@@ -1,0 +1,23 @@
+:root {
+    --bg-color: #1B1B1F;
+    --ui-bg-color: #222227;
+    --ui-txt-color: #313137;
+    --txt-color: white;
+}
+
+*{
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--bg-color);
+    color: var(--txt-color);
+
+    main {
+        position: absolute;
+        left: 50px;
+    }
+}
+
+@import "components/nav";

@@ -1,0 +1,66 @@
+:root {
+  --bg-color: #1B1B1F;
+  --ui-bg-color: #222227;
+  --ui-txt-color: #313137;
+  --txt-color: white;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--txt-color);
+}
+body main {
+  position: absolute;
+  left: 50px;
+}
+
+.navWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 50px;
+  background-color: var(--ui-bg-color);
+  z-index: 10;
+}
+.navWrapper .navigation {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 100%;
+  height: 68%;
+  padding-top: 5px;
+}
+
+.navLink {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+}
+.navLink .nav-icon {
+  width: 25px;
+  height: 25px;
+  margin: auto 0;
+  fill: var(--ui-txt-color);
+}
+.navLink .nav-icon:hover {
+  fill: #1ED583;
+}
+.navLink .nav-icon.active {
+  fill: #1ED583; /* active color */
+}
+
+#settingsLink {
+  margin-bottom: 10px;
+}/*# sourceMappingURL=main.css.map */
