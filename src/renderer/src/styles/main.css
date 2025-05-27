@@ -19,6 +19,40 @@ body main {
   left: 50px;
 }
 
+.dragBar {
+  height: 20px;
+  -webkit-app-region: drag; /* Enables dragging the window */
+  display: flex;
+  justify-content: flex-end;
+  background: #222227;
+  color: white;
+}
+
+.windowControls {
+  display: flex;
+  -webkit-app-region: no-drag; /* Prevent buttons from being draggable */
+}
+
+.windowControls button {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0 10px;
+  cursor: pointer;
+  opacity: 25%;
+}
+.windowControls button:hover {
+  opacity: 100%;
+}
+
+#min:hover {
+  color: #1e9ad3;
+}
+
+#close:hover {
+  color: #F77036;
+}
+
 .navWrapper {
   display: flex;
   justify-content: space-between;
@@ -37,7 +71,7 @@ body main {
   flex-direction: column;
   width: 100%;
   height: 68%;
-  padding-top: 5px;
+  padding-top: 25px;
 }
 
 .navLink {
@@ -63,4 +97,28 @@ body main {
 
 #settingsLink {
   margin-bottom: 10px;
+}
+
+.balanceWrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 65px;
+  position: fixed;
+  top: 25px;
+  right: 40px;
+}
+.balanceWrapper img {
+  width: 35px;
+  position: relative;
+  left: 15px;
+}
+.balanceWrapper p {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 600;
+  margin: auto;
+  border-radius: 0px 10px 10px 0px;
+  height: 20px;
+  padding: 0px 8px 0px 12px;
+  background-color: #222227;
+  color: #1ED583;
 }/*# sourceMappingURL=main.css.map */

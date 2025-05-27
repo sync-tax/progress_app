@@ -8,7 +8,10 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: true,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    frame: false,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -73,3 +76,17 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('window-control', (event, action) => {
+  const window = BrowserWindow.getFocusedWindow()
+  if (!window) return
+
+  switch (action) {
+    case 'minimize':
+      window.minimize()
+      break
+    case 'close':
+      window.close()
+      break
+  }
+})
