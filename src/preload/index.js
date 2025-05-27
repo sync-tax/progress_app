@@ -1,10 +1,13 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
-  windowControl: (action) => ipcRenderer.send('window-control', action)
+  // Custom window control panel
+  windowControl: (action) => ipcRenderer.send('window-control', action),
+
+  // Balance Functions
+  getBalance: async () => await ipcRenderer.invoke('get-balance'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

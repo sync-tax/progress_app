@@ -1,7 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const balance = ref(13223)
+const balance = ref(0)
+
+onMounted(async () => {
+    balance.value = await window.api.getBalance()
+})
 </script>
 
 <template>

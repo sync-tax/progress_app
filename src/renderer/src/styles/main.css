@@ -45,10 +45,6 @@ body main {
   opacity: 100%;
 }
 
-#min:hover {
-  color: #1e9ad3;
-}
-
 #close:hover {
   color: #F77036;
 }
@@ -108,7 +104,7 @@ body main {
   right: 40px;
 }
 .balanceWrapper img {
-  width: 35px;
+  width: 30px;
   position: relative;
   left: 15px;
 }

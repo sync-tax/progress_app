@@ -3,6 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+import { registerDBHandlers } from './db/api.js'
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -56,6 +58,7 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  registerDBHandlers()
   createWindow()
 
   app.on('activate', function () {
@@ -77,6 +80,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+// Custom Bar Process
 ipcMain.on('window-control', (event, action) => {
   const window = BrowserWindow.getFocusedWindow()
   if (!window) return
@@ -90,3 +94,4 @@ ipcMain.on('window-control', (event, action) => {
       break
   }
 })
+
