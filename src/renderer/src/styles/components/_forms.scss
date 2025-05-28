@@ -1,0 +1,128 @@
+.formWrapper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  .addTagForm, .editTagForm{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 250px;
+
+  background-color: var(--bg-color);
+  border-radius: 5px;
+
+  h4{
+    @include ui-titles-font();
+    text-align: center;
+    background-color: #1ED583;
+    color: var(--bg-color);
+
+    border-radius: 5px 5px 0 0;
+    padding-top: 5px
+  }
+
+  input{
+ border: none;
+  border-bottom: 2px solid #1ED583;
+  background: transparent;
+  outline: none;
+  padding: 4px 0;
+  color: #fff;
+
+  width: 200px;
+  margin: 0 auto;
+  padding-top: 20px;
+
+  margin-bottom: 20px;
+  }
+
+  span{
+    @include ui-lvl-font();
+    width: 250px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .addIconContainer{
+    width: 200px;
+    background-color: #1ED583;
+    margin: 0 auto;
+    border-radius: 5px;
+    margin-top: 20px;
+
+    display: flex;
+    justify-content: center;
+    padding: 3px;
+
+    opacity: 35%;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 100%;
+    }
+
+    .addIcon{
+        fill: var(--bg-color);
+    }
+  }
+
+    .cancelIconContainer{
+    width: 200px;
+    background-color: #F77036;
+    margin: 0 auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    display: flex;
+    justify-content: center;
+    padding: 0px;
+
+    opacity: 35%;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 100%;
+    }
+
+    .cancelIcon{
+        fill: var(--bg-color);
+        width: 30px;
+    }
+  }
+
+  .deleteIconContainer{
+    width: 200px;
+    background-color: #F77036ed;
+    margin: 0 auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+
+    display: flex;
+    justify-content: center;
+    padding: 0px;
+
+    opacity: 25%;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 100%;
+    }
+
+    .cancelIcon{
+        fill: var(--bg-color);
+        width: 30px;
+    }
+  }
+  }
+}

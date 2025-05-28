@@ -11,6 +11,9 @@ const api = {
 
   // Tag Functions
   getTags: async () => await ipcRenderer.invoke('get-tags'),
+  addTag: async (tag) => await ipcRenderer.invoke('add-tag', tag),
+  updateTag: async (tag) => await ipcRenderer.invoke('update-tag', tag),
+  deleteTag: async (id) => await ipcRenderer.invoke('delete-tag', id),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -245,4 +245,115 @@ progress::-webkit-progress-bar {
 
 progress::-webkit-progress-value {
   background-color: #A335EE;
+}
+
+.formWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.formWrapper .addTagForm, .formWrapper .editTagForm {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 250px;
+  background-color: var(--bg-color);
+  border-radius: 5px;
+}
+.formWrapper .addTagForm h4, .formWrapper .editTagForm h4 {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  background-color: #1ED583;
+  color: var(--bg-color);
+  border-radius: 5px 5px 0 0;
+  padding-top: 5px;
+}
+.formWrapper .addTagForm input, .formWrapper .editTagForm input {
+  border: none;
+  border-bottom: 2px solid #1ED583;
+  background: transparent;
+  outline: none;
+  padding: 4px 0;
+  color: #fff;
+  width: 200px;
+  margin: 0 auto;
+  padding-top: 20px;
+  margin-bottom: 20px;
+}
+.formWrapper .addTagForm span, .formWrapper .editTagForm span {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  opacity: 35%;
+  width: 250px;
+  text-align: center;
+  font-size: 12px;
+}
+.formWrapper .addTagForm .addIconContainer, .formWrapper .editTagForm .addIconContainer {
+  width: 200px;
+  background-color: #1ED583;
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  opacity: 35%;
+  cursor: pointer;
+}
+.formWrapper .addTagForm .addIconContainer:hover, .formWrapper .editTagForm .addIconContainer:hover {
+  opacity: 100%;
+}
+.formWrapper .addTagForm .addIconContainer .addIcon, .formWrapper .editTagForm .addIconContainer .addIcon {
+  fill: var(--bg-color);
+}
+.formWrapper .addTagForm .cancelIconContainer, .formWrapper .editTagForm .cancelIconContainer {
+  width: 200px;
+  background-color: #F77036;
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 0px;
+  opacity: 35%;
+  cursor: pointer;
+}
+.formWrapper .addTagForm .cancelIconContainer:hover, .formWrapper .editTagForm .cancelIconContainer:hover {
+  opacity: 100%;
+}
+.formWrapper .addTagForm .cancelIconContainer .cancelIcon, .formWrapper .editTagForm .cancelIconContainer .cancelIcon {
+  fill: var(--bg-color);
+  width: 30px;
+}
+.formWrapper .addTagForm .deleteIconContainer, .formWrapper .editTagForm .deleteIconContainer {
+  width: 200px;
+  background-color: rgba(247, 112, 54, 0.9294117647);
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 0px;
+  opacity: 25%;
+  cursor: pointer;
+}
+.formWrapper .addTagForm .deleteIconContainer:hover, .formWrapper .editTagForm .deleteIconContainer:hover {
+  opacity: 100%;
+}
+.formWrapper .addTagForm .deleteIconContainer .cancelIcon, .formWrapper .editTagForm .deleteIconContainer .cancelIcon {
+  fill: var(--bg-color);
+  width: 30px;
 }/*# sourceMappingURL=main.css.map */
