@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <h1>timer</h1>
+  <div class="moduleTitle">
+    <h1>Timer</h1>
+  </div>
 </template>

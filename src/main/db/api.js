@@ -7,4 +7,10 @@ export function registerDBHandlers() {
     db.read()
     return db.data.balance
   })
+
+  // Tag Functions
+   ipcMain.handle('get-tags', () => {
+    db.read()
+    return db.data.tags
+  })
 }

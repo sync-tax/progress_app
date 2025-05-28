@@ -18,16 +18,3 @@ import Crystals from './components/Crystals.vue'
     </main>
   </body>
 </template>
-
-<style scoped>
-.route-enter-active,
-.route-leave-active {
-  scroll-behavior: smooth;
-  transition: opacity 0.5s ease, transform 0.3s ease; /* Add transform */
-}
-
-.route-enter-from,
-.route-leave-to {
-  opacity: 0;
-}
-</style>

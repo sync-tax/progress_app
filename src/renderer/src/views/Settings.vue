@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <h1>Setting</h1>
+  <div class="moduleTitle">
+    <h1>Settings</h1>
+  </div>
 </template>

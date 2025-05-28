@@ -3,5 +3,7 @@
 </script>
 
 <template>
-  <h1>projects</h1>
+  <div class="moduleTitle">
+    <h1>Projects</h1>
+  </div>
 </template>

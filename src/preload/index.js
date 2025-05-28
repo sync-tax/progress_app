@@ -8,6 +8,9 @@ const api = {
 
   // Balance Functions
   getBalance: async () => await ipcRenderer.invoke('get-balance'),
+
+  // Tag Functions
+  getTags: async () => await ipcRenderer.invoke('get-tags'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

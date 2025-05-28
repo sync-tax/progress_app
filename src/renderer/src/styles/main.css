@@ -8,15 +8,34 @@
 * {
   margin: 0;
   box-sizing: border-box;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--txt-color);
+  width: 800px;
+  overflow: hidden;
 }
 body main {
   position: absolute;
   left: 50px;
+}
+body .moduleTitle {
+  border-radius: 5px;
+  background: linear-gradient(to right, #3c3c46, #1B1B1F);
+  margin: 10px;
+  width: 740px;
+  height: 40px;
+  z-index: 0;
+}
+body .moduleTitle h1 {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  padding-left: 10px;
 }
 
 .dragBar {
@@ -100,8 +119,9 @@ body main {
   justify-content: space-between;
   width: 65px;
   position: fixed;
-  top: 25px;
+  top: 35px;
   right: 40px;
+  z-index: 10;
 }
 .balanceWrapper img {
   width: 30px;
@@ -117,4 +137,112 @@ body main {
   padding: 0px 8px 0px 12px;
   background-color: #222227;
   color: #1ED583;
+}
+
+.tagsWrapper {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 50px;
+  gap: 10px;
+  margin-left: 10px;
+}
+.tagsWrapper .tagCard {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--ui-bg-color);
+  border-radius: 5px 5px 5px 5px;
+  opacity: 60%;
+  cursor: pointer;
+}
+.tagsWrapper .tagCard:hover {
+  opacity: 100%;
+}
+.tagsWrapper .tagCard .tagContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+}
+.tagsWrapper .tagCard .tagContent .labelLvlWrapper {
+  display: flex;
+  flex-direction: column;
+}
+.tagsWrapper .tagCard .tagContent .labelLvlWrapper .tagLabel {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  padding-top: 2px;
+  height: 26px;
+}
+.tagsWrapper .tagCard .tagContent .labelLvlWrapper .tagLvl {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  opacity: 35%;
+  padding-bottom: 2px;
+}
+.tagsWrapper .tagCard .tagContent .expBar {
+  width: 200px;
+  border-radius: 5px;
+  height: 3px;
+  position: relative;
+  top: -18.5px;
+  right: 4.8px;
+  z-index: 0;
+  opacity: 50%;
+}
+.tagsWrapper .tagCard .rankColor {
+  display: flex;
+  justify-content: center;
+  border-radius: 5px 0 0 5px;
+  width: 30px;
+  z-index: 10;
+}
+.tagsWrapper .tagCard .rankColor .hashtag {
+  fill: var(--ui-bg-color);
+  margin: auto 0;
+}
+.tagsWrapper .tagCard .common {
+  background: linear-gradient(to right, #FFFFFF, #999999);
+}
+.tagsWrapper .tagCard .uncommon {
+  background: linear-gradient(to right, #1EFF00, #129900);
+}
+.tagsWrapper .tagCard .rare {
+  background: linear-gradient(to right, #0070DD, #003C77);
+}
+.tagsWrapper .tagCard .epic {
+  background: linear-gradient(to right, #A335EE, #5D1E88);
+}
+.tagsWrapper .tagCard .legendary {
+  background: linear-gradient(to right, #FF8000, #994D00);
+}
+.tagsWrapper .addTagWrapper {
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  border: 3px dashed var(--ui-bg-color);
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.tagsWrapper .addTagWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: var(--ui-bg-color);
+}
+.tagsWrapper .addTagWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #D9D9D9;
+  border-bottom-right-radius: 5px;
+}
+
+progress::-webkit-progress-value {
+  background-color: #A335EE;
 }/*# sourceMappingURL=main.css.map */
