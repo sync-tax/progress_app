@@ -1,14 +1,14 @@
-.tagsWrapper {
+.ideasWrapper {
     position: absolute;
 
     display: grid;
     grid-template-columns: repeat(3, 230px);
-    grid-auto-rows: 50px;
+    grid-auto-rows: 100px;
     gap: 10px;
 
     margin-left: 10px;
 
-    .tagCard {
+    .ideaCard {
         display: flex;
         justify-content: space-around;
 
@@ -24,16 +24,14 @@
             opacity: 100%;
         }
 
-        .tagContent {
+        .ideaContent {
             padding-left: 5px;
             width: 200px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
 
-            .labelLvlWrapper {
-                display: flex;
-                flex-direction: column;
-
-                h4 {
+            h4 {
                     @include ui-titles-font();
                     padding-top: 2px;
 
@@ -42,24 +40,10 @@
 
                 p {
                     @include ui-lvl-font();
-
-                    padding-bottom: 2px;
+                    opacity: 90%;
+                    padding-top: 5px;
+                    line-height: 18px;
                 }
-            }
-
-        
-            .expBar {
-                width: 200px;
-                border-radius: 5px;
-                height: 3px;
-
-                position: relative;
-                top: -18.5px;
-                right: 4.8px;
-
-                z-index: 0;
-
-                opacity: 50%;
             }
         }
 
@@ -72,7 +56,7 @@
 
             z-index: 10;
 
-            .hashtag {
+            .bulb {
                 fill: var(--ui-bg-color);
 
                 margin: auto 0;
@@ -100,9 +84,9 @@
         }
     }
 
-    .addTagWrapper {
+    .addIdeaWrapper {
         width: 230px;
-        height: 50px;
+        height: 100px;
         border-radius: 5px;
         border: 3px dashed var(--ui-bg-color);
 
@@ -127,15 +111,4 @@
             opacity: 50%;
         }
     }
-}
-
-progress::-webkit-progress-bar {
-    background-color: #D9D9D9;
-
-    border-bottom-right-radius: 5px;
-}
-
-progress::-webkit-progress-value {
-    background-color: #A335EE;
-}
 

@@ -28,8 +28,12 @@ const rank = computed(() => {
 
     <div class="tagContent">
       <div class="labelLvlWrapper">
-        <span class="tagLabel">{{ tag.label }}</span>
-        <span class="tagLvl">Level {{ tag.level }}</span>
+        <h4 class="tagLabel">
+          {{ tag.label }}
+        </h4>
+        <p class="tagLvl">
+          Level {{ tag.level }}
+        </p>
       </div>
 
       <progress class="expBar" :class="rank" :value="tag.exp_current" :max="tag.exp_needed">

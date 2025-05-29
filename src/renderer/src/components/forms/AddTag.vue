@@ -27,7 +27,7 @@ const onKeyDown = (event) => {
   <div class="formWrapper" @keydown="onKeyDown">
     <div class="addTagForm">
       <h4>Add Tag</h4>
-      <input v-model="label" type="text" placeholder="Label..."/>
+      <input v-model="label" type="text" placeholder="Label..." />
       <span>ESC = Cancel | ENTER = Save</span>
     </div>
   </div>
