@@ -1,9 +1,9 @@
 <script setup>
 import PlusIcon from '../assets/plus.svg'
 
-import IdeaCard from '../components/IdeaCard.vue'
-import AddModal from '../components/forms/AddModal.vue'
-import EditModal from '../components/forms/EditModal.vue'
+import IdeaCard from '../components/cards/IdeaCard.vue'
+import AddModal from '../components/modals/AddModal.vue'
+import EditModal from '../components/modals/EditModal.vue'
 
 import { ref, onMounted } from 'vue'
 

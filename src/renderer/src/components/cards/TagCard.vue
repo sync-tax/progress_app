@@ -1,5 +1,5 @@
 <script setup>
-import TagIcon from '../assets/tags.svg'
+import TagIcon from '../../assets/tags.svg'
 
 import { computed } from 'vue'
 

@@ -1,5 +1,5 @@
 <script setup>
-import IdeaIcon from '../assets/idea.svg'
+import IdeaIcon from '../../assets/idea.svg'
 
 import { computed } from 'vue'
 

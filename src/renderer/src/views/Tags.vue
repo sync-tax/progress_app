@@ -1,9 +1,9 @@
 <script setup>
 import PlusIcon from '../assets/plus.svg'
 
-import TagCard from '../components/TagCard.vue'
-import AddModal from '../components/forms/AddModal.vue'
-import EditModal from '../components/forms/EditModal.vue'
+import TagCard from '../components/cards/TagCard.vue'
+import AddModal from '../components/modals/AddModal.vue'
+import EditModal from '../components/modals/EditModal.vue'
 
 import { ref, onMounted, computed } from 'vue'
 
