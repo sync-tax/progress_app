@@ -2,8 +2,8 @@
 import PlusIcon from '../assets/plus.svg'
 
 import TagCard from '../components/TagCard.vue'
-import AddTag from '../components/forms/AddTag.vue'
-import EditTag from '../components/forms/EditTag.vue'
+import AddModal from '../components/forms/AddModal.vue'
+import EditModal from '../components/forms/EditModal.vue'
 
 import { ref, onMounted, computed } from 'vue'
 
@@ -57,6 +57,6 @@ const closeEditForm = async () => {
       <PlusIcon class="addIcon" />
     </div>
   </div>
-  <AddTag v-if="addFormIsVisible" @close="closeAddForm()" />
-  <EditTag v-if="editFormIsVisible" :tag="editingTag" @close="closeEditForm()" />
+  <AddModal v-if="addFormIsVisible" type="tag" @close="closeAddForm()" />
+  <EditModal v-if="editFormIsVisible && editingTag" type="tag" :data="editingTag" @close="closeEditForm()" />
 </template>

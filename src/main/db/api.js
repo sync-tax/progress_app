@@ -21,7 +21,7 @@ export function registerDBHandlers() {
 
     db.data.tags.push({
       id: nextId,
-      label: newTag.label,
+      title: newTag.title,
       level: 1,
       exp_current: 0,
       exp_needed: 60,
@@ -40,7 +40,7 @@ export function registerDBHandlers() {
     const tagToUpdate = db.data.tags[index]
 
     // Update provided fields
-    if ('label' in updatedTag) tagToUpdate.label = updatedTag.label
+    if ('title' in updatedTag) tagToUpdate.title = updatedTag.title
     if ('level' in updatedTag) tagToUpdate.level = updatedTag.level
     if ('exp_current' in updatedTag) tagToUpdate.exp_current = updatedTag.exp_current
     if ('exp_needed' in updatedTag) tagToUpdate.exp_needed = updatedTag.exp_needed

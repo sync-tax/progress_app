@@ -9,7 +9,7 @@ export default {
   tags: [
     {
     "id": 1,
-    "label": "Epic Tag",
+    "title": "Epic Tag",
     "level": 50,
     "exp_current": 1250,
     "exp_needed": 3000

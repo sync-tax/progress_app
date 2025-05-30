@@ -337,7 +337,7 @@ progress::-webkit-progress-value {
   background-color: #A335EE;
 }
 
-.formWrapper {
+.modalWrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -351,7 +351,7 @@ progress::-webkit-progress-value {
   justify-content: center;
   z-index: 9999;
 }
-.formWrapper .addTagForm, .formWrapper .editTagForm {
+.modalWrapper .addModal, .modalWrapper .editModal {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -359,7 +359,7 @@ progress::-webkit-progress-value {
   background-color: var(--bg-color);
   border-radius: 5px;
 }
-.formWrapper .addTagForm h4, .formWrapper .editTagForm h4 {
+.modalWrapper .addModal h4, .modalWrapper .editModal h4 {
   font-family: "Anek Devanagari", sans-serif;
   font-weight: 600;
   font-size: 18px;
@@ -369,7 +369,7 @@ progress::-webkit-progress-value {
   border-radius: 5px 5px 0 0;
   padding-top: 5px;
 }
-.formWrapper .addTagForm input, .formWrapper .editTagForm input {
+.modalWrapper .addModal input, .modalWrapper .editModal input {
   border: none;
   border-bottom: 2px solid #1ED583;
   background: transparent;
@@ -381,7 +381,46 @@ progress::-webkit-progress-value {
   padding-top: 20px;
   margin-bottom: 20px;
 }
-.formWrapper .addTagForm span, .formWrapper .editTagForm span {
+.modalWrapper .addModal textarea, .modalWrapper .editModal textarea {
+  border: none;
+  border-bottom: 2px solid #1ED583;
+  background: transparent;
+  outline: none;
+  padding: 4px 0;
+  color: #fff;
+  width: 200px;
+  margin: 0 auto;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  resize: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.modalWrapper .addModal select, .modalWrapper .editModal select {
+  border: none;
+  border-bottom: 2px solid #1ED583;
+  background: transparent;
+  outline: none;
+  padding: 4px 0;
+  color: #fff;
+  width: 200px;
+  margin: 0 auto;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 5px top 20px;
+  background-size: 16px;
+}
+.modalWrapper .addModal select option, .modalWrapper .editModal select option {
+  background-color: #1B1B1F;
+  color: #fff;
+  padding: 8px;
+}
+.modalWrapper .addModal span, .modalWrapper .editModal span {
   font-family: "Anek Devanagari", sans-serif;
   font-weight: 300;
   font-size: 14px;
@@ -390,7 +429,7 @@ progress::-webkit-progress-value {
   text-align: center;
   font-size: 12px;
 }
-.formWrapper .addTagForm .addIconContainer, .formWrapper .editTagForm .addIconContainer {
+.modalWrapper .addModal .addIconContainer, .modalWrapper .editModal .addIconContainer {
   width: 200px;
   background-color: #1ED583;
   margin: 0 auto;
@@ -402,13 +441,13 @@ progress::-webkit-progress-value {
   opacity: 35%;
   cursor: pointer;
 }
-.formWrapper .addTagForm .addIconContainer:hover, .formWrapper .editTagForm .addIconContainer:hover {
+.modalWrapper .addModal .addIconContainer:hover, .modalWrapper .editModal .addIconContainer:hover {
   opacity: 100%;
 }
-.formWrapper .addTagForm .addIconContainer .addIcon, .formWrapper .editTagForm .addIconContainer .addIcon {
+.modalWrapper .addModal .addIconContainer .addIcon, .modalWrapper .editModal .addIconContainer .addIcon {
   fill: var(--bg-color);
 }
-.formWrapper .addTagForm .cancelIconContainer, .formWrapper .editTagForm .cancelIconContainer {
+.modalWrapper .addModal .cancelIconContainer, .modalWrapper .editModal .cancelIconContainer {
   width: 200px;
   background-color: #F77036;
   margin: 0 auto;
@@ -421,14 +460,14 @@ progress::-webkit-progress-value {
   opacity: 35%;
   cursor: pointer;
 }
-.formWrapper .addTagForm .cancelIconContainer:hover, .formWrapper .editTagForm .cancelIconContainer:hover {
+.modalWrapper .addModal .cancelIconContainer:hover, .modalWrapper .editModal .cancelIconContainer:hover {
   opacity: 100%;
 }
-.formWrapper .addTagForm .cancelIconContainer .cancelIcon, .formWrapper .editTagForm .cancelIconContainer .cancelIcon {
+.modalWrapper .addModal .cancelIconContainer .cancelIcon, .modalWrapper .editModal .cancelIconContainer .cancelIcon {
   fill: var(--bg-color);
   width: 30px;
 }
-.formWrapper .addTagForm .deleteIconContainer, .formWrapper .editTagForm .deleteIconContainer {
+.modalWrapper .addModal .deleteIconContainer, .modalWrapper .editModal .deleteIconContainer {
   width: 200px;
   background-color: rgba(247, 112, 54, 0.9294117647);
   margin: 0 auto;
@@ -440,10 +479,10 @@ progress::-webkit-progress-value {
   opacity: 25%;
   cursor: pointer;
 }
-.formWrapper .addTagForm .deleteIconContainer:hover, .formWrapper .editTagForm .deleteIconContainer:hover {
+.modalWrapper .addModal .deleteIconContainer:hover, .modalWrapper .editModal .deleteIconContainer:hover {
   opacity: 100%;
 }
-.formWrapper .addTagForm .deleteIconContainer .cancelIcon, .formWrapper .editTagForm .deleteIconContainer .cancelIcon {
+.modalWrapper .addModal .deleteIconContainer .deleteIcon, .modalWrapper .editModal .deleteIconContainer .deleteIcon {
   fill: var(--bg-color);
   width: 30px;
 }/*# sourceMappingURL=main.css.map */

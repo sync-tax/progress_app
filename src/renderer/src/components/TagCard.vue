@@ -29,7 +29,7 @@ const rank = computed(() => {
     <div class="tagContent">
       <div class="labelLvlWrapper">
         <h4 class="tagLabel">
-          {{ tag.label }}
+          {{ tag.title }}
         </h4>
         <p class="tagLvl">
           Level {{ tag.level }}
