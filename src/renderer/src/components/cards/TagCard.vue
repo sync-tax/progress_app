@@ -1,5 +1,6 @@
 <script setup>
 import TagIcon from '../../assets/tags.svg'
+import EditIcon from '../../assets/edit.svg'
 
 import { computed } from 'vue'
 
@@ -18,10 +19,24 @@ const rank = computed(() => {
   else return 'common'
 })
 
+const rankHoverStyle = computed(() => {
+  if (props.tag.level >= 55) return 'legendary-opac'
+  else if (props.tag.level >= 40) return 'epic-opac'
+  else if (props.tag.level >= 25) return 'rare-opac'
+  else if (props.tag.level >= 10) return 'uncommon-opac'
+  else return 'common-opac'
+})
+
+const emit = defineEmits(['edit'])
+
+const renderEditModal = (tag) => {
+    emit('edit', tag)
+}
+
 </script>
 
 <template>
-  <div class="tagCard">
+  <div class="tagCard" :class="rankHoverStyle">
     <div class="rankColor" :class="rank">
       <TagIcon class="hashtag" />
     </div>
@@ -34,6 +49,10 @@ const rank = computed(() => {
         <p class="tagLvl">
           Level {{ tag.level }}
         </p>
+      </div>
+
+      <div class="editIconContainer" @click="renderEditModal(tag)">
+        <EditIcon class="editIcon" />
       </div>
 
       <progress class="expBar" :class="rank" :value="tag.exp_current" :max="tag.exp_needed">

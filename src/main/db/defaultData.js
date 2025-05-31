@@ -25,5 +25,23 @@ export default {
     "rank": "rare"
   },
 ],
+
+  //Rewards
+  rewards: [
+    {
+    "id": 1,
+    "title": "Repat Reward",
+    "cost": 100,
+    "rank": "rare",
+    "repeatable": true
+  },
+  {
+    "id": 2,
+    "title": "No-Repeat Reward",
+    "cost": 100,
+    "rank": "rare",
+    "repeatable": false
+  },
+],
 }
 

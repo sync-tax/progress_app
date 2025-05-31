@@ -1,4 +1,4 @@
-.tagsWrapper {
+.rewardsWrapper {
     position: absolute;
 
     display: grid;
@@ -8,7 +8,7 @@
 
     margin-left: 10px;
 
-    .tagCard {
+    .rewardCard {
         position: relative;
         display: flex;
         justify-content: space-around;
@@ -16,7 +16,6 @@
         background-color: var(--ui-bg-color);
 
         border-radius: 5px 5px 5px 5px;
-
         transition: all .15s ease-in-out;
 
         &.common-opac:hover {
@@ -59,49 +58,32 @@
               }
             }
           }
-        
+
           &:hover .editIconContainer {
             opacity: 0.75; 
             cursor: pointer;
           }
 
-
-        .tagContent {
+        .rewardContent {
             padding-left: 5px;
             width: 200px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
 
-            .labelLvlWrapper {
-                display: flex;
-                flex-direction: column;
-
-                h4 {
+            h4 {
                     @include ui-titles-font();
-                    padding-top: 2px;
+                    margin: auto 0;
 
                     height: 26px
                 }
 
                 p {
                     @include ui-lvl-font();
-
-                    padding-bottom: 2px;
+                    opacity: 90%;
+                    padding-top: 5px;
+                    line-height: 18px;
                 }
-            }
-
-        
-            .expBar {
-                width: 200px;
-                border-radius: 5px;
-                height: 3px;
-
-                position: relative;
-                top: -18.5px;
-                right: 4.8px;
-
-                z-index: 0;
-
-                opacity: 50%;
             }
         }
 
@@ -110,14 +92,32 @@
             justify-content: center;
 
             border-radius: 5px 0 0 5px;
-            width: 30px;
+            width: 50px;
 
             z-index: 10;
 
-            .hashtag {
-                fill: var(--ui-bg-color);
+            .costWrapper{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                cursor: pointer;
+                transition: transform .15s ease-in-out;
+                
+                &:hover {
+                    transform: scale(1.05);
+                }
 
-                margin: auto 0;
+                img{
+                    width: 20px;
+                }
+
+                p{
+                    font-family: "Anek Devanagari", sans-serif;
+                    font-weight: 400;
+                    font-size: 14px;
+                    color: white;
+                }
             }
         }
 
@@ -142,7 +142,7 @@
         }
     }
 
-    .addTagWrapper {
+    .addRewardWrapper {
         width: 230px;
         height: 50px;
         border-radius: 5px;
@@ -169,15 +169,4 @@
             opacity: 50%;
         }
     }
-}
-
-progress::-webkit-progress-bar {
-    background-color: #D9D9D9;
-
-    border-bottom-right-radius: 5px;
-}
-
-progress::-webkit-progress-value {
-    background-color: #A335EE;
-}
 

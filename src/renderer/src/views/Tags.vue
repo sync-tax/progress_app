@@ -33,12 +33,12 @@ const closeAddForm = async () => {
 
 const editingTag = ref(null)
 const editFormIsVisible = ref(false)
-const renderEditForm = (tag) => {
+const renderEditModal = (tag) => {
   editingTag.value = tag
   editFormIsVisible.value = true
 }
 
-const closeEditForm = async () => {
+const closeEditModal = async () => {
   editFormIsVisible.value = false
   await fetchTags()
 }
@@ -52,11 +52,11 @@ const closeEditForm = async () => {
   </div>
 
   <div class="tagsWrapper">
-    <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @click="renderEditForm(tag)" />
+    <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @edit="renderEditModal(tag)" />
     <div class="addTagWrapper" @click="renderAddForm()">
       <PlusIcon class="addIcon" />
     </div>
   </div>
   <AddModal v-if="addFormIsVisible" type="tag" @close="closeAddForm()" />
-  <EditModal v-if="editFormIsVisible && editingTag" type="tag" :data="editingTag" @close="closeEditForm()" />
+  <EditModal v-if="editFormIsVisible && editingTag" type="tag" :data="editingTag" @close="closeEditModal()" />
 </template>

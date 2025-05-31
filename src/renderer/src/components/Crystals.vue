@@ -1,11 +1,20 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted} from 'vue'
 
 const balance = ref(0)
 
+const updateBalance = (newBalance) => {
+  balance.value = newBalance
+}
+
 onMounted(async () => {
-    balance.value = await window.api.getBalance()
+  // Initial fetch
+  balance.value = await window.api.getBalance()
+
+  // Listen for balance updates
+  window.api.onBalanceUpdate(updateBalance)
 })
+
 </script>
 
 <template>

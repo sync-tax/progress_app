@@ -22,6 +22,12 @@
   --ui-bg-color: #222227;
   --ui-txt-color: #313137;
   --txt-color: white;
+
+  --common-color: #FFFFFF;
+  --uncommon-color: #1EFF00;
+  --rare-color: #0070DD;
+  --epic-color: #A335EE;
+  --legendary-color: #FF8000;
 }
 
 * {
@@ -68,5 +74,6 @@ body {
 
 @import "components/ideas";
 @import "components/tags";
+@import "components/rewards";
 
 @import "components/forms";

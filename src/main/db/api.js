@@ -8,6 +8,22 @@ export function registerDBHandlers() {
     return db.data.balance
   })
 
+  ipcMain.handle('add-balance', (event, amount) => {
+    db.read()
+    db.data.balance += amount
+    db.write()
+    event.sender.send('balance-updated', db.data.balance)
+    return true
+  })
+
+  ipcMain.handle('remove-balance', (event, amount) => {
+    db.read()
+    db.data.balance -= amount
+    db.write()
+    event.sender.send('balance-updated', db.data.balance)
+    return true
+  })
+
   // Tag Functions
   ipcMain.handle('get-tags', () => {
     db.read()
@@ -101,5 +117,53 @@ export function registerDBHandlers() {
     db.write()
     return true
   })
+
+  // Reward Functions
+  ipcMain.handle('get-rewards', () => {
+    db.read()
+    return db.data.rewards
+  })
+
+  ipcMain.handle('add-reward', (event, newReward) => {
+    db.read()
+
+    const nextId = (db.data.rewards.at(-1)?.id || 0) + 1
+
+    db.data.rewards.push({
+      id: nextId,
+      title: newReward.title,
+      cost: newReward.cost,
+      rank: newReward.rank,
+      repeatable: newReward.repeatable,
+    })
+
+    db.write()
+    return true
+  })
+
+  ipcMain.handle('update-reward', (event, updatedReward) => {
+    db.read()
+    const index = db.data.rewards.findIndex((reward) => reward.id === updatedReward.id)
+
+    if (index === -1) return false
+
+    const rewardToUpdate = db.data.rewards[index]
+
+    // Update provided fields
+    if ('title' in updatedReward) rewardToUpdate.title = updatedReward.title
+    if ('cost' in updatedReward) rewardToUpdate.cost = updatedReward.cost
+    if ('rank' in updatedReward) rewardToUpdate.rank = updatedReward.rank
+    if ('repeatable' in updatedReward) rewardToUpdate.repeatable = updatedReward.repeatable
+
+    db.write()
+    return true
+  })
+
+  ipcMain.handle('delete-reward', (event, id) => {
+    db.read()
+    db.data.rewards = db.data.rewards.filter(reward => reward.id !== id)
+    db.write()
+    return true
+  })  
 
 }

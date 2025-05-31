@@ -14,7 +14,8 @@ const props = defineProps({
 const formData = ref({
   title: '',
   description: '',
-  rank: 'common'
+  rank: 'common',
+  cost: 0
 })
 
 watch(
@@ -25,6 +26,11 @@ watch(
       if (props.type === 'idea') {
         formData.value.description = data.description
         formData.value.rank = data.rank
+      }
+      if (props.type === 'reward') {
+        formData.value.cost = data.cost
+        formData.value.rank = data.rank
+        formData.value.repeatable = data.repeatable
       }
     }
   },
@@ -48,6 +54,14 @@ const save = async () => {
       description: formData.value.description,
       rank: formData.value.rank
     })
+  } else if (props.type === 'reward') {
+    await window.api.updateReward({
+      ...props.data,
+      title: formData.value.title,
+      cost: formData.value.cost,
+      rank: formData.value.rank,
+      repeatable: formData.value.repeatable
+    })
   }
   
   emit('close')
@@ -60,6 +74,8 @@ const deleteItem = async () => {
     await window.api.deleteTag(props.data.id)
   } else if (props.type === 'idea') {
     await window.api.deleteIdea(props.data.id)
+  } else if (props.type === 'reward') {
+    await window.api.deleteReward(props.data.id)
   }
   
   emit('close')
@@ -103,6 +119,7 @@ onUnmounted(() => {
           placeholder="Description..." 
           rows="3"
           maxlength="90"
+          spellcheck="false"
         ></textarea>
         <select v-model="formData.rank">
           <option value="common">Common</option>
@@ -111,6 +128,26 @@ onUnmounted(() => {
           <option value="epic">Epic</option>
           <option value="legendary">Legendary</option>
         </select>
+      </template>
+      
+      <template v-if="type === 'reward'">
+        <input 
+          v-model="formData.cost" 
+          type="number" 
+          :placeholder="`Cost...`" 
+        />
+        <select v-model="formData.rank">
+          <option value="common">Common</option>
+          <option value="uncommon">Uncommon</option>
+          <option value="rare">Rare</option>
+          <option value="epic">Epic</option>
+          <option value="legendary">Legendary</option>
+        </select>
+
+        <input 
+          v-model="formData.repeatable"
+          type="checkbox" 
+        />
       </template>
       
       <div class="deleteIconContainer" @click="deleteItem">

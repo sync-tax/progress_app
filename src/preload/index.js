@@ -8,6 +8,11 @@ const api = {
 
   // Balance Functions
   getBalance: async () => await ipcRenderer.invoke('get-balance'),
+  addBalance: async (amount) => await ipcRenderer.invoke('add-balance', amount),
+  removeBalance: async (amount) => await ipcRenderer.invoke('remove-balance', amount),
+  onBalanceUpdate: (callback) => {
+    ipcRenderer.on('balance-updated', (event, newBalance) => callback(newBalance))
+  },
 
   // Idea Functions
   getIdeas: async () => await ipcRenderer.invoke('get-ideas'),
@@ -20,6 +25,12 @@ const api = {
   addTag: async (tag) => await ipcRenderer.invoke('add-tag', tag),
   updateTag: async (tag) => await ipcRenderer.invoke('update-tag', tag),
   deleteTag: async (id) => await ipcRenderer.invoke('delete-tag', id),
+
+  // Reward Functions
+  getRewards: async () => await ipcRenderer.invoke('get-rewards'),
+  addReward: async (reward) => await ipcRenderer.invoke('add-reward', reward),
+  updateReward: async (reward) => await ipcRenderer.invoke('update-reward', reward),
+  deleteReward: async (id) => await ipcRenderer.invoke('delete-reward', id),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

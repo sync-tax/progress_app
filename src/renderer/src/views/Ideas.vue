@@ -29,12 +29,12 @@ const closeAddForm = () => {
 
 const editFormIsVisible = ref(false)
 const editingIdea = ref(null)
-const renderEditForm = (idea) => {
+const renderEditModal = (idea) => {
   editingIdea.value = idea
   editFormIsVisible.value = true
 }
 
-const closeEditForm = () => {
+const closeEditModal = () => {
   editFormIsVisible.value = false
   fetchIdeas()
 }
@@ -48,12 +48,12 @@ const closeEditForm = () => {
 
 
   <div class="ideasWrapper">
-    <IdeaCard v-for="idea in ideas" :key="idea.id" :idea="idea" @click="renderEditForm(idea)" />
+    <IdeaCard v-for="idea in ideas" :key="idea.id" :idea="idea" @edit="renderEditModal(idea)" />
     <div class="addIdeaWrapper" @click="renderAddForm()">
       <PlusIcon class="addIcon" />
     </div>
   </div>
 
   <AddModal v-if="addFormIsVisible" type="idea" @close="closeAddForm()" />
-  <EditModal v-if="editFormIsVisible && editingIdea" type="idea" :data="editingIdea" @close="closeEditForm()" />
+  <EditModal v-if="editFormIsVisible && editingIdea" type="idea" :data="editingIdea" @close="closeEditModal()" />
 </template>

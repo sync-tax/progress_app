@@ -3,6 +3,11 @@
   --ui-bg-color: #222227;
   --ui-txt-color: #313137;
   --txt-color: white;
+  --common-color: #FFFFFF;
+  --uncommon-color: #1EFF00;
+  --rare-color: #0070DD;
+  --epic-color: #A335EE;
+  --legendary-color: #FF8000;
 }
 
 * {
@@ -102,6 +107,7 @@ body .moduleTitle h1 {
   height: 25px;
   margin: auto 0;
   fill: var(--ui-txt-color);
+  transition: all 0.1s ease-in-out;
 }
 .navLink .nav-icon:hover {
   fill: #1ED583;
@@ -148,15 +154,49 @@ body .moduleTitle h1 {
   margin-left: 10px;
 }
 .ideasWrapper .ideaCard {
+  position: relative;
   display: flex;
   justify-content: space-around;
   background-color: var(--ui-bg-color);
   border-radius: 5px 5px 5px 5px;
-  opacity: 60%;
+  transition: all 0.15s ease-in-out;
+}
+.ideasWrapper .ideaCard.common-opac:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.ideasWrapper .ideaCard.uncommon-opac:hover {
+  background-color: rgba(30, 255, 0, 0.05);
+}
+.ideasWrapper .ideaCard.rare-opac:hover {
+  background-color: rgba(0, 112, 221, 0.05);
+}
+.ideasWrapper .ideaCard.epic-opac:hover {
+  background-color: rgba(163, 53, 238, 0.05);
+}
+.ideasWrapper .ideaCard.legendary-opac:hover {
+  background-color: rgba(255, 128, 0, 0.05);
+}
+.ideasWrapper .ideaCard .editIconContainer {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
   cursor: pointer;
 }
-.ideasWrapper .ideaCard:hover {
-  opacity: 100%;
+.ideasWrapper .ideaCard .editIconContainer .editIcon {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in-out;
+}
+.ideasWrapper .ideaCard .editIconContainer .editIcon:hover {
+  opacity: 1;
+}
+.ideasWrapper .ideaCard:hover .editIconContainer {
+  opacity: 0.75;
+  cursor: pointer;
 }
 .ideasWrapper .ideaCard .ideaContent {
   padding-left: 5px;
@@ -238,15 +278,49 @@ body .moduleTitle h1 {
   margin-left: 10px;
 }
 .tagsWrapper .tagCard {
+  position: relative;
   display: flex;
   justify-content: space-around;
   background-color: var(--ui-bg-color);
   border-radius: 5px 5px 5px 5px;
-  opacity: 60%;
+  transition: all 0.15s ease-in-out;
+}
+.tagsWrapper .tagCard.common-opac:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.tagsWrapper .tagCard.uncommon-opac:hover {
+  background-color: rgba(30, 255, 0, 0.05);
+}
+.tagsWrapper .tagCard.rare-opac:hover {
+  background-color: rgba(0, 112, 221, 0.05);
+}
+.tagsWrapper .tagCard.epic-opac:hover {
+  background-color: rgba(163, 53, 238, 0.05);
+}
+.tagsWrapper .tagCard.legendary-opac:hover {
+  background-color: rgba(255, 128, 0, 0.05);
+}
+.tagsWrapper .tagCard .editIconContainer {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
   cursor: pointer;
 }
-.tagsWrapper .tagCard:hover {
-  opacity: 100%;
+.tagsWrapper .tagCard .editIconContainer .editIcon {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in-out;
+}
+.tagsWrapper .tagCard .editIconContainer .editIcon:hover {
+  opacity: 1;
+}
+.tagsWrapper .tagCard:hover .editIconContainer {
+  opacity: 0.75;
+  cursor: pointer;
 }
 .tagsWrapper .tagCard .tagContent {
   padding-left: 5px;
@@ -337,6 +411,146 @@ progress::-webkit-progress-value {
   background-color: #A335EE;
 }
 
+.rewardsWrapper {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 50px;
+  gap: 10px;
+  margin-left: 10px;
+}
+.rewardsWrapper .rewardCard {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--ui-bg-color);
+  border-radius: 5px 5px 5px 5px;
+  transition: all 0.15s ease-in-out;
+}
+.rewardsWrapper .rewardCard.common-opac:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.rewardsWrapper .rewardCard.uncommon-opac:hover {
+  background-color: rgba(30, 255, 0, 0.05);
+}
+.rewardsWrapper .rewardCard.rare-opac:hover {
+  background-color: rgba(0, 112, 221, 0.05);
+}
+.rewardsWrapper .rewardCard.epic-opac:hover {
+  background-color: rgba(163, 53, 238, 0.05);
+}
+.rewardsWrapper .rewardCard.legendary-opac:hover {
+  background-color: rgba(255, 128, 0, 0.05);
+}
+.rewardsWrapper .rewardCard .editIconContainer {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+}
+.rewardsWrapper .rewardCard .editIconContainer .editIcon {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in-out;
+}
+.rewardsWrapper .rewardCard .editIconContainer .editIcon:hover {
+  opacity: 1;
+}
+.rewardsWrapper .rewardCard:hover .editIconContainer {
+  opacity: 0.75;
+  cursor: pointer;
+}
+.rewardsWrapper .rewardCard .rewardContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.rewardsWrapper .rewardCard .rewardContent h4 {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  margin: auto 0;
+  height: 26px;
+}
+.rewardsWrapper .rewardCard .rewardContent p {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  opacity: 35%;
+  opacity: 90%;
+  padding-top: 5px;
+  line-height: 18px;
+}
+.rewardsWrapper .rankColor {
+  display: flex;
+  justify-content: center;
+  border-radius: 5px 0 0 5px;
+  width: 50px;
+  z-index: 10;
+}
+.rewardsWrapper .rankColor .costWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+}
+.rewardsWrapper .rankColor .costWrapper:hover {
+  transform: scale(1.05);
+}
+.rewardsWrapper .rankColor .costWrapper img {
+  width: 20px;
+}
+.rewardsWrapper .rankColor .costWrapper p {
+  font-family: "Anek Devanagari", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: white;
+}
+.rewardsWrapper .common {
+  background: linear-gradient(to right, #FFFFFF, #999999);
+}
+.rewardsWrapper .uncommon {
+  background: linear-gradient(to right, #1EFF00, #129900);
+}
+.rewardsWrapper .rare {
+  background: linear-gradient(to right, #0070DD, #003C77);
+}
+.rewardsWrapper .epic {
+  background: linear-gradient(to right, #A335EE, #5D1E88);
+}
+.rewardsWrapper .legendary {
+  background: linear-gradient(to right, #FF8000, #994D00);
+}
+
+.addRewardWrapper {
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  border: 3px dashed var(--ui-bg-color);
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.addRewardWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: var(--ui-bg-color);
+}
+.addRewardWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
+}
+
 .modalWrapper {
   position: fixed;
   top: 0;
@@ -351,7 +565,8 @@ progress::-webkit-progress-value {
   justify-content: center;
   z-index: 9999;
 }
-.modalWrapper .addModal, .modalWrapper .editModal {
+.modalWrapper .addModal,
+.modalWrapper .editModal {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -359,7 +574,8 @@ progress::-webkit-progress-value {
   background-color: var(--bg-color);
   border-radius: 5px;
 }
-.modalWrapper .addModal h4, .modalWrapper .editModal h4 {
+.modalWrapper .addModal h4,
+.modalWrapper .editModal h4 {
   font-family: "Anek Devanagari", sans-serif;
   font-weight: 600;
   font-size: 18px;
@@ -369,7 +585,8 @@ progress::-webkit-progress-value {
   border-radius: 5px 5px 0 0;
   padding-top: 5px;
 }
-.modalWrapper .addModal input, .modalWrapper .editModal input {
+.modalWrapper .addModal input,
+.modalWrapper .editModal input {
   border: none;
   border-bottom: 2px solid #1ED583;
   background: transparent;
@@ -380,8 +597,15 @@ progress::-webkit-progress-value {
   margin: 0 auto;
   padding-top: 20px;
   margin-bottom: 20px;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
 }
-.modalWrapper .addModal textarea, .modalWrapper .editModal textarea {
+.modalWrapper .addModal input:focus,
+.modalWrapper .editModal input:focus {
+  opacity: 1;
+}
+.modalWrapper .addModal textarea,
+.modalWrapper .editModal textarea {
   border: none;
   border-bottom: 2px solid #1ED583;
   background: transparent;
@@ -395,8 +619,15 @@ progress::-webkit-progress-value {
   resize: none;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
 }
-.modalWrapper .addModal select, .modalWrapper .editModal select {
+.modalWrapper .addModal textarea:focus,
+.modalWrapper .editModal textarea:focus {
+  opacity: 1;
+}
+.modalWrapper .addModal select,
+.modalWrapper .editModal select {
   border: none;
   border-bottom: 2px solid #1ED583;
   background: transparent;
@@ -414,13 +645,21 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: right 5px top 20px;
   background-size: 16px;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
 }
-.modalWrapper .addModal select option, .modalWrapper .editModal select option {
+.modalWrapper .addModal select:focus,
+.modalWrapper .editModal select:focus {
+  opacity: 1;
+}
+.modalWrapper .addModal select option,
+.modalWrapper .editModal select option {
   background-color: #1B1B1F;
   color: #fff;
   padding: 8px;
 }
-.modalWrapper .addModal span, .modalWrapper .editModal span {
+.modalWrapper .addModal span,
+.modalWrapper .editModal span {
   font-family: "Anek Devanagari", sans-serif;
   font-weight: 300;
   font-size: 14px;
@@ -429,7 +668,8 @@ progress::-webkit-progress-value {
   text-align: center;
   font-size: 12px;
 }
-.modalWrapper .addModal .addIconContainer, .modalWrapper .editModal .addIconContainer {
+.modalWrapper .addModal .addIconContainer,
+.modalWrapper .editModal .addIconContainer {
   width: 200px;
   background-color: #1ED583;
   margin: 0 auto;
@@ -441,13 +681,16 @@ progress::-webkit-progress-value {
   opacity: 35%;
   cursor: pointer;
 }
-.modalWrapper .addModal .addIconContainer:hover, .modalWrapper .editModal .addIconContainer:hover {
+.modalWrapper .addModal .addIconContainer:hover,
+.modalWrapper .editModal .addIconContainer:hover {
   opacity: 100%;
 }
-.modalWrapper .addModal .addIconContainer .addIcon, .modalWrapper .editModal .addIconContainer .addIcon {
+.modalWrapper .addModal .addIconContainer .addIcon,
+.modalWrapper .editModal .addIconContainer .addIcon {
   fill: var(--bg-color);
 }
-.modalWrapper .addModal .cancelIconContainer, .modalWrapper .editModal .cancelIconContainer {
+.modalWrapper .addModal .cancelIconContainer,
+.modalWrapper .editModal .cancelIconContainer {
   width: 200px;
   background-color: #F77036;
   margin: 0 auto;
@@ -460,14 +703,17 @@ progress::-webkit-progress-value {
   opacity: 35%;
   cursor: pointer;
 }
-.modalWrapper .addModal .cancelIconContainer:hover, .modalWrapper .editModal .cancelIconContainer:hover {
+.modalWrapper .addModal .cancelIconContainer:hover,
+.modalWrapper .editModal .cancelIconContainer:hover {
   opacity: 100%;
 }
-.modalWrapper .addModal .cancelIconContainer .cancelIcon, .modalWrapper .editModal .cancelIconContainer .cancelIcon {
+.modalWrapper .addModal .cancelIconContainer .cancelIcon,
+.modalWrapper .editModal .cancelIconContainer .cancelIcon {
   fill: var(--bg-color);
   width: 30px;
 }
-.modalWrapper .addModal .deleteIconContainer, .modalWrapper .editModal .deleteIconContainer {
+.modalWrapper .addModal .deleteIconContainer,
+.modalWrapper .editModal .deleteIconContainer {
   width: 200px;
   background-color: rgba(247, 112, 54, 0.9294117647);
   margin: 0 auto;
@@ -476,13 +722,15 @@ progress::-webkit-progress-value {
   display: flex;
   justify-content: center;
   padding: 0px;
-  opacity: 25%;
+  opacity: 35%;
   cursor: pointer;
 }
-.modalWrapper .addModal .deleteIconContainer:hover, .modalWrapper .editModal .deleteIconContainer:hover {
+.modalWrapper .addModal .deleteIconContainer:hover,
+.modalWrapper .editModal .deleteIconContainer:hover {
   opacity: 100%;
 }
-.modalWrapper .addModal .deleteIconContainer .deleteIcon, .modalWrapper .editModal .deleteIconContainer .deleteIcon {
+.modalWrapper .addModal .deleteIconContainer .deleteIcon,
+.modalWrapper .editModal .deleteIconContainer .deleteIcon {
   fill: var(--bg-color);
   width: 30px;
 }/*# sourceMappingURL=main.css.map */

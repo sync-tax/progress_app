@@ -42,6 +42,7 @@
         margin: auto 0;
 
         fill: var(--ui-txt-color);
+        transition: all .1s ease-in-out;
 
         &:hover {
             fill: #1ED583;
