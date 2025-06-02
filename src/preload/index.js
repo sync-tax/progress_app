@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { IPC_CHANNELS } from '../shared/ipcChannels'
 
 // Custom APIs for renderer
 const api = {
@@ -7,30 +8,30 @@ const api = {
   windowControl: (action) => ipcRenderer.send('window-control', action),
 
   // Balance Functions
-  getBalance: async () => await ipcRenderer.invoke('get-balance'),
-  addBalance: async (amount) => await ipcRenderer.invoke('add-balance', amount),
-  removeBalance: async (amount) => await ipcRenderer.invoke('remove-balance', amount),
+  getBalance: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_BALANCE),
+  addBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_BALANCE, amount),
+  removeBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.REMOVE_BALANCE, amount),
   onBalanceUpdate: (callback) => {
-    ipcRenderer.on('balance-updated', (event, newBalance) => callback(newBalance))
+    ipcRenderer.on(IPC_CHANNELS.BALANCE_UPDATED, (event, newBalance) => callback(newBalance))
   },
 
   // Idea Functions
-  getIdeas: async () => await ipcRenderer.invoke('get-ideas'),
-  addIdea: async (idea) => await ipcRenderer.invoke('add-idea', idea),
-  updateIdea: async (idea) => await ipcRenderer.invoke('update-idea', idea),
-  deleteIdea: async (id) => await ipcRenderer.invoke('delete-idea', id),
+  getIdeas: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_IDEAS),
+  addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
+  updateIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_IDEA, idea),
+  deleteIdea: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_IDEA, id),
   
   // Tag Functions
-  getTags: async () => await ipcRenderer.invoke('get-tags'),
-  addTag: async (tag) => await ipcRenderer.invoke('add-tag', tag),
-  updateTag: async (tag) => await ipcRenderer.invoke('update-tag', tag),
-  deleteTag: async (id) => await ipcRenderer.invoke('delete-tag', id),
+  getTags: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_TAGS),
+  addTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TAG, tag),
+  updateTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_TAG, tag),
+  deleteTag: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_TAG, id),
 
   // Reward Functions
-  getRewards: async () => await ipcRenderer.invoke('get-rewards'),
-  addReward: async (reward) => await ipcRenderer.invoke('add-reward', reward),
-  updateReward: async (reward) => await ipcRenderer.invoke('update-reward', reward),
-  deleteReward: async (id) => await ipcRenderer.invoke('delete-reward', id),
+  getRewards: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_REWARDS),
+  addReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_REWARD, reward),
+  updateReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_REWARD, reward),
+  deleteReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_REWARD, id),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
