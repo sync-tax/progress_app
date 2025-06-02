@@ -2,43 +2,22 @@
 import PlusIcon from '../assets/plus.svg'
 
 import IdeaCard from '../components/cards/IdeaCard.vue'
-import AddModal from '../components/modals/AddModal.vue'
-import EditModal from '../components/modals/EditModal.vue'
+import AddIdeaModal from '../components/modals/AddIdeaModal.vue'
+import EditIdeaModal from '../components/modals/EditIdeaModal.vue'
 
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
-const ideas = ref([])
-const fetchIdeas = async () => {
-  ideas.value = await window.api.getIdeas()
-}
+import { useIdeas } from '../composables/db_functions/useIdeas'
+import { useAddModalVisibility } from '../composables/modal_functions/useAddModalVisibility'
+import { useEditModalVisibility } from '../composables/modal_functions/useEditModalVisibility'
 
+const { fetchIdeas, ideas } = useIdeas()
 onMounted(async () => {
   fetchIdeas()
 })
 
-const addFormIsVisible = ref(false)
-
-const renderAddForm = () => {
-  addFormIsVisible.value = true
-}
-
-const closeAddForm = () => {
-  addFormIsVisible.value = false
-  fetchIdeas()
-}
-
-const editFormIsVisible = ref(false)
-const editingIdea = ref(null)
-const renderEditModal = (idea) => {
-  editingIdea.value = idea
-  editFormIsVisible.value = true
-}
-
-const closeEditModal = () => {
-  editFormIsVisible.value = false
-  fetchIdeas()
-}
-
+const { isVisible: addModalVisible, showModal: showAddModal, hideModal: hideAddModal } = useAddModalVisibility(fetchIdeas)
+const { isVisible: editModalVisible, showModal: showEditModal, hideModal: hideEditModal, editedData } = useEditModalVisibility(fetchIdeas)
 </script>
 
 <template>
@@ -48,12 +27,12 @@ const closeEditModal = () => {
 
 
   <div id="ideasWrapper" class="moduleWrapper">
-    <IdeaCard v-for="idea in ideas" :key="idea.id" :idea="idea" @edit="renderEditModal(idea)" />
-    <div class="addIdeaWrapper" @click="renderAddForm()">
+    <IdeaCard v-for="idea in ideas" :key="idea.id" :idea="idea" @edit="showEditModal(idea)" />
+    <div class="addIdeaWrapper" @click="showAddModal()">
       <PlusIcon class="addIcon" />
     </div>
   </div>
 
-  <AddModal v-if="addFormIsVisible" type="idea" @close="closeAddForm()" />
-  <EditModal v-if="editFormIsVisible && editingIdea" type="idea" :data="editingIdea" @close="closeEditModal()" />
+  <AddIdeaModal v-if="addModalVisible" @close="hideAddModal()" />
+  <EditIdeaModal v-if="editModalVisible && editedData" type="idea" :data="editedData" @close="hideEditModal()" />
 </template>

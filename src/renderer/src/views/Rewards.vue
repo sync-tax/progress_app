@@ -2,59 +2,35 @@
 import PlusIcon from '../assets/plus.svg'
 
 import RewardCard from '../components/cards/RewardCard.vue'
-import AddModal from '../components/modals/AddModal.vue'
-import EditModal from '../components/modals/EditModal.vue'
+import AddRewardModal from '../components/modals/AddRewardModal.vue'
+import EditRewardModal from '../components/modals/EditRewardModal.vue'
 
-import { ref, onMounted } from 'vue'
+import { useBalance } from '../composables/db_functions/useBalance'
+import { useRewards } from '../composables/db_functions/useRewards'
+import { useAddModalVisibility } from '../composables/modal_functions/useAddModalVisibility'
+import { useEditModalVisibility } from '../composables/modal_functions/useEditModalVisibility'
 
-const rewards = ref([])
-const fetchRewards = async () => {
-  rewards.value = await window.api.getRewards()
-}
+import { onMounted } from 'vue'
 
-const balance = ref(0)
-const fetchBalance = async () => {
-  balance.value = await window.api.getBalance()
-}
-
+const { fetchBalance, balance, removeBalance } = useBalance()
+const { fetchRewards, rewards, deleteReward } = useRewards()
 onMounted(async () => {
   fetchRewards()
   fetchBalance()
 })
 
-const addFormIsVisible = ref(false)
-
-const renderAddForm = () => {
-  addFormIsVisible.value = true
-}
-
-const closeAddForm = () => {
-  addFormIsVisible.value = false
-  fetchRewards()
-}
-
-const editFormIsVisible = ref(false)
-const editingReward = ref(null)
-const renderEditModal = (reward) => {
-  editingReward.value = reward
-  editFormIsVisible.value = true
-}
-
-const closeEditModal = () => {
-  editFormIsVisible.value = false
-  fetchRewards()
-}
+const { isVisible: addModalVisible, showModal: showAddModal, hideModal: hideAddModal } = useAddModalVisibility(fetchRewards)
+const { isVisible: editModalVisible, showModal: showEditModal, hideModal: hideEditModal, editedData } = useEditModalVisibility(fetchRewards)
 
 const updateBalanceAndDeleteReward = async (reward) => {
   await fetchBalance()
   if (reward.cost > balance.value) {
-    console.log('Insufficient balance!')
+    console.error('Insufficient balance!')
     return
   }
-
-  window.api.removeBalance(reward.cost)
+  removeBalance(reward.cost)
   if (!reward.repeatable) {
-    window.api.deleteReward(reward.id)
+    deleteReward(reward.id)
   }
   fetchRewards()
 }
@@ -68,12 +44,12 @@ const updateBalanceAndDeleteReward = async (reward) => {
 
 
   <div id="rewardsWrapper" class="moduleWrapper">
-    <RewardCard v-for="reward in rewards" :key="reward.id" :reward="reward" @edit="renderEditModal(reward)" @update-and-delete="updateBalanceAndDeleteReward(reward)" />
-    <div class="addRewardWrapper" @click="renderAddForm()">
+    <RewardCard v-for="reward in rewards" :key="reward.id" :reward="reward" @edit="showEditModal(reward)" @update-and-delete="updateBalanceAndDeleteReward(reward)" />
+    <div class="addRewardWrapper" @click="showAddModal()">
       <PlusIcon class="addIcon" />
     </div>
   </div>
 
-  <AddModal v-if="addFormIsVisible" type="reward" @close="closeAddForm()" />
-  <EditModal v-if="editFormIsVisible && editingReward" type="reward" :data="editingReward" @close="closeEditModal()" />
+  <AddRewardModal v-if="addModalVisible" @close="hideAddModal()" />
+  <EditRewardModal v-if="editModalVisible && editedData" :data="editedData" @close="hideEditModal()" />
 </template>

@@ -11,9 +11,7 @@ import Crystals from './components/Crystals.vue'
     <Crystals />
     <main>
       <router-view v-slot="{ Component }">
-        <transition name="route">
-          <component :is="Component" />
-        </transition>
+        <component :is="Component" />
       </router-view>
     </main>
   </body>

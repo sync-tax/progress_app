@@ -2,46 +2,22 @@
 import PlusIcon from '../assets/plus.svg'
 
 import TagCard from '../components/cards/TagCard.vue'
-import AddModal from '../components/modals/AddModal.vue'
-import EditModal from '../components/modals/EditModal.vue'
+import AddTagModal from '../components/modals/AddTagModal.vue'
+import EditTagModal from '../components/modals/EditTagModal.vue'
 
-import { ref, onMounted, computed } from 'vue'
+import { useTags } from '../composables/db_functions/useTags'
+import { useAddModalVisibility } from '../composables/modal_functions/useAddModalVisibility'
+import { useEditModalVisibility } from '../composables/modal_functions/useEditModalVisibility'
 
-const tags = ref([])
-const fetchTags = async () => {
-  tags.value = await window.api.getTags()
-}
+import { onMounted } from 'vue'
 
+const { fetchTags, sortedTags } = useTags()
 onMounted(async () => {
   fetchTags()
 })
 
-const sortedTags = computed(() =>
-  tags.value.slice().sort((a, b) => b.level - a.level)
-)
-
-// Form Visibility
-const addFormIsVisible = ref(false)
-const renderAddForm = () => {
-  addFormIsVisible.value = true
-}
-
-const closeAddForm = async () => {
-  addFormIsVisible.value = false
-  await fetchTags()
-}
-
-const editingTag = ref(null)
-const editFormIsVisible = ref(false)
-const renderEditModal = (tag) => {
-  editingTag.value = tag
-  editFormIsVisible.value = true
-}
-
-const closeEditModal = async () => {
-  editFormIsVisible.value = false
-  await fetchTags()
-}
+const { isVisible: addModalVisible, showModal: showAddModal, hideModal: hideAddModal } = useAddModalVisibility(fetchTags)
+const { isVisible: editModalVisible, showModal: showEditModal, hideModal: hideEditModal, editedData } = useEditModalVisibility(fetchTags)
 </script>
 
 <template>
@@ -52,11 +28,11 @@ const closeEditModal = async () => {
   </div>
 
   <div id="tagsWrapper" class="moduleWrapper">
-    <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @edit="renderEditModal(tag)" />
-    <div class="addTagWrapper" @click="renderAddForm()">
+    <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @edit="showEditModal(tag)" />
+    <div class="addTagWrapper" @click="showAddModal()">
       <PlusIcon class="addIcon" />
     </div>
   </div>
-  <AddModal v-if="addFormIsVisible" type="tag" @close="closeAddForm()" />
-  <EditModal v-if="editFormIsVisible && editingTag" type="tag" :data="editingTag" @close="closeEditModal()" />
+  <AddTagModal v-if="addModalVisible" @close="hideAddModal()" />
+  <EditTagModal v-if="editModalVisible && editedData" :data="editedData" @close="hideEditModal()" />
 </template>
