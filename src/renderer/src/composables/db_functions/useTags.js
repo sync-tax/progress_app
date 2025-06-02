@@ -1,9 +1,9 @@
-// src/composables/useTags.js
 import { ref, computed } from 'vue'
 
 export function useTags() {
+  // initiates tag array
   const tags = ref([])
-
+ // initiates tag data - empty by default
   const tagData = ref({
     title: ''
   })
@@ -23,11 +23,11 @@ export function useTags() {
   const deleteTag = async (id) => {
     return await window.api.deleteTag(id)
   }
-
+// sorts tags by level - descending order
   const sortedTags = computed(() =>
     tags.value.slice().sort((a, b) => b.level - a.level)
   )
-
+// exposes component functions
   return {
     tags,
     tagData,

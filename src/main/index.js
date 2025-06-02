@@ -58,6 +58,7 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  // register db handlers
   registerDBHandlers()
   createWindow()
 

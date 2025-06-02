@@ -2,6 +2,8 @@ import { ipcMain } from 'electron'
 import db from './lowdb.js'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
+// register handlers for ipc channels
+// these handlers are used to update the database
 export function registerDBHandlers() {
   // ========== CRYSTALS ==========
   ipcMain.handle(IPC_CHANNELS.GET_BALANCE, () => {

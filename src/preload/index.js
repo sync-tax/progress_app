@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { IPC_CHANNELS } from '../shared/ipcChannels'
 
-// Custom APIs for renderer
+// exposes custom API to renderer process
 const api = {
   // Custom window control panel
   windowControl: (action) => ipcRenderer.send('window-control', action),

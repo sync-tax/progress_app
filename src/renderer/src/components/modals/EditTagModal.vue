@@ -1,11 +1,11 @@
 <script setup>
 import DeleteIcon from '../../assets/delete.svg'
-import { watch } from 'vue'
 import { useModalActions } from '../../composables/modal_functions/useModalActions'
 import { useTags } from '../../composables/db_functions/useTags'
 
 const { tagData, updateTag, deleteTag } = useTags()
 
+//grabs passed tag data
 const props = defineProps({
   data: {
     type: Object,
@@ -13,23 +13,18 @@ const props = defineProps({
   }
 })
 
-// Update local copy when prop changes
-watch(
-  () => props.data,
-  (data) => {
-    if (data) {
-      tagData.value.title = data.title
-    }
-  },
-  { immediate: true, deep: true }
-)
+//sets tagData to passed tag data
+//to prefill v-model with old tag title when opening
+tagData.value.title = props.data.title
 
 const emit = defineEmits(['close'])
 
 const save = async () => {
+  //checks for empty input
   if (!tagData.value?.title?.trim()) return
   
-  await updateTag({
+  updateTag({
+    //spreads old tag data and only changes title
     ...props.data,
     title: tagData.value.title
   })
@@ -38,8 +33,9 @@ const save = async () => {
 }
 
 const remove = async () => {
-  if (!props.data) return
-  await deleteTag(props.data.id)
+  if (!props.data?.id) return
+  //calls deleteTag function with tag id
+  deleteTag(props.data.id)
   emit('close')
 }
 
@@ -66,7 +62,6 @@ useModalActions({
         type="text" 
         placeholder="Title..." 
         spellcheck="false"
-        @keydown.enter="save"
       />
 
       <div class="deleteIconContainer" @click="remove">

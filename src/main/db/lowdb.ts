@@ -5,22 +5,22 @@ import { app } from 'electron'
 import defaultData from './defaultData'
 import type { DbSchema } from '../../shared/dbTypes'
 
-// Define where the JSON DB file should live (e.g., in AppData or ~/.config)
+// save path of db.json
 const file = join(app.getPath('userData'), 'db.json')
 
-// Create adapter for reading/writing JSON
+// creates the adapter
 const adapter = new JSONFileSync<DbSchema>(file)
 
-// Create LowDB instance with type
+// creates the database
 const db = new LowSync<DbSchema>(adapter, defaultData)
 
-// Read from disk (creates file if not present)
+// reads the database
 db.read()
 
-// Ensure default data is set if file is empty
+// ensures default data if db is empty
 db.data ||= defaultData
 
-// Save it immediately
+// saves it
 db.write()
 
 export default db
