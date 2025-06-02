@@ -19,14 +19,14 @@
 
     width: 250px;
 
-    background-color: var(--bg-color);
+    background-color: $ui-color-dark;
     border-radius: 5px;
 
     h4 {
       @include ui-titles-font();
       text-align: center;
       background-color: #1ED583;
-      color: var(--bg-color);
+      color: $ui-color-dark;
 
       border-radius: 5px 5px 0 0;
       padding-top: 5px
@@ -117,10 +117,10 @@
     }
 
     span {
-      @include ui-lvl-font();
+      @include base-font(300, 12px);
+      color: $secondary-txt-color;
       width: 250px;
       text-align: center;
-      font-size: 12px;
     }
 
     .addIconContainer {
@@ -142,7 +142,7 @@
       }
 
       .addIcon {
-        fill: var(--bg-color);
+        fill: $ui-color-dark;
       }
     }
 
@@ -166,7 +166,7 @@
       }
 
       .cancelIcon {
-        fill: var(--bg-color);
+        fill: $ui-color-dark;
         width: 30px;
       }
     }
@@ -185,12 +185,14 @@
       opacity: 35%;
       cursor: pointer;
 
+      transition: opacity .2s ease-in-out;
+
       &:hover {
         opacity: 100%;
       }
 
       .deleteIcon {
-        fill: var(--bg-color);
+        fill: $ui-color-dark;
         width: 30px;
       }
     }

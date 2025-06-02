@@ -5,7 +5,8 @@ const formData = ref({
   title: '',
   description: '',
   rank: 'common',
-  cost: 0
+  cost: 100,
+  repeatable: false
 })
 
 const props = defineProps({
@@ -81,7 +82,7 @@ onUnmounted(() => {
         <input 
           v-model="formData.cost" 
           type="number" 
-          :placeholder="`Cost...`" 
+          :placeholder="`Cost...`"
         />
         <select v-model="formData.rank">
           <option value="common">Common</option>

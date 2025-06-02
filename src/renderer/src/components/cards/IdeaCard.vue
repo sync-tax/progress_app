@@ -24,7 +24,7 @@ const renderEditModal = (idea) => {
 </script>
 
 <template>
-  <div class="ideaCard" :class="rankHoverStyle">
+  <div id="ideaCard" class="cardWrapper" :class="rankHoverStyle">
     <div class="rankColor" :class="props.idea.rank"> 
       <IdeaIcon class="bulb" />
     </div>

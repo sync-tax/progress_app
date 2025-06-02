@@ -30,42 +30,9 @@
   --legendary-color: #FF8000;
 }
 
-* {
-  margin: 0;
-  box-sizing: border-box;
-  user-select: none;
-}
-
-body {
-  background-color: var(--bg-color);
-  color: var(--txt-color);
-
-  width: 800px;
-  overflow: hidden;
-
-  main {
-    position: absolute;
-    left: 50px;
-  }
-
-  .moduleTitle {
-    border-radius: 5px;
-    background: linear-gradient(to right, #3c3c46, #1B1B1F);
-
-    margin: 10px;
-
-    width: 740px;
-    height: 40px;
-
-    z-index: 0;
-
-    h1 {
-      @include titles-font();
-
-      padding-left: 10px
-    }
-  }
-}
+@import "utils/variables";
+@import "utils/mixins";
+@import "utils/global";
 
 @import "components/dragbar";
 @import "components/nav";
@@ -76,4 +43,4 @@ body {
 @import "components/tags";
 @import "components/rewards";
 
-@import "components/forms";
+@import "components/modals";

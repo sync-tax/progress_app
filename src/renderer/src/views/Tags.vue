@@ -51,7 +51,7 @@ const closeEditModal = async () => {
     </h1>
   </div>
 
-  <div class="tagsWrapper">
+  <div id="tagsWrapper" class="moduleWrapper">
     <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @edit="renderEditModal(tag)" />
     <div class="addTagWrapper" @click="renderAddForm()">
       <PlusIcon class="addIcon" />

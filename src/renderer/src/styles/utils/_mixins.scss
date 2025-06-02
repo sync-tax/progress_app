@@ -1,0 +1,39 @@
+@mixin base-font ($weight: 600, $size: 28px) {
+    font-family: "Anek Devanagari", sans-serif;
+    font-weight: $weight;
+    font-size: $size;
+  }
+  
+  @mixin module-grid-layout($row-height) {
+    display: grid;
+    grid-template-columns: repeat(3, 230px);
+    grid-auto-rows: $row-height;
+    gap: 10px;
+  }
+
+  @mixin add-wrapper ($height) {
+    width: 230px;
+    height: $height;
+    border-radius: 5px;
+    border: 3px dashed $ui-color-medium;
+
+    display: flex;
+    justify-content: center;
+
+    opacity: 60%;
+
+    cursor: pointer;
+
+    &:hover {
+        opacity: 100%;
+        border: none;
+        background-color: $ui-color-medium;
+    }
+
+    .addIcon {
+        align-self: center;
+        fill: #1ED583;
+
+        opacity: 50%;
+    }
+  }

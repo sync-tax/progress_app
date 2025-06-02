@@ -19,13 +19,6 @@ const rank = computed(() => {
   else return 'common'
 })
 
-const rankHoverStyle = computed(() => {
-  if (props.tag.level >= 55) return 'legendary-opac'
-  else if (props.tag.level >= 40) return 'epic-opac'
-  else if (props.tag.level >= 25) return 'rare-opac'
-  else if (props.tag.level >= 10) return 'uncommon-opac'
-  else return 'common-opac'
-})
 
 const emit = defineEmits(['edit'])
 
@@ -36,7 +29,7 @@ const renderEditModal = (tag) => {
 </script>
 
 <template>
-  <div class="tagCard" :class="rankHoverStyle">
+  <div id="tagCard" class="cardWrapper" :class="rank + '-opac'">
     <div class="rankColor" :class="rank">
       <TagIcon class="hashtag" />
     </div>

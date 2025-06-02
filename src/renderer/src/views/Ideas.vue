@@ -47,7 +47,7 @@ const closeEditModal = () => {
   </div>
 
 
-  <div class="ideasWrapper">
+  <div id="ideasWrapper" class="moduleWrapper">
     <IdeaCard v-for="idea in ideas" :key="idea.id" :idea="idea" @edit="renderEditModal(idea)" />
     <div class="addIdeaWrapper" @click="renderAddForm()">
       <PlusIcon class="addIcon" />

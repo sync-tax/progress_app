@@ -10,8 +10,8 @@ const props = defineProps({
     }
 })
 
-const rankHoverStyle = computed(() => {
-    return props.reward.rank + '-opac'
+const rank = computed(() => {
+    return props.reward.rank
 })
 
 const emit = defineEmits(['edit', 'update-and-delete'])
@@ -27,15 +27,15 @@ const updateBalanceAndDeleteReward = (reward) => {
 </script>
 
 <template>
-  <div class="rewardCard" :class="rankHoverStyle">
-    <div class="rankColor" :class="props.reward.rank"> 
-      <div class="costWrapper" @click="updateBalanceAndDeleteReward(reward)">
+  <div id="rewardCard" class="cardWrapper">
+    <div class="rankColor" :class="rank + '-reward'" @click="updateBalanceAndDeleteReward(reward)"> 
+      <div class="costWrapper">
         <img src="../../assets/crystal.png" alt="crystal cost">
         <p>{{ reward.cost }}</p>
       </div>
     </div>
 
-    <div class="rewardContent">
+    <div class="rewardContent" :class="rank + '-opac'">
       <h4>{{ reward.title }}</h4>
     </div>
 

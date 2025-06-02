@@ -67,7 +67,7 @@ const updateBalanceAndDeleteReward = async (reward) => {
   </div>
 
 
-  <div class="rewardsWrapper">
+  <div id="rewardsWrapper" class="moduleWrapper">
     <RewardCard v-for="reward in rewards" :key="reward.id" :reward="reward" @edit="renderEditModal(reward)" @update-and-delete="updateBalanceAndDeleteReward(reward)" />
     <div class="addRewardWrapper" @click="renderAddForm()">
       <PlusIcon class="addIcon" />

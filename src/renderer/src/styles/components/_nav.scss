@@ -10,7 +10,7 @@
     height: 100%;
     width: 50px;
 
-    background-color: var(--ui-bg-color);
+    background-color: $ui-color-medium;
 
     z-index: 10;
 
@@ -41,7 +41,7 @@
 
         margin: auto 0;
 
-        fill: var(--ui-txt-color);
+        fill: $ui-color-light;
         transition: all .1s ease-in-out;
 
         &:hover {

@@ -1,69 +1,9 @@
-.rewardsWrapper {
+#rewardsWrapper {
     position: absolute;
 
-    display: grid;
-    grid-template-columns: repeat(3, 230px);
-    grid-auto-rows: 50px;
-    gap: 10px;
+    @include module-grid-layout($row-height: 50px);
 
-    margin-left: 10px;
-
-    .rewardCard {
-        position: relative;
-        display: flex;
-        justify-content: space-around;
-
-        background-color: var(--ui-bg-color);
-
-        border-radius: 5px 5px 5px 5px;
-        transition: all .15s ease-in-out;
-
-        &.common-opac:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        &.uncommon-opac:hover {
-            background-color: rgba(30, 255, 0, 0.05);
-        }
-
-        &.rare-opac:hover {
-            background-color: rgba(0, 112, 221, 0.05);
-        }
-
-        &.epic-opac:hover {
-            background-color: rgba(163, 53, 238, 0.05);
-        }
-
-        &.legendary-opac:hover {
-            background-color: rgba(255, 128, 0, 0.05);
-        }
-
-        .editIconContainer {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-            cursor: pointer;
-        
-            .editIcon {
-              width: 20px;
-              height: 20px;
-              fill: white;
-              opacity: 0.3;
-              transition: opacity .15s ease-in-out;
-
-              &:hover {
-                opacity: 1;
-              }
-            }
-          }
-
-          &:hover .editIconContainer {
-            opacity: 0.75; 
-            cursor: pointer;
-          }
-
+    #rewardCard {
         .rewardContent {
             padding-left: 5px;
             width: 200px;
@@ -71,52 +11,32 @@
             display: flex;
             flex-direction: column;
 
-            h4 {
-                    @include ui-titles-font();
-                    margin: auto 0;
-
-                    height: 26px
-                }
-
-                p {
-                    @include ui-lvl-font();
-                    opacity: 90%;
-                    padding-top: 5px;
-                    line-height: 18px;
-                }
+            &.common-opac:hover {
+                background-color: rgba(255, 255, 255, 0.05);
             }
-        }
+    
+            &.uncommon-opac:hover {
+                background-color: rgba(30, 255, 0, 0.05);
+            }
+    
+            &.rare-opac:hover {
+                background-color: rgba(0, 112, 221, 0.05);
+            }
+    
+            &.epic-opac:hover {
+                background-color: rgba(163, 53, 238, 0.05);
+            }
+    
+            &.legendary-opac:hover {
+                background-color: rgba(255, 128, 0, 0.05);
+            }
 
-        .rankColor {
-            display: flex;
-            justify-content: center;
 
-            border-radius: 5px 0 0 5px;
-            width: 50px;
-
-            z-index: 10;
-
-            .costWrapper{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                cursor: pointer;
-                transition: transform .15s ease-in-out;
-                
-                &:hover {
-                    transform: scale(1.05);
-                }
-
-                img{
-                    width: 20px;
-                }
-
-                p{
-                    font-family: "Anek Devanagari", sans-serif;
-                    font-weight: 400;
-                    font-size: 14px;
-                    color: white;
+            h4 {
+                    @include base-font($weight: 600, $size: 18px);
+                    color: $main-txt-color;
+                    margin: auto 0;
+                    height: 26px
                 }
             }
         }
@@ -137,36 +57,86 @@
             background: linear-gradient(to right, #A335EE, #5D1E88);
         }
 
-        .legendary {
+        .rankColor {
+            width: 50px;
+            cursor: pointer;
+
+            .costWrapper{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                cursor: pointer;
+                transition: transform .15s ease-in-out;
+                
+                &:hover {
+                    transform: scale(1.05);
+                }
+
+                img{
+                    width: 23px;
+                    padding-top: 5px;
+                }
+
+                p{
+                    @include base-font($weight: 600, $size: 14px);
+                    color: $ui-color-dark;
+                }
+            }
+        }
+
+        .common-reward {
+            background: linear-gradient(to right, #FFFFFF, #999999);
+            opacity: 0.5;
+            transition: opacity .15s ease-in-out;
+            
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+
+        .uncommon-reward {
+            background: linear-gradient(to right, #1EFF00, #129900);
+            opacity: 0.5;
+            transition: opacity .15s ease-in-out;
+            
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+
+        .rare-reward {
+            background: linear-gradient(to right, #0070DD, #003C77);
+            opacity: 0.5;
+            transition: opacity .15s ease-in-out;
+            
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+
+        .epic-reward {
+            background: linear-gradient(to right, #A335EE, #5D1E88);
+            opacity: 0.5;
+            transition: opacity .15s ease-in-out;
+            
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+
+        .legendary-reward {
             background: linear-gradient(to right, #FF8000, #994D00);
+            opacity: 0.5;
+            transition: opacity .15s ease-in-out;
+            
+            &:hover {
+                opacity: 0.75;
+            }
         }
     }
 
     .addRewardWrapper {
-        width: 230px;
-        height: 50px;
-        border-radius: 5px;
-        border: 3px dashed var(--ui-bg-color);
-
-        display: flex;
-        justify-content: center;
-
-        opacity: 60%;
-
-        cursor: pointer;
-
-        &:hover {
-            opacity: 100%;
-
-            border: none;
-            background-color: var(--ui-bg-color);
-        }
-
-        .addIcon {
-            align-self: center;
-            fill: #1ED583;
-
-            opacity: 50%;
-        }
+        @include add-wrapper(50px);
     }
 
