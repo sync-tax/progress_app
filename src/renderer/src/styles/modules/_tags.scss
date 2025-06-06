@@ -1,60 +1,102 @@
 #tagsWrapper {
-    @include module-grid-layout($row-height: 50px);
+    @include module-grid-layout($row-height: 60px);
 
+    .tagEditWrapper {
+        background-color: $ui-color-medium;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+
+        width: 227px;
+        height: 60px;
+        border-radius: 5px;
+
+        padding: 0 5px;
+
+        .titleInput {
+            width: 218px;
+            @include base-font($weight: 600, $size: 14px);
+            color: $main-txt-color;
+            background-color: $ui-color-medium;
+
+            margin: auto 0;
+            height: 26px;
+
+            border: none;
+            outline: none;
+            border-bottom: 2px solid $main-txt-color;
+
+            opacity: .35;
+            transition: opacity .2s ease-in-out;
+
+            &:focus {
+                opacity: 1;
+            }
+        }
+    }
     .addTagWrapper {
-       @include add-wrapper(50px);
+        @include add-wrapper(60px);
     }
 
     #tagCard {
+        height: 60px;
+
         .tagContent {
-            padding-left: 5px;
+            padding-left: 15px;
             width: 200px;
-            overflow: hidden;
+            height: 60px;
 
             .labelLvlWrapper {
                 display: flex;
                 flex-direction: column;
+                justify-content: space-around;
+
+                padding-left: 18px;
+                padding-top: 10px;
 
                 h4 {
-                    @include base-font($weight: 600, $size: 18px);
+                    @include base-font($weight: 600, $size: 16px);
                     color: $main-txt-color;
-                    padding-top: 2px;
-                    height: 26px
+                    height: fit-content;
                 }
 
                 p {
-                    @include base-font($weight: 300, $size: 14px);
+                    @include base-font($weight: 300, $size: 12px);
                     padding-bottom: 2px;
-                    color: $secondary-txt-color;
+                    color: $main-txt-color;
+                    opacity: .5;
                 }
-            }
-
-        
-            .expBar {
-                width: 200px;
-                border-radius: 5px;
-                height: 3px;
-
-                position: relative;
-                top: -18.5px;
-                right: 4.8px;
-
-                z-index: 0;
-
-                opacity: 50%;
             }
         }
 
-        .hashtag {
-            fill: $ui-color-dark;
-            transform: scale(.75);
+        .expBar {
+            width: 225px;
+            border-radius: 5px;
+            height: 3px;
+
+            position: relative;
+            top: -8px;
+            left:-34px;
+
+            z-index: 20;
+
+            opacity: 50%;
+        }
+
+        .rankMark {
+            width: 130px;
+            height: 130px;
             margin: auto 0;
+            position: absolute;
+            top: -35px;
+            left: -40px;
         }
     }
 }
 
 progress::-webkit-progress-bar {
-    background-color: #D9D9D9;
+    background-color: #414141;
 
     border-bottom-right-radius: 5px;
 }
@@ -62,4 +104,3 @@ progress::-webkit-progress-bar {
 progress::-webkit-progress-value {
     background-color: #A335EE;
 }
-

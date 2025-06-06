@@ -32,7 +32,6 @@ export interface Idea {
   id: number
   title: string
   description: string
-  rank: string
 }
 
 // ========== HABITS ==========
@@ -79,8 +78,8 @@ export interface Reward {
   id: number
   title: string
   cost: number
-  rank: string
   repeatable: boolean
+  position: number
 }
 
 // ========== ACHIEVEMENTS ==========

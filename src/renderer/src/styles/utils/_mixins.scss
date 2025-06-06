@@ -12,13 +12,13 @@
   
   @mixin module-grid-layout($row-height) {
     display: grid;
-    grid-template-columns: repeat(3, 230px);
+    grid-template-columns: repeat(4, 227px);
     grid-auto-rows: $row-height;
     gap: 10px;
   }
 
   @mixin add-wrapper ($height) {
-    width: 230px;
+    width: 227px;
     height: $height;
     border-radius: 5px;
     border: 3px dashed $ui-color-medium;
@@ -38,8 +38,8 @@
 
     .addIcon {
         align-self: center;
-        fill: #1ED583;
+        fill: #4A612F;
 
-        opacity: 50%;
+        opacity: 100%;
     }
   }

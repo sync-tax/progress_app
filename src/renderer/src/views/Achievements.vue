@@ -1,9 +1,7 @@
 <script setup>
-
+import ModuleTitle from '../components/ModuleTitle.vue'
 </script>
 
 <template>
-  <div class="moduleTitle">
-    <h1>Achievements</h1>
-  </div>
+  <ModuleTitle title="Achievements" />
 </template>

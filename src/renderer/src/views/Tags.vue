@@ -1,41 +1,122 @@
 <script setup>
 import PlusIcon from '../assets/plus.svg'
+import EditIcon from '../assets/edit.svg'
 
-import TagCard from '../components/cards/TagCard.vue'
-import AddTagModal from '../components/modals/AddTagModal.vue'
-import EditTagModal from '../components/modals/EditTagModal.vue'
-// import composables
+import ModuleTitle from '../components/ModuleTitle.vue'
+
+import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useTags } from '../composables/db_functions/useTags'
-import { useAddModalVisibility } from '../composables/modal_functions/useAddModalVisibility'
-import { useEditModalVisibility } from '../composables/modal_functions/useEditModalVisibility'
 
-import { onMounted } from 'vue'
-// uses needed parts of db composables (useTags)
-const { fetchTags, sortedTags } = useTags()
+import { onMounted, ref, computed, toRaw } from 'vue'
+
+const { fetchTags, tags, deleteTag, updateTag, addTag } = useTags()
 onMounted(async () => {
   fetchTags()
 })
-// uses needed parts of modal composables (useAddModalVisibility, useEditModalVisibility)
-const { isVisible: addModalVisible, showModal: showAddModal, hideModal: hideAddModal } = useAddModalVisibility(fetchTags)
-const { isVisible: editModalVisible, showModal: showEditModal, hideModal: hideEditModal, editedData } = useEditModalVisibility(fetchTags)
+
+//EDIT LOGIC
+const editingId = ref(null)
+const editedTag = ref({})
+
+const startEditing = (tag) => {
+  editingId.value = tag.id
+  //spread operator is used to create a new object (clone)
+  editedTag.value = { ...tag }
+}
+
+const cancelEditing = () => {
+  //reset reactive references
+  editingId.value = null
+  editedTag.value = {}
+}
+
+const saveEditing = async () => {
+  // just to make sure lol
+  if (!editingId.value) return
+  // toRaw() is a vue function that removes reactivity from an object
+  // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
+  updateTag(toRaw(editedTag.value))
+  fetchTags()
+  cancelEditing()
+}
+
+const deleteEditing = () => {
+  // just to make sure lol
+  if (!editingId.value) return
+  deleteTag(editingId.value)
+  fetchTags()
+  cancelEditing()
+}
+
+//Who needs Buttons in a MVP?
+useKeydowns({
+  onSave: () => {
+    saveEditing()
+  },
+  onCancel: () => {
+    cancelEditing()
+  },
+  onDelete: () => {
+    deleteEditing()
+  }
+})
+
+//RANK LOGIC
+const getRank = (tag) => {
+  if (tag.level >= 55) return 'legendary'
+  else if (tag.level >= 40) return 'epic'
+  else if (tag.level >= 25) return 'rare'
+  else if (tag.level >= 10) return 'uncommon'
+  else return 'common'
+}
 </script>
 
 <template>
-  <div class="moduleTitle">
-    <h1>
-      Tags
-    </h1>
-  </div>
+  <ModuleTitle title="Tags" />
 
   <div id="tagsWrapper" class="moduleWrapper">
-    <!-- iterates over sortedTags array and renders TagCard for each tag -->
-    <!-- @edit="showEditModal(tag)" emits showEditModal event with selected tag data - passes the tag data to EditModal -->
-    <TagCard v-for="tag in sortedTags" :key="tag.id" :tag="tag" @edit="showEditModal(tag)" />
-    <div class="addTagWrapper" @click="showAddModal()">
+    <!-- Reward Card START -->
+    <div v-for="tag in tags" :key="tag.id" id="tagCard" :class="getRank(tag) + '-opac'">
+      <!-- Normal Template START -->
+      <template v-if="editingId !== tag.id">
+        <div class="cardWrapper">
+          <div class="rankGems">
+            <img v-if="tag.level >= 1" src="../assets/COMMON_MARK.png" alt="tagIcon" class="rankMark">
+            <img v-if="tag.level >= 10" src="../assets/UNCOMMON_MARK.png" alt="tagIcon" class="rankMark">
+            <img v-if="tag.level >= 25" src="../assets/RARE_MARK.png" alt="tagIcon" class="rankMark">
+            <img v-if="tag.level >= 40" src="../assets/EPIC_MARK.png" alt="tagIcon" class="rankMark">
+            <img v-if="tag.level >= 55" src="../assets/LEGENDARY_MARK.png" alt="tagIcon" class="rankMark">
+          </div>
+          <div class="tagContent">
+            <div class="labelLvlWrapper">
+              <h4 class="tagLabel">
+                {{ tag.title }}
+              </h4>
+              <p class="tagLvl">
+                Level {{ tag.level }}
+              </p>
+            </div>
+            <div class="editIconContainer" @click="startEditing(tag)">
+              <EditIcon class="editIcon" />
+            </div>
+            <progress class="expBar" :value="tag.exp_current" :max="tag.exp_needed">
+              EXP
+            </progress>
+          </div>
+        </div>
+      </template>
+      <!-- Normal Template END -->
+      <!-- Edit Template START -->
+      <template v-else>
+        <div class="tagEditWrapper">
+          <input class="titleInput" type="text" v-model="editedTag.title">
+        </div>
+      </template>
+      <!-- Edit Template END -->
+    </div>
+    <!-- Reward Card END -->
+    <div class="addTagWrapper" @click="addTag({ title: 'New Tag', level: 1, exp_current: 0, exp_needed: 60 }); fetchTags();">
       <PlusIcon class="addIcon" />
     </div>
   </div>
-  <AddTagModal v-if="addModalVisible" @close="hideAddModal()" />
-  <!-- visible when editModalVisible is true and editedData is not null - e.g. was passed to EditModal -->
-  <EditTagModal v-if="editModalVisible && editedData" :data="editedData" @close="hideEditModal()" />
 </template>

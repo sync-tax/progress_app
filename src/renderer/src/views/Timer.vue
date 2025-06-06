@@ -1,7 +1,9 @@
 <script setup>
+import ModuleTitle from '../components/ModuleTitle.vue'
 
 let timeNeeded = 0
 let expNeeded = 0
+//exp progression shananigans
 const test = () => {
   for (let i = 1; i <= 80; i++) {
     let temp = Math.floor(60 * 1.1 ** i)
@@ -21,9 +23,7 @@ expNeeded = 0
 </script>
 
 <template>
-  <div class="moduleTitle">
-    <h1>Timer</h1>
-  </div>
+  <ModuleTitle title="Timer" />
   <div>
     <p>Time needed: {{ timeNeeded }}h</p>
     <p>EXP needed: {{ expNeeded }}xp</p>

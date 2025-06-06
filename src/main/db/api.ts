@@ -51,7 +51,7 @@ export function registerDBHandlers() {
     return true
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_TAG, (event, updatedTag: { id: number, title?: string, level?: number, exp_current?: number, exp_needed?: number, time_spent?: number }) => {
+  ipcMain.handle(IPC_CHANNELS.UPDATE_TAG, (event, updatedTag: { id: number, title?: string, level?: number, exp_current?: number, exp_needed?: number, time_spent?: number, created_at?: Date }) => {
     db.read()
     const index = db.data.tags.findIndex(tag => tag.id === updatedTag.id)
     if (index === -1) return false
@@ -62,6 +62,7 @@ export function registerDBHandlers() {
     if (updatedTag.exp_current !== undefined) tagToUpdate.exp_current = updatedTag.exp_current
     if (updatedTag.exp_needed !== undefined) tagToUpdate.exp_needed = updatedTag.exp_needed
     if (updatedTag.time_spent !== undefined) tagToUpdate.time_spent = updatedTag.time_spent
+    if (updatedTag.created_at !== undefined) tagToUpdate.created_at = updatedTag.created_at
 
     db.write()
     return true
@@ -80,7 +81,7 @@ export function registerDBHandlers() {
     return db.data.ideas
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event, newIdea: { title: string, description: string, rank: string }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event, newIdea: { title: string, description: string }) => {
     db.read()
     const nextId = (db.data.ideas.at(-1)?.id || 0) + 1
 
@@ -88,14 +89,13 @@ export function registerDBHandlers() {
       id: nextId,
       title: newIdea.title,
       description: newIdea.description,
-      rank: newIdea.rank,
     })
 
     db.write()
     return true
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_IDEA, (event, updatedIdea: { id: number, title?: string, description?: string, rank?: string }) => {
+  ipcMain.handle(IPC_CHANNELS.UPDATE_IDEA, (event, updatedIdea: { id: number, title?: string, description?: string }) => {
     db.read()
     const index = db.data.ideas.findIndex(idea => idea.id === updatedIdea.id)
     if (index === -1) return false
@@ -103,7 +103,6 @@ export function registerDBHandlers() {
     const ideaToUpdate = db.data.ideas[index]
     if (updatedIdea.title !== undefined) ideaToUpdate.title = updatedIdea.title
     if (updatedIdea.description !== undefined) ideaToUpdate.description = updatedIdea.description
-    if (updatedIdea.rank !== undefined) ideaToUpdate.rank = updatedIdea.rank
 
     db.write()
     return true
@@ -130,15 +129,15 @@ export function registerDBHandlers() {
       id: nextId,
       title: newReward.title,
       cost: newReward.cost,
-      rank: newReward.rank,
       repeatable: newReward.repeatable,
+      position: nextId,
     })
 
     db.write()
     return true
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_REWARD, (event, updatedReward: { id: number, title?: string, cost?: number, rank?: string, repeatable?: boolean }) => {
+  ipcMain.handle(IPC_CHANNELS.UPDATE_REWARD, (event, updatedReward: { id: number, title?: string, cost?: number, repeatable?: boolean, position?: number }) => {
     db.read()
     const index = db.data.rewards.findIndex(reward => reward.id === updatedReward.id)
     if (index === -1) return false
@@ -146,8 +145,8 @@ export function registerDBHandlers() {
     const rewardToUpdate = db.data.rewards[index]
     if (updatedReward.title !== undefined) rewardToUpdate.title = updatedReward.title
     if (updatedReward.cost !== undefined) rewardToUpdate.cost = updatedReward.cost
-    if (updatedReward.rank !== undefined) rewardToUpdate.rank = updatedReward.rank
     if (updatedReward.repeatable !== undefined) rewardToUpdate.repeatable = updatedReward.repeatable
+    if (updatedReward.position !== undefined) rewardToUpdate.position = updatedReward.position
 
     db.write()
     return true

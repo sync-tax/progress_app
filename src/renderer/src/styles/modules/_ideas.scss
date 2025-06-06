@@ -1,11 +1,86 @@
 #ideasWrapper {
     @include module-grid-layout($row-height: 100px);
 
+    .ideaEditWrapper {
+        background-color: $ui-color-medium;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+
+        width: 227px;
+        height: 100px;
+        border-radius: 5px;
+
+        padding: 0 5px;
+
+        .titleInput {
+            width: 140px;
+            @include base-font($weight: 600, $size: 14px);
+            color: $main-txt-color;
+            background-color: $ui-color-medium;
+
+            margin: auto 0;
+            height: 26px;
+
+            border: none;
+            outline: none;
+            border-bottom: 2px solid $main-txt-color;
+
+            opacity: .35;
+            transition: opacity .2s ease-in-out;
+
+            &:focus {
+                opacity: 1;
+            }
+        }
+
+        .descriptionInput {
+            border: none;
+            border-bottom: 2px solid $main-txt-color;
+            background: transparent;
+            outline: none;
+            padding: 4px 0;
+            color: $main-txt-color;
+
+            @include inter-font($weight: 300, $size: 12px);
+      
+            width: 200px;
+            margin: 0 auto;
+            padding-top: 20px;
+      
+            margin-bottom: 20px;
+            resize: none;
+      
+            opacity: .35;
+            transition: opacity .2s ease-in-out;
+      
+            &:focus {
+              opacity: 1;
+            }
+        }
+    }
+
     #ideaCard {
+
+        .bulbWrapper {
+            width: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .bulb{
+                fill: $main-txt-color;
+                transform: scale(.75);
+                filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
+            }
+        }
 
         .ideaContent {
             padding-left: 5px;
             width: 200px;
+            height: 100px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -13,27 +88,22 @@
 
 
             h4 {
-                @include base-font($weight: 600, $size: 18px);
+                @include base-font($weight: 600, $size: 16px);
                 color: $main-txt-color;
                 padding-top: 2px;
                 height: 26px
             }
 
             p {
-                @include base-font($weight: 300, $size: 14px);
+                @include inter-font($weight: 300, $size: 12px);
                 color: $main-txt-color;
-                padding-top: 5px;
-                line-height: 18px;
+                padding-top: 2px;
+                padding-right: 3px;
+                line-height: 15px;
             }
         }
     }
       
-
-        .bulb {
-            fill: $ui-color-dark;
-            transform: scale(.75);
-            margin: auto 0;
-        }
 }
 
 .addIdeaWrapper {

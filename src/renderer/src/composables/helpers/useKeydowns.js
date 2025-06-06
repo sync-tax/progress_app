@@ -1,9 +1,10 @@
 import { onMounted, onUnmounted } from 'vue'
 
-export function useModalActions({ onSave, onCancel }) {
+export function useKeydowns({ onSave, onCancel, onDelete }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') onSave?.()
     if (e.key === 'Escape') onCancel?.()
+    if (e.key === 'Delete') onDelete?.()
   }
 
   onMounted(() => {

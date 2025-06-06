@@ -2,63 +2,104 @@ import type { DbSchema } from '../../shared/dbTypes'
 
 const defaultData: DbSchema = {
   balance: 10000,
-  projects: [
-    {
-      id: 1,
-      title: 'Test Project',
-      rank: 'common',
-      active: true,
-      todo_lists: []
-    }
-  ],
+  projects: [],
 
-  todo_lists: [
-    {
-      id: 1,
-      title: 'Test Todo List',
-      project_id: 1,
-      todo_items: [],
-      tag_id: 1
-    }
-  ],
+  todo_lists: [],
 
-  todo_items: [
-    {
-      id: 1,
-      title: 'Test Todo Item',
-      todo_list_id: 1,
-      completed: false
-    }
-  ],
+  todo_items: [],
+
   tags: [
     {
       id: 1,
-      title: 'Test Tag',
-      level: 1,
-      exp_current: 0,
+      title: 'Focus',
+      level: 3,
+      exp_current: 45,
       exp_needed: 100,
-      time_spent: 0,
-      created_at: new Date()
+      time_spent: 7200, // in seconds (2 hours)
+      created_at: new Date('2025-04-01T10:00:00'),
+    },
+    {
+      id: 2,
+      title: 'Strength',
+      level: 11,
+      exp_current: 120,
+      exp_needed: 300,
+      time_spent: 14400, // 4 hours
+      created_at: new Date('2025-03-15T14:30:00'),
+    },
+    {
+      id: 3,
+      title: 'Writing',
+      level: 21,
+      exp_current: 80,
+      exp_needed: 500,
+      time_spent: 25200, // 7 hours
+      created_at: new Date('2025-02-10T09:15:00'),
+    },
+    {
+      id: 4,
+      title: 'Agility',
+      level: 35,
+      exp_current: 250,
+      exp_needed: 1000,
+      time_spent: 39600, // 11 hours
+      created_at: new Date('2025-01-20T12:45:00'),
+    },
+    {
+      id: 5,
+      title: 'Creativity',
+      level: 48,
+      exp_current: 900,
+      exp_needed: 1500,
+      time_spent: 57600, // 16 hours
+      created_at: new Date('2024-12-05T08:00:00'),
+    },
+    {
+      id: 6,
+      title: 'Discipline',
+      level: 60,
+      exp_current: 1400,
+      exp_needed: 2000,
+      time_spent: 86400, // 24 hours
+      created_at: new Date('2024-11-01T17:20:00'),
     }
   ],
+
   ideas: [
     {
       id: 1,
-      title: 'Test Idea',
-      description: 'A test idea to see how ideas display',
-      rank: 'common'
-    }
-  ],
-  habits: [
+      title: "MindGarden",
+      description: "A daily journaling app that grows a digital garden from your thoughts over time.",
+    },
     {
-      id: 1,
-      title: 'Test Habit',
-      counter: 0,
-      current_streak: 0,
-      best_streak: 0,
-      tag_name: 'Test Tag'
+      id: 2,
+      title: "SkillTree",
+      description: "Gamify personal development by mapping goals to a visual skill tree with XP and levels.",
+    },
+    {
+      id: 3,
+      title: "FocusNest",
+      description: "A minimalist Pomodoro timer that rewards focus with ambient nature sounds and visuals.",
+    },
+    {
+      id: 4,
+      title: "TaskForge",
+      description: "A to-do app where completed tasks forge imaginary weapons—great for RPG fans.",
+    },
+    {
+      id: 5,
+      title: "DreamDock",
+      description: "A place to log and categorize dreams, with tags, moods, and AI-powered symbolism analysis.",
+    },
+    {
+      id: 6,
+      title: "MoodCast",
+      description: "A personal weather forecast app that maps your daily mood and habits onto a climate landscape.",
     }
   ],
+
+  habits: [],
+
   stats: {
     focused_time: 0,
     total_time: 0,
@@ -70,31 +111,48 @@ const defaultData: DbSchema = {
     EXP_gained: 0,
     crystals_gained: 0
   },
+
   daily_stats: [],
+
   rewards: [
     {
       id: 1,
-      title: 'Test Repeat Reward',
-      cost: 100,
-      rank: 'common',
-      repeatable: true
+      title: 'Watch',
+      cost: 20,
+      repeatable: true,
+      position: 0,
     },
     {
       id: 2,
-      title: 'Test No Repeat Reward',
-      cost: 200,
-      rank: 'rare',
-      repeatable: false
-    }
-  ],
-  achievements: [
+      title: 'Snack',
+      cost: 500,
+      repeatable: true,
+      position: 1,
+    },
     {
-      id: 1,
-      title: 'Test Achievement',
-      description: 'This is a test achievement',
-      unlocked: false
-    }
-  ]
+      id: 3,
+      title: 'Fap',
+      cost: 100,
+      repeatable: false,
+      position: 2,
+    },
+    {
+      id: 4,
+      title: 'Gift',
+      cost: 375,
+      repeatable: true,
+      position: 3,
+    },
+    {
+      id: 5,
+      title: 'Trip',
+      cost: 1500,
+      repeatable: false,
+      position: 4,
+    },
+  ],
+
+  achievements: []
 }
 
 export default defaultData

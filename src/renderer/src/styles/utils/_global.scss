@@ -34,13 +34,14 @@ body {
 
         .moduleWrapper {
             position: absolute;
-            margin-left: 10px;
+            margin-top: 10px;
 
 
             .cardWrapper {
                 position: relative;
                 display: flex;
                 justify-content: space-around;
+                filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.2));
 
                 cursor: pointer;
 
@@ -80,12 +81,13 @@ body {
                     .editIcon {
                       width: 20px;
                       height: 20px;
-                      fill: white;
+                      fill: $main-txt-color;
                       opacity: 0.3;
                       transition: opacity .15s ease-in-out;
         
                       &:hover {
                         opacity: 1;
+                        filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.5));
                       }
                     }
                   }
@@ -128,7 +130,7 @@ body {
 }
 
 .plus {
-    fill: $ui-color-dark;
+    fill: #FAF9C4;
     transform: scale(.75);
     margin: auto 0;
 }
