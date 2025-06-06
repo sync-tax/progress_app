@@ -19,7 +19,7 @@
 }
 
 body {
-  background-color: #1B1B1F;
+  background-color: #181818;
   width: 800px;
   overflow-x: hidden;
 }
@@ -29,18 +29,19 @@ body main {
 }
 body main .moduleTitle {
   border-radius: 5px;
-  margin: 10px;
-  width: 740px;
+  margin-top: 30px;
+  width: 1000px;
   height: 40px;
-  background: linear-gradient(to right, #313137, #1B1B1F);
+  padding-top: 2px;
+  background: linear-gradient(to right, rgba(219, 185, 151, 0.35), #181818);
   z-index: 0;
 }
 body main .moduleTitle h1 {
-  font-family: "Anek Devanagari", sans-serif;
+  font-family: "Cinzel", sans-serif;
   font-weight: 600;
   font-size: 28px;
   padding-left: 10px;
-  color: white;
+  color: #181818;
 }
 body main .moduleWrapper {
   position: absolute;
@@ -96,7 +97,7 @@ body main .moduleWrapper .cardWrapper .rankColor {
   display: flex;
   justify-content: center;
   border-radius: 5px 0 0 5px;
-  width: 30px;
+  width: 50px;
   z-index: 10;
 }
 body main .moduleWrapper .cardWrapper .common {
@@ -115,13 +116,24 @@ body main .moduleWrapper .cardWrapper .legendary {
   background: linear-gradient(to right, #FF8000, #994D00);
 }
 
+.plus {
+  fill: #181818;
+  transform: scale(0.75);
+  margin: auto 0;
+}
+
 .dragBar {
   height: 20px;
+  width: 100vw;
   -webkit-app-region: drag; /* Enables dragging the window */
   display: flex;
   justify-content: flex-end;
-  background: #222227;
-  color: white;
+  background: #181818;
+  border-bottom: 2px solid #2C2825;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
 
 .windowControls {
@@ -132,17 +144,13 @@ body main .moduleWrapper .cardWrapper .legendary {
 .windowControls button {
   background: transparent;
   border: none;
-  color: white;
+  color: #DBB997;
   padding: 0 10px;
   cursor: pointer;
   opacity: 25%;
 }
 .windowControls button:hover {
   opacity: 100%;
-}
-
-#close:hover {
-  color: #F77036;
 }
 
 .navWrapper {
@@ -153,16 +161,17 @@ body main .moduleWrapper .cardWrapper .legendary {
   top: 0px;
   left: 0px;
   height: 100%;
-  width: 50px;
-  background-color: #222227;
+  width: 40px;
+  background-color: #181818;
   z-index: 10;
+  border-right: 2px solid #2C2825;
 }
 .navWrapper .navigation {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   width: 100%;
-  height: 68%;
+  height: 55%;
   padding-top: 25px;
 }
 
@@ -170,22 +179,27 @@ body main .moduleWrapper .cardWrapper .legendary {
   display: flex;
   justify-content: center;
   align-self: center;
-  width: 44px;
-  height: 44px;
   border-radius: 5px;
+  padding-left: 2px;
 }
 .navLink .nav-icon {
   width: 25px;
   height: 25px;
+  transform: scale(0.85);
   margin: auto 0;
-  fill: #313137;
+  fill: #DBB997;
+  opacity: 20%;
   transition: all 0.1s ease-in-out;
 }
 .navLink .nav-icon:hover {
-  fill: #1ED583;
+  fill: #DBB997;
+  opacity: 100%;
+  filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
 }
 .navLink .nav-icon.active {
-  fill: #1ED583; /* active color */
+  fill: #DBB997;
+  opacity: 100%;
+  filter: drop-shadow(0px 0px 5px rgba(219, 185, 151, 0.5));
 }
 
 #settingsLink {
@@ -205,280 +219,17 @@ body main .moduleWrapper .cardWrapper .legendary {
   width: 30px;
   position: relative;
   left: 15px;
+  filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
 }
 .balanceWrapper p {
-  font-family: "Anek Devanagari", sans-serif;
+  font-family: "Cinzel", sans-serif;
   font-weight: 600;
+  font-size: 16px;
   margin: auto;
   border-radius: 0px 10px 10px 0px;
   height: 20px;
   padding: 0px 8px 0px 12px;
-  color: #1ED583;
-}
-
-#ideasWrapper {
-  display: grid;
-  grid-template-columns: repeat(3, 230px);
-  grid-auto-rows: 100px;
-  gap: 10px;
-}
-#ideasWrapper #ideaCard .ideaContent {
-  padding-left: 5px;
-  width: 200px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-#ideasWrapper #ideaCard .ideaContent h4 {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: white;
-  padding-top: 2px;
-  height: 26px;
-}
-#ideasWrapper #ideaCard .ideaContent p {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  color: white;
-  padding-top: 5px;
-  line-height: 18px;
-}
-#ideasWrapper .bulb {
-  fill: #1B1B1F;
-  margin: auto 0;
-}
-
-.addIdeaWrapper {
-  width: 230px;
-  height: 100px;
-  border-radius: 5px;
-  border: 3px dashed #222227;
-  display: flex;
-  justify-content: center;
-  opacity: 60%;
-  cursor: pointer;
-}
-.addIdeaWrapper:hover {
-  opacity: 100%;
-  border: none;
-  background-color: #222227;
-}
-.addIdeaWrapper .addIcon {
-  align-self: center;
-  fill: #1ED583;
-  opacity: 50%;
-}
-
-#tagsWrapper {
-  display: grid;
-  grid-template-columns: repeat(3, 230px);
-  grid-auto-rows: 50px;
-  gap: 10px;
-}
-#tagsWrapper .addTagWrapper {
-  width: 230px;
-  height: 50px;
-  border-radius: 5px;
-  border: 3px dashed #222227;
-  display: flex;
-  justify-content: center;
-  opacity: 60%;
-  cursor: pointer;
-}
-#tagsWrapper .addTagWrapper:hover {
-  opacity: 100%;
-  border: none;
-  background-color: #222227;
-}
-#tagsWrapper .addTagWrapper .addIcon {
-  align-self: center;
-  fill: #1ED583;
-  opacity: 50%;
-}
-#tagsWrapper #tagCard .tagContent {
-  padding-left: 5px;
-  width: 200px;
-  overflow: hidden;
-}
-#tagsWrapper #tagCard .tagContent .labelLvlWrapper {
-  display: flex;
-  flex-direction: column;
-}
-#tagsWrapper #tagCard .tagContent .labelLvlWrapper h4 {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: white;
-  padding-top: 2px;
-  height: 26px;
-}
-#tagsWrapper #tagCard .tagContent .labelLvlWrapper p {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  padding-bottom: 2px;
-  color: #696969;
-}
-#tagsWrapper #tagCard .tagContent .expBar {
-  width: 200px;
-  border-radius: 5px;
-  height: 3px;
-  position: relative;
-  top: -18.5px;
-  right: 4.8px;
-  z-index: 0;
-  opacity: 50%;
-}
-#tagsWrapper #tagCard .hashtag {
-  fill: #1B1B1F;
-  margin: auto 0;
-}
-
-progress::-webkit-progress-bar {
-  background-color: #D9D9D9;
-  border-bottom-right-radius: 5px;
-}
-
-progress::-webkit-progress-value {
-  background-color: #A335EE;
-}
-
-#rewardsWrapper {
-  position: absolute;
-  display: grid;
-  grid-template-columns: repeat(3, 230px);
-  grid-auto-rows: 50px;
-  gap: 10px;
-}
-#rewardsWrapper #rewardCard .rewardContent {
-  padding-left: 5px;
-  width: 200px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-#rewardsWrapper #rewardCard .rewardContent.common-opac:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-#rewardsWrapper #rewardCard .rewardContent.uncommon-opac:hover {
-  background-color: rgba(30, 255, 0, 0.05);
-}
-#rewardsWrapper #rewardCard .rewardContent.rare-opac:hover {
-  background-color: rgba(0, 112, 221, 0.05);
-}
-#rewardsWrapper #rewardCard .rewardContent.epic-opac:hover {
-  background-color: rgba(163, 53, 238, 0.05);
-}
-#rewardsWrapper #rewardCard .rewardContent.legendary-opac:hover {
-  background-color: rgba(255, 128, 0, 0.05);
-}
-#rewardsWrapper #rewardCard .rewardContent h4 {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: white;
-  margin: auto 0;
-  height: 26px;
-}
-#rewardsWrapper .common {
-  background: linear-gradient(to right, #FFFFFF, #999999);
-}
-#rewardsWrapper .uncommon {
-  background: linear-gradient(to right, #1EFF00, #129900);
-}
-#rewardsWrapper .rare {
-  background: linear-gradient(to right, #0070DD, #003C77);
-}
-#rewardsWrapper .epic {
-  background: linear-gradient(to right, #A335EE, #5D1E88);
-}
-#rewardsWrapper .rankColor {
-  width: 50px;
-  cursor: pointer;
-}
-#rewardsWrapper .rankColor .costWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-  transition: transform 0.15s ease-in-out;
-}
-#rewardsWrapper .rankColor .costWrapper:hover {
-  transform: scale(1.05);
-}
-#rewardsWrapper .rankColor .costWrapper img {
-  width: 23px;
-  padding-top: 5px;
-}
-#rewardsWrapper .rankColor .costWrapper p {
-  font-family: "Anek Devanagari", sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  color: #1B1B1F;
-}
-#rewardsWrapper .common-reward {
-  background: linear-gradient(to right, #FFFFFF, #999999);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
-}
-#rewardsWrapper .common-reward:hover {
-  opacity: 0.75;
-}
-#rewardsWrapper .uncommon-reward {
-  background: linear-gradient(to right, #1EFF00, #129900);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
-}
-#rewardsWrapper .uncommon-reward:hover {
-  opacity: 0.75;
-}
-#rewardsWrapper .rare-reward {
-  background: linear-gradient(to right, #0070DD, #003C77);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
-}
-#rewardsWrapper .rare-reward:hover {
-  opacity: 0.75;
-}
-#rewardsWrapper .epic-reward {
-  background: linear-gradient(to right, #A335EE, #5D1E88);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
-}
-#rewardsWrapper .epic-reward:hover {
-  opacity: 0.75;
-}
-#rewardsWrapper .legendary-reward {
-  background: linear-gradient(to right, #FF8000, #994D00);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
-}
-#rewardsWrapper .legendary-reward:hover {
-  opacity: 0.75;
-}
-
-.addRewardWrapper {
-  width: 230px;
-  height: 50px;
-  border-radius: 5px;
-  border: 3px dashed #222227;
-  display: flex;
-  justify-content: center;
-  opacity: 60%;
-  cursor: pointer;
-}
-.addRewardWrapper:hover {
-  opacity: 100%;
-  border: none;
-  background-color: #222227;
-}
-.addRewardWrapper .addIcon {
-  align-self: center;
-  fill: #1ED583;
-  opacity: 50%;
+  color: #DBB997;
 }
 
 .modalWrapper {
@@ -501,7 +252,7 @@ progress::-webkit-progress-value {
   justify-content: center;
   flex-direction: column;
   width: 250px;
-  background-color: #1B1B1F;
+  background-color: #181818;
   border-radius: 5px;
 }
 .modalWrapper .addModal h4,
@@ -511,7 +262,7 @@ progress::-webkit-progress-value {
   font-size: 18px;
   text-align: center;
   background-color: #1ED583;
-  color: #1B1B1F;
+  color: #181818;
   border-radius: 5px 5px 0 0;
   padding-top: 5px;
 }
@@ -590,10 +341,10 @@ progress::-webkit-progress-value {
 }
 .modalWrapper .addModal span,
 .modalWrapper .editModal span {
-  font-family: "Anek Devanagari", sans-serif;
+  font-family: "Cinzel", sans-serif;
   font-weight: 300;
   font-size: 12px;
-  color: #696969;
+  color: #FAF9C4;
   width: 250px;
   text-align: center;
 }
@@ -616,7 +367,7 @@ progress::-webkit-progress-value {
 }
 .modalWrapper .addModal .addIconContainer .addIcon,
 .modalWrapper .editModal .addIconContainer .addIcon {
-  fill: #1B1B1F;
+  fill: #181818;
 }
 .modalWrapper .addModal .cancelIconContainer,
 .modalWrapper .editModal .cancelIconContainer {
@@ -638,7 +389,7 @@ progress::-webkit-progress-value {
 }
 .modalWrapper .addModal .cancelIconContainer .cancelIcon,
 .modalWrapper .editModal .cancelIconContainer .cancelIcon {
-  fill: #1B1B1F;
+  fill: #181818;
   width: 30px;
 }
 .modalWrapper .addModal .deleteIconContainer,
@@ -661,6 +412,379 @@ progress::-webkit-progress-value {
 }
 .modalWrapper .addModal .deleteIconContainer .deleteIcon,
 .modalWrapper .editModal .deleteIconContainer .deleteIcon {
-  fill: #1B1B1F;
+  fill: #181818;
   width: 30px;
+}
+
+#ideasWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 100px;
+  gap: 10px;
+}
+#ideasWrapper #ideaCard .ideaContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#ideasWrapper #ideaCard .ideaContent h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #DBB997;
+  padding-top: 2px;
+  height: 26px;
+}
+#ideasWrapper #ideaCard .ideaContent p {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #DBB997;
+  padding-top: 5px;
+  line-height: 18px;
+}
+#ideasWrapper .bulb {
+  fill: #181818;
+  transform: scale(0.75);
+  margin: auto 0;
+}
+
+.addIdeaWrapper {
+  width: 230px;
+  height: 100px;
+  border-radius: 5px;
+  border: 3px dashed #222227;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.addIdeaWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #222227;
+}
+.addIdeaWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
+}
+
+#tagsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 50px;
+  gap: 10px;
+}
+#tagsWrapper .addTagWrapper {
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  border: 3px dashed #222227;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+#tagsWrapper .addTagWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #222227;
+}
+#tagsWrapper .addTagWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
+}
+#tagsWrapper #tagCard .tagContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+}
+#tagsWrapper #tagCard .tagContent .labelLvlWrapper {
+  display: flex;
+  flex-direction: column;
+}
+#tagsWrapper #tagCard .tagContent .labelLvlWrapper h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #DBB997;
+  padding-top: 2px;
+  height: 26px;
+}
+#tagsWrapper #tagCard .tagContent .labelLvlWrapper p {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  padding-bottom: 2px;
+  color: #FAF9C4;
+}
+#tagsWrapper #tagCard .tagContent .expBar {
+  width: 200px;
+  border-radius: 5px;
+  height: 3px;
+  position: relative;
+  top: -18.5px;
+  right: 4.8px;
+  z-index: 0;
+  opacity: 50%;
+}
+#tagsWrapper #tagCard .hashtag {
+  fill: #181818;
+  transform: scale(0.75);
+  margin: auto 0;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #D9D9D9;
+  border-bottom-right-radius: 5px;
+}
+
+progress::-webkit-progress-value {
+  background-color: #A335EE;
+}
+
+#habitsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 50px;
+  gap: 10px;
+}
+#habitsWrapper #habitCard .habitContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#habitsWrapper #habitCard .habitContent.common-opac:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+#habitsWrapper #habitCard .habitContent.uncommon-opac:hover {
+  background-color: rgba(30, 255, 0, 0.05);
+}
+#habitsWrapper #habitCard .habitContent.rare-opac:hover {
+  background-color: rgba(0, 112, 221, 0.05);
+}
+#habitsWrapper #habitCard .habitContent.epic-opac:hover {
+  background-color: rgba(163, 53, 238, 0.05);
+}
+#habitsWrapper #habitCard .habitContent.legendary-opac:hover {
+  background-color: rgba(255, 128, 0, 0.05);
+}
+#habitsWrapper #habitCard .habitContent h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #DBB997;
+  padding-top: 2px;
+  height: 26px;
+}
+#habitsWrapper #habitCard .habitContent p {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #DBB997;
+  padding-top: 5px;
+  line-height: 18px;
+}
+#habitsWrapper .common-reward {
+  background: linear-gradient(to right, #FFFFFF, #999999);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#habitsWrapper .common-reward:hover {
+  opacity: 0.75;
+}
+#habitsWrapper .uncommon-reward {
+  background: linear-gradient(to right, #1EFF00, #129900);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#habitsWrapper .uncommon-reward:hover {
+  opacity: 0.75;
+}
+#habitsWrapper .rare-reward {
+  background: linear-gradient(to right, #0070DD, #003C77);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#habitsWrapper .rare-reward:hover {
+  opacity: 0.75;
+}
+#habitsWrapper .epic-reward {
+  background: linear-gradient(to right, #A335EE, #5D1E88);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#habitsWrapper .epic-reward:hover {
+  opacity: 0.75;
+}
+#habitsWrapper .legendary-reward {
+  background: linear-gradient(to right, #FF8000, #994D00);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#habitsWrapper .legendary-reward:hover {
+  opacity: 0.75;
+}
+
+.addHabitWrapper {
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  border: 3px dashed #222227;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.addHabitWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #222227;
+}
+.addHabitWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
+}
+
+#rewardsWrapper {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(3, 230px);
+  grid-auto-rows: 50px;
+  gap: 10px;
+}
+#rewardsWrapper #rewardCard .rewardContent {
+  padding-left: 5px;
+  width: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#rewardsWrapper #rewardCard .rewardContent.common-opac:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+#rewardsWrapper #rewardCard .rewardContent.uncommon-opac:hover {
+  background-color: rgba(30, 255, 0, 0.05);
+}
+#rewardsWrapper #rewardCard .rewardContent.rare-opac:hover {
+  background-color: rgba(0, 112, 221, 0.05);
+}
+#rewardsWrapper #rewardCard .rewardContent.epic-opac:hover {
+  background-color: rgba(163, 53, 238, 0.05);
+}
+#rewardsWrapper #rewardCard .rewardContent.legendary-opac:hover {
+  background-color: rgba(255, 128, 0, 0.05);
+}
+#rewardsWrapper #rewardCard .rewardContent h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #DBB997;
+  margin: auto 0;
+  height: 26px;
+}
+#rewardsWrapper .common {
+  background: linear-gradient(to right, #FFFFFF, #999999);
+}
+#rewardsWrapper .uncommon {
+  background: linear-gradient(to right, #1EFF00, #129900);
+}
+#rewardsWrapper .rare {
+  background: linear-gradient(to right, #0070DD, #003C77);
+}
+#rewardsWrapper .epic {
+  background: linear-gradient(to right, #A335EE, #5D1E88);
+}
+#rewardsWrapper .rankColor {
+  width: 50px;
+  cursor: pointer;
+}
+#rewardsWrapper .rankColor .costWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+}
+#rewardsWrapper .rankColor .costWrapper:hover {
+  transform: scale(1.05);
+}
+#rewardsWrapper .rankColor .costWrapper img {
+  width: 23px;
+  padding-top: 5px;
+}
+#rewardsWrapper .rankColor .costWrapper p {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #181818;
+}
+#rewardsWrapper .common-reward {
+  background: linear-gradient(to right, #FFFFFF, #999999);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#rewardsWrapper .common-reward:hover {
+  opacity: 0.75;
+}
+#rewardsWrapper .uncommon-reward {
+  background: linear-gradient(to right, #1EFF00, #129900);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#rewardsWrapper .uncommon-reward:hover {
+  opacity: 0.75;
+}
+#rewardsWrapper .rare-reward {
+  background: linear-gradient(to right, #0070DD, #003C77);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#rewardsWrapper .rare-reward:hover {
+  opacity: 0.75;
+}
+#rewardsWrapper .epic-reward {
+  background: linear-gradient(to right, #A335EE, #5D1E88);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#rewardsWrapper .epic-reward:hover {
+  opacity: 0.75;
+}
+#rewardsWrapper .legendary-reward {
+  background: linear-gradient(to right, #FF8000, #994D00);
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in-out;
+}
+#rewardsWrapper .legendary-reward:hover {
+  opacity: 0.75;
+}
+
+.addRewardWrapper {
+  width: 230px;
+  height: 50px;
+  border-radius: 5px;
+  border: 3px dashed #222227;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.addRewardWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #222227;
+}
+.addRewardWrapper .addIcon {
+  align-self: center;
+  fill: #1ED583;
+  opacity: 50%;
 }/*# sourceMappingURL=main.css.map */

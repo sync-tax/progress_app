@@ -1,6 +1,6 @@
 <script setup>
 import DeleteIcon from '../../assets/delete.svg'
-import { watch } from 'vue'
+
 import { useModalActions } from '../../composables/modal_functions/useModalActions'
 import { useIdeas } from '../../composables/db_functions/useIdeas'
 
@@ -13,18 +13,9 @@ const props = defineProps({
     }
 })
 
-// Update local copy when prop changes
-watch(
-    () => props.data,
-    (data) => {
-        if (data) {
-            ideaData.value.title = data.title
-            ideaData.value.description = data.description
-            ideaData.value.rank = data.rank
-        }
-    },
-    { immediate: true, deep: true }
-)
+ideaData.value.title = props.data.title
+ideaData.value.description = props.data.description
+ideaData.value.rank = props.data.rank
 
 const emit = defineEmits(['close'])
 
@@ -65,8 +56,7 @@ useModalActions({
     <div class="modalWrapper">
         <div class="editModal">
             <h4>Edit Idea</h4>
-            <input v-model="ideaData.title" type="text" placeholder="Title..." spellcheck="false"
-                @keydown.enter="save" />
+            <input v-model="ideaData.title" type="text" placeholder="Title..." spellcheck="false" />
 
             <textarea v-model="ideaData.description" placeholder="Description..." rows="3" maxlength="90"
                 spellcheck="false"></textarea>

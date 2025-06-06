@@ -1,0 +1,103 @@
+#habitsWrapper {
+    @include module-grid-layout($row-height: 50px);
+
+    #habitCard {
+
+        .habitContent {
+            padding-left: 5px;
+            width: 200px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+
+            &.common-opac:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+    
+            &.uncommon-opac:hover {
+                background-color: rgba(30, 255, 0, 0.05);
+            }
+    
+            &.rare-opac:hover {
+                background-color: rgba(0, 112, 221, 0.05);
+            }
+    
+            &.epic-opac:hover {
+                background-color: rgba(163, 53, 238, 0.05);
+            }
+    
+            &.legendary-opac:hover {
+                background-color: rgba(255, 128, 0, 0.05);
+            }
+
+
+            h4 {
+                @include base-font($weight: 600, $size: 18px);
+                color: $main-txt-color;
+                padding-top: 2px;
+                height: 26px
+            }
+
+            p {
+                @include base-font($weight: 300, $size: 14px);
+                color: $main-txt-color;
+                padding-top: 5px;
+                line-height: 18px;
+            }
+        }
+    }
+
+    .common-reward {
+        background: linear-gradient(to right, #FFFFFF, #999999);
+        opacity: 0.5;
+        transition: opacity .15s ease-in-out;
+        
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+
+    .uncommon-reward {
+        background: linear-gradient(to right, #1EFF00, #129900);
+        opacity: 0.5;
+        transition: opacity .15s ease-in-out;
+        
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+
+    .rare-reward {
+        background: linear-gradient(to right, #0070DD, #003C77);
+        opacity: 0.5;
+        transition: opacity .15s ease-in-out;
+        
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+
+    .epic-reward {
+        background: linear-gradient(to right, #A335EE, #5D1E88);
+        opacity: 0.5;
+        transition: opacity .15s ease-in-out;
+        
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+
+    .legendary-reward {
+        background: linear-gradient(to right, #FF8000, #994D00);
+        opacity: 0.5;
+        transition: opacity .15s ease-in-out;
+        
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+}
+
+.addHabitWrapper {
+@include add-wrapper(50px);
+}

@@ -22,7 +22,7 @@ const rank = computed(() => {
 
 const emit = defineEmits(['edit'])
 
-const renderEditModal = (tag) => {
+const showEditModal = (tag) => {
     emit('edit', tag)
 }
 
@@ -44,7 +44,7 @@ const renderEditModal = (tag) => {
         </p>
       </div>
 
-      <div class="editIconContainer" @click="renderEditModal(tag)">
+      <div class="editIconContainer" @click="showEditModal(tag)">
         <EditIcon class="editIcon" />
       </div>
 

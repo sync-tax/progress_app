@@ -40,7 +40,9 @@ export interface Habit {
   id: number
   title: string
   counter: number
-  streak: number
+  current_streak: number
+  best_streak: number
+  tag_name: string
 }
 
 // ========== TAGS ==========
@@ -51,6 +53,7 @@ export interface Tag {
   exp_current: number
   exp_needed: number
   time_spent: number
+  created_at: Date
 }
 
 // ========== STATISTICS ==========

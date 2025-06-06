@@ -15,11 +15,12 @@ body {
 
         .moduleTitle {
             border-radius: 5px;
-            margin: 10px;
-            width: 740px;
+            margin-top: 30px;
+            width: 1000px;
             height: 40px;
+            padding-top: 2px;
 
-            background: linear-gradient(to right, $ui-color-light, $ui-color-dark);
+            background: linear-gradient(to right, rgba(219, 185, 151, 0.35), #181818);
 
             z-index: 0;
 
@@ -27,7 +28,7 @@ body {
                 @include base-font($weight: 600, $size: 28px);
                 padding-left: 10px;
 
-                color: $main-txt-color;
+                color: $ui-color-dark;
             }
         }
 
@@ -98,7 +99,7 @@ body {
                     display: flex;
                     justify-content: center;
                     border-radius: 5px 0 0 5px;
-                    width: 30px;
+                    width: 50px;
                     z-index: 10;
                 }
         
@@ -124,4 +125,10 @@ body {
             }
         }
     }
+}
+
+.plus {
+    fill: $ui-color-dark;
+    transform: scale(.75);
+    margin: auto 0;
 }

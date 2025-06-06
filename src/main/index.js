@@ -8,8 +8,8 @@ import { registerDBHandlers } from './db/api.js'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 625,
     resizable: false,
     maximizable: false,
     fullscreenable: false,

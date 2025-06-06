@@ -32,6 +32,12 @@ const api = {
   addReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_REWARD, reward),
   updateReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_REWARD, reward),
   deleteReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_REWARD, id),
+
+  // Habit Functions
+  getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
+  addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
+  updateHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT, habit),
+  deleteHabit: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT, id),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

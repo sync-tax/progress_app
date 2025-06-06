@@ -38,9 +38,10 @@
 @import "components/nav";
 
 @import "components/balance";
-
-@import "components/ideas";
-@import "components/tags";
-@import "components/rewards";
-
 @import "components/modals";
+
+@import "modules/ideas";
+@import "modules/tags";
+@import "modules/habits";
+@import "modules/rewards";
+

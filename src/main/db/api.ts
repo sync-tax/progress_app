@@ -44,6 +44,7 @@ export function registerDBHandlers() {
       exp_current: 0,
       exp_needed: 60,
       time_spent: 0,
+      created_at: new Date()
     })
 
     db.write()
@@ -159,3 +160,49 @@ export function registerDBHandlers() {
     return true
   })
 }
+
+ // ========== HABITS ==========
+ ipcMain.handle(IPC_CHANNELS.GET_HABITS, () => {
+    db.read()
+    return db.data.habits
+ })
+
+ ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, newHabit: { title: string, counter: number, current_streak: number, best_streak: number, tag_name: string }) => {
+    db.read()
+    const nextId = (db.data.habits.at(-1)?.id || 0) + 1
+
+    db.data.habits.push({
+      id: nextId,
+      title: newHabit.title,
+      tag_name: newHabit.tag_name,
+      counter: 0,
+      current_streak: 0,
+      best_streak: 0
+    })
+
+    db.write()
+    return true
+ })
+
+ ipcMain.handle(IPC_CHANNELS.UPDATE_HABIT, (event, updatedHabit: { id: number, title?: string, counter?: number, current_streak?: number, best_streak?: number, tag_name?: string }) => {
+    db.read()
+    const index = db.data.habits.findIndex(habit => habit.id === updatedHabit.id)
+    if (index === -1) return false
+
+    const habitToUpdate = db.data.habits[index]
+    if (updatedHabit.title !== undefined) habitToUpdate.title = updatedHabit.title
+    if (updatedHabit.counter !== undefined) habitToUpdate.counter = updatedHabit.counter
+    if (updatedHabit.current_streak !== undefined) habitToUpdate.current_streak = updatedHabit.current_streak
+    if (updatedHabit.best_streak !== undefined) habitToUpdate.best_streak = updatedHabit.best_streak
+    if (updatedHabit.tag_name !== undefined) habitToUpdate.tag_name = updatedHabit.tag_name
+
+    db.write()
+    return true
+ })
+
+ ipcMain.handle(IPC_CHANNELS.DELETE_HABIT, (event, id: number) => {
+    db.read()
+    db.data.habits = db.data.habits.filter(habit => habit.id !== id)
+    db.write()
+    return true
+ })

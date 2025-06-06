@@ -7,11 +7,15 @@ import TagsIcon from '../assets/tags.svg';
 import RewardIcon from '../assets/reward.svg';
 import AchievementIcon from '../assets/achievement.svg';
 import SettingsIcon from '../assets/settings.svg';
+import StatsIcon from '../assets/stats.svg';
 </script>
 
 <template>
   <div class="navWrapper">
     <div class="navigation">
+      <RouterLink v-slot="{ isActive }" to="/Stats" class="navLink">
+        <StatsIcon :class="['nav-icon', { active: isActive }]" />
+      </RouterLink>
       <RouterLink v-slot="{ isActive }" to="/" class="navLink">
         <TimerIcon :class="['nav-icon', { active: isActive }]" />
       </RouterLink>
@@ -39,9 +43,3 @@ import SettingsIcon from '../assets/settings.svg';
     </RouterLink>
   </div>
 </template>
-
-<style scoped>
-.router-link-active {
-  background-color: #313137;
-}
-</style>

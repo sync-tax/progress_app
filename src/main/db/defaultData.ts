@@ -37,7 +37,8 @@ const defaultData: DbSchema = {
       level: 1,
       exp_current: 0,
       exp_needed: 100,
-      time_spent: 0
+      time_spent: 0,
+      created_at: new Date()
     }
   ],
   ideas: [
@@ -53,7 +54,9 @@ const defaultData: DbSchema = {
       id: 1,
       title: 'Test Habit',
       counter: 0,
-      streak: 0
+      current_streak: 0,
+      best_streak: 0,
+      tag_name: 'Test Tag'
     }
   ],
   stats: {

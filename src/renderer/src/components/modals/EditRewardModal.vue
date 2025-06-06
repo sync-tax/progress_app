@@ -1,6 +1,6 @@
 <script setup>
 import DeleteIcon from '../../assets/delete.svg'
-import { watch } from 'vue'
+
 import { useModalActions } from '../../composables/modal_functions/useModalActions'
 import { useRewards } from '../../composables/db_functions/useRewards'
 
@@ -13,26 +13,17 @@ const props = defineProps({
   }
 })
 
-// Update local copy when prop changes
-watch(
-  () => props.data,
-  (data) => {
-    if (data) {
-      rewardData.value.title = data.title
-      rewardData.value.cost = data.cost
-      rewardData.value.rank = data.rank
-      rewardData.value.repeatable = data.repeatable
-    }
-  },
-  { immediate: true, deep: true }
-)
+rewardData.value.title = props.data.title
+rewardData.value.cost = props.data.cost
+rewardData.value.rank = props.data.rank
+rewardData.value.repeatable = props.data.repeatable
 
 const emit = defineEmits(['close'])
 
 const save = async () => {
   if (!rewardData.value?.title?.trim()) return
 
-  await updateReward({
+  updateReward({
     ...props.data,
     title: rewardData.value.title,
     cost: rewardData.value.cost,
@@ -45,7 +36,7 @@ const save = async () => {
 
 const remove = async () => {
   if (!props.data) return
-  await deleteReward(props.data.id)
+  deleteReward(props.data.id)
   emit('close')
 }
 

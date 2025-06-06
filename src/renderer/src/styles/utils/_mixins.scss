@@ -1,5 +1,11 @@
 @mixin base-font ($weight: 600, $size: 28px) {
-    font-family: "Anek Devanagari", sans-serif;
+    font-family: "Cinzel", sans-serif;
+    font-weight: $weight;
+    font-size: $size;
+  }
+
+  @mixin inter-font ($weight: 600, $size: 28px) {
+    font-family: "Inter", sans-serif;
     font-weight: $weight;
     font-size: $size;
   }
