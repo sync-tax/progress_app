@@ -2,6 +2,8 @@ import { ipcMain } from 'electron'
 import db from './lowdb.js'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
+import { Reward } from '../../shared/dbTypes'
+
 // register handlers for ipc channels
 // these handlers are used to update the database
 export function registerDBHandlers() {
@@ -33,22 +35,28 @@ export function registerDBHandlers() {
     return db.data.tags
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event, newTag: { title: string }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event) => {
     db.read()
     const nextId = (db.data.tags.at(-1)?.id || 0) + 1
 
-    db.data.tags.push({
+    const newTag = {
       id: nextId,
-      title: newTag.title,
+      title: '',
       level: 1,
       exp_current: 0,
       exp_needed: 60,
       time_spent: 0,
       created_at: new Date()
-    })
+    }
+    db.data.tags.push(newTag)
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
+    return {
+      success: true,
+      message: 'New tag added!',
+      newTag
+    }
   })
 
   ipcMain.handle(IPC_CHANNELS.UPDATE_TAG, (event, updatedTag: { id: number, title?: string, level?: number, exp_current?: number, exp_needed?: number, time_spent?: number, created_at?: Date }) => {
@@ -72,6 +80,7 @@ export function registerDBHandlers() {
     db.read()
     db.data.tags = db.data.tags.filter(tag => tag.id !== id)
     db.write()
+    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
     return true
   })
 
@@ -121,20 +130,28 @@ export function registerDBHandlers() {
     return db.data.rewards
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event, newReward: { title: string, cost: number, rank: string, repeatable: boolean }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event) => {
     db.read()
     const nextId = (db.data.rewards.at(-1)?.id || 0) + 1
+    const nextPosition = (db.data.rewards.at(-1)?.position || 0) + 1
 
-    db.data.rewards.push({
+   const newReward = {
       id: nextId,
-      title: newReward.title,
-      cost: newReward.cost,
-      repeatable: newReward.repeatable,
-      position: nextId,
-    })
+      title: '',
+      cost: 0,
+      repeatable: false,
+      position: nextPosition,
+    }
+    db.data.rewards.push(newReward)
+
+    event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
 
     db.write()
-    return true
+    return {
+      success: true,
+      message: 'New reward added!',
+      newReward
+    }
   })
 
   ipcMain.handle(IPC_CHANNELS.UPDATE_REWARD, (event, updatedReward: { id: number, title?: string, cost?: number, repeatable?: boolean, position?: number }) => {
@@ -156,7 +173,42 @@ export function registerDBHandlers() {
     db.read()
     db.data.rewards = db.data.rewards.filter(reward => reward.id !== id)
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
+  })
+
+  ipcMain.handle(IPC_CHANNELS.UNLOCK_REWARD, (event, passedReward: Reward) => {
+    db.read();
+    const rewardIndex = db.data.rewards.findIndex(r => r.id === passedReward.id)
+
+    if (rewardIndex === -1) {
+      return { success: false, message: 'Uups, this reward does not exist.' }
+    }
+
+    const reward = db.data.rewards[rewardIndex]
+
+    if (reward.cost > db.data.balance) {
+      return { success: false, message: 'Not enough crystals!' }
+    }
+
+    // pay crystals for reward
+    db.data.balance -= reward.cost
+
+    // remove non-repeatable rewards
+    if (!reward.repeatable) {
+      db.data.rewards.splice(rewardIndex, 1)
+    }
+
+    db.write()
+
+    // send updates to renderer
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.balance)
+    event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
+
+    return { 
+      success: true, 
+      message: 'You unlocked ' + reward.title + '!', 
+      newBalance: db.data.balance 
+    }
   })
 }
 

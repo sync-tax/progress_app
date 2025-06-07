@@ -35,13 +35,13 @@ export interface Idea {
 }
 
 // ========== HABITS ==========
-interface HabitStack {
+export interface HabitStack {
   id: number
   title: string
   position: number
 }
 
-interface Habit {
+export interface Habit {
   id: number
   stack_id: number
   title: string

@@ -8,51 +8,63 @@ import ModuleTitle from '../components/ModuleTitle.vue'
 import { useBalance } from '../composables/db_functions/useBalance'
 import { useRewards } from '../composables/db_functions/useRewards'
 import { useKeydowns } from '../composables/helpers/useKeydowns'
+import { useToasts } from '../composables/ui/useToasts'
+import { useInlineEditor } from '../composables/ui/useEdit'
 
-import { onMounted, ref, toRaw } from 'vue'
+//toRaw removes reactivity from an object -> required for ipc communication
+import { onMounted, onUnmounted, toRaw } from 'vue'
 
-const { fetchBalance, balance, removeBalance } = useBalance()
-const { fetchRewards, rewards, deleteReward, updateReward, addReward } = useRewards()
+const { fetchBalance, onBalanceUpdate } = useBalance()
+const { getRewards, rewards, deleteReward, updateReward, addReward: addRewardLogic, unlockReward: unlockRewardLogic, onRewardsUpdate } = useRewards()
+const { addToast } = useToasts()
+
+let cleanupBalanceUpdate = null
+let cleanupRewardsUpdate = null
+
 onMounted(async () => {
-  await fetchRewards()
-  await fetchBalance()
-})
+  await getRewards();
 
-//EDIT LOGIC
-const editingId = ref(null)
-const editedReward = ref({})
+  cleanupBalanceUpdate = onBalanceUpdate(() => {
+    fetchBalance()
+  })
 
-const startEditing = (reward) => {
-  editingId.value = reward.id
-  //spread operator is used to create a new object (clone)
-  editedReward.value = { ...reward }
-}
+  cleanupRewardsUpdate = onRewardsUpdate(() => {
+    getRewards()
+  })
+});
 
-const cancelEditing = () => {
-  //reset reactive references
-  editingId.value = null
-  editedReward.value = {}
-}
+onUnmounted(() => {
+  //cleanup listeners
+  if (cleanupBalanceUpdate) {
+    cleanupBalanceUpdate();
+  }
+  if (cleanupRewardsUpdate) {
+    cleanupRewardsUpdate();
+  }
+});
 
-const saveEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  // toRaw() is a vue function that removes reactivity from an object
-  // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  await updateReward(toRaw(editedReward.value))
-  await fetchRewards()
-  cancelEditing()
-}
+// USE EDITOR
+const { 
+  editingId, 
+  editedItemData, 
+  startEditing, 
+  cancelEditing, 
+  saveEditing, 
+  deleteEditing 
+} = useInlineEditor({
+  updateFn: updateReward,
+  deleteFn: deleteReward,
+  fetchFn: getRewards,
+  onSaveSuccess: () => {
+    addToast({ message: 'Saved Reward.', type: 'success' });
+  },
+  onDeleteSuccess: () => {
+    addToast({ message: 'Deleted Reward.', type: 'warning' });
+  }
+});
 
-const deleteEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  await deleteReward(editingId.value)
-  await fetchRewards()
-  cancelEditing()
-}
-
-//Who needs Buttons in a MVP?
+// KEYDOWN LOGIC
+// TODO: Implement Buttons
 useKeydowns({
   onSave: () => {
     saveEditing()
@@ -65,22 +77,36 @@ useKeydowns({
   }
 })
 
-//REWARD UNLOCK LOGIC
-const updateBalanceAndDeleteReward = async (reward) => {
-  // fetchBalance() comes with an await already
-  // still need to await -> Else it will result in balance getting negative
-  await fetchBalance()
-  if (editingId.value === true) return
-  if (reward.cost > balance.value) {
-    alert('Insufficient balance!')
-    return
+// REWARD UNLOCK LOGIC
+const unlockReward = async (reward) => {
+  // no purchases while editing
+  if (editingId.value) return
+
+  try {
+    const result = await unlockRewardLogic(reward);
+
+    if (result.success) {
+      addToast({ message: result.message, type: 'success' })
+    } else {
+      addToast({ message: result.message, type: 'error' })
+    }
+  } catch (error) {
+    console.error('Error unlocking reward:', error)
+    addToast({ message: 'An error occurred while trying to unlock the reward.', type: 'error' })
   }
-  removeBalance(reward.cost)
-  if (!reward.repeatable) {
-    await deleteReward(reward.id)
+};
+
+const addReward = async () => {
+  const result = await addRewardLogic();
+  //check if all return values arrived
+  if (result && result.success && result.newReward) {
+    startEditing(toRaw(result.newReward));
+    addToast({ message: result.message, type: 'info' }); 
+  } else {
+    addToast({ message: 'Failed to add reward.', type: 'error' });
   }
-  await fetchRewards()
 }
+
 </script>
 
 <template>
@@ -92,7 +118,7 @@ const updateBalanceAndDeleteReward = async (reward) => {
       <!-- Normal Template START -->
       <template v-if="editingId !== reward.id">
         <div class="cardWrapper">
-          <div class="rankColor" @click="!editingId ? updateBalanceAndDeleteReward(reward) : null">
+          <div class="rankColor" @click="!editingId ? unlockReward(toRaw(reward)) : null">
             <div class="costWrapper">
               <img src="../assets/crystal.png" alt="crystal cost">
               <p>{{ reward.cost }}</p>
@@ -112,11 +138,11 @@ const updateBalanceAndDeleteReward = async (reward) => {
       <template v-else>
         <div class="rewardEditWrapper">
           <div>
-            <input class="titleInput" type="text" v-model="editedReward.title">
-            <input class="costInput" type="number" v-model.number="editedReward.cost">
+            <input class="titleInput" type="text" placeholder="Title" v-model="editedItemData.title">
+            <input class="costInput" type="number" placeholder="Cost" v-model.number="editedItemData.cost">
           </div>
-          <div class="repeatIconContainer" @click="editedReward.repeatable = !editedReward.repeatable">
-            <RepeatIcon :class="editedReward.repeatable ? 'repeatEnabled' : 'repeatDisabled'" />
+          <div class="repeatIconContainer" @click="editedItemData.repeatable = !editedItemData.repeatable">
+            <RepeatIcon :class="editedItemData.repeatable ? 'repeatEnabled' : 'repeatDisabled'" />
           </div>
         </div>
       </template>
@@ -124,7 +150,7 @@ const updateBalanceAndDeleteReward = async (reward) => {
     </div>
     <!-- Reward Card END -->
     <div class="addRewardWrapper"
-      @click="addReward({ title: 'New Reward', cost: 0, repeatable: false }); fetchRewards();">
+      @click="addReward()">
       <PlusIcon class="addIcon" />
     </div>
   </div>

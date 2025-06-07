@@ -8,7 +8,7 @@ export function useTags() {
     title: ''
   })
 
-  const fetchTags = async () => {
+  const getTags = async () => {
     tags.value = await window.api.getTags()
   }
 
@@ -23,19 +23,19 @@ export function useTags() {
   const deleteTag = async (id) => {
     return await window.api.deleteTag(id)
   }
-// sorts tags by level - descending order
-  const sortedTags = computed(() =>
-    tags.value.slice().sort((a, b) => b.level - a.level)
-  )
+
+  const onTagsUpdate = (callback) => {
+    return window.api.onTagsUpdate(callback)
+  }
 // exposes component functions
   return {
     tags,
     tagData,
-    fetchTags,
+    getTags,
     addTag,
     updateTag,
     deleteTag,
-    sortedTags
+    onTagsUpdate
   }
 }
 

@@ -16,10 +16,17 @@ export function useBalance() {
         return await window.api.addBalance(amount)
     }
 
+    const onBalanceUpdate = () => {
+      return window.api.onBalanceUpdate(newBalance => {
+        balance.value = newBalance
+      })
+    }
+
     return {
         balance,
         fetchBalance,
         removeBalance,
-        addBalance
+        addBalance,
+        onBalanceUpdate
     }
 }

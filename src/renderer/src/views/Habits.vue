@@ -13,7 +13,7 @@ import { useTags } from '../composables/db_functions/useTags'
 import { onMounted, ref, toRaw } from 'vue'
 
 const { getStartOfDay, isSameDateAsToday } = useDates()
-const { fetchTags, tags } = useTags()
+const { getTags: fetchTags, tags } = useTags()
 const { fetchHabits, habits, addHabit, updateHabit, deleteHabit, updateStreaks } = useHabits()
 const { fetchHabitStacks, habitStacks, addHabitStack, updateHabitStack, deleteHabitStack } = useHabitStacks()
 onMounted(async () => {

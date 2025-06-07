@@ -1,5 +1,7 @@
 import { ref } from 'vue'
-import { getStartOfDay } from '../helpers/useDates'
+import { useDates } from '../helpers/useDates'
+
+const { getStartOfDay } = useDates()
 
 export function useHabits() {
     const habits = ref([])
@@ -29,12 +31,11 @@ export function useHabits() {
 
     const updateStreaks = async () => {
         if (!habits.value || habits.value.length === 0) {
-            return false // No habits to check yet
+            return // No habits to check yet
         }
 
         const todayStart = getStartOfDay(new Date())
         const yesterdayStart = getStartOfDay(new Date(todayStart.getTime() - 24 * 60 * 60 * 1000))
-        let habitsUpdated = false
 
         //iterate over habits.value array
         for (const habit of habits.value) { 
@@ -56,11 +57,9 @@ export function useHabits() {
                     if (habit.current_streak > habit.best_streak) habit.best_streak = habit.current_streak
                     const updatedHabitData = { ...habit, current_streak: 0 }
                     await window.api.updateHabit(updatedHabitData)
-                    habitsUpdated = true
                 }
             }
         }
-        return habitsUpdated
     }
 
     return {

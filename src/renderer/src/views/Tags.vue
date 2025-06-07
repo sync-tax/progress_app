@@ -6,47 +6,49 @@ import ModuleTitle from '../components/ModuleTitle.vue'
 
 import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useTags } from '../composables/db_functions/useTags'
+import { useToasts } from '../composables/ui/useToasts'
+import { useInlineEditor } from '../composables/ui/useEdit'
 
-import { onMounted, ref, toRaw } from 'vue'
+import { onMounted, onUnmounted, toRaw } from 'vue'
 
-const { fetchTags, tags, deleteTag, updateTag, addTag } = useTags()
+let cleanupTagsUpdate = null
+
+const { getTags, tags, deleteTag, updateTag, addTag: addTagLogic, onTagsUpdate } = useTags()
+const { addToast } = useToasts()
+
 onMounted(async () => {
-  await fetchTags()
+  await getTags()
+
+  cleanupTagsUpdate = onTagsUpdate(() => {
+    getTags()
+  })
 })
 
-//EDIT LOGIC
-const editingId = ref(null)
-const editedTag = ref({})
+onUnmounted(() => {
+  if (cleanupTagsUpdate) {
+    cleanupTagsUpdate()
+  }
+})
 
-const startEditing = (tag) => {
-  editingId.value = tag.id
-  //spread operator is used to create a new object (clone)
-  editedTag.value = { ...tag }
-}
-
-const cancelEditing = () => {
-  //reset reactive references
-  editingId.value = null
-  editedTag.value = {}
-}
-
-const saveEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  // toRaw() is a vue function that removes reactivity from an object
-  // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  await updateTag(toRaw(editedTag.value))
-  await fetchTags()
-  cancelEditing()
-}
-
-const deleteEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  await deleteTag(editingId.value)
-  await fetchTags()
-  cancelEditing()
-}
+// USE EDITOR
+const { 
+  editingId, 
+  editedItemData, 
+  startEditing, 
+  cancelEditing, 
+  saveEditing, 
+  deleteEditing 
+} = useInlineEditor({
+  updateFn: updateTag,
+  deleteFn: deleteTag,
+  fetchFn: getTags,
+  onSaveSuccess: () => {
+    addToast({ message: 'Saved Tag.', type: 'success' });
+  },
+  onDeleteSuccess: () => {
+    addToast({ message: 'Deleted Tag.', type: 'warning' });
+  }
+});
 
 //Who needs Buttons in a MVP?
 useKeydowns({
@@ -68,6 +70,17 @@ const getRank = (tag) => {
   else if (tag.level >= 25) return 'rare'
   else if (tag.level >= 10) return 'uncommon'
   else return 'common'
+}
+
+const addTag = async () => {
+  const result = await addTagLogic();
+  //check if all return values arrived
+  if (result && result.success && result.newTag) {
+    startEditing(toRaw(result.newTag));
+    addToast({ message: result.message, type: 'info' }); 
+  } else {
+    addToast({ message: 'Failed to add tag.', type: 'error' });
+  }
 }
 </script>
 
@@ -109,13 +122,13 @@ const getRank = (tag) => {
       <!-- Edit Template START -->
       <template v-else>
         <div class="tagEditWrapper">
-          <input class="titleInput" type="text" v-model="editedTag.title">
+          <input class="titleInput" type="text" v-model="editedItemData.title">
         </div>
       </template>
       <!-- Edit Template END -->
     </div>
     <!-- Reward Card END -->
-    <div class="addTagWrapper" @click="addTag({ title: 'New Tag', level: 1, exp_current: 0, exp_needed: 60 }); fetchTags();">
+    <div class="addTagWrapper" @click="addTag()">
       <PlusIcon class="addIcon" />
     </div>
   </div>

@@ -9,12 +9,12 @@ export function useRewards() {
         repeatable: false
     })
     
-    const fetchRewards = async () => {
+    const getRewards = async () => {
         rewards.value = await window.api.getRewards()
     }
 
-    const addReward = async (reward) => {
-        return await window.api.addReward(reward)
+    const addReward = async () => {
+        return await window.api.addReward()
     }
 
     const updateReward = async (reward) => {
@@ -24,13 +24,23 @@ export function useRewards() {
     const deleteReward = async (id) => {
         return await window.api.deleteReward(id)
     }
+    
+    const unlockReward = async (reward) => {
+        return await window.api.unlockReward(reward)
+    }
+
+    const onRewardsUpdate = (callback) => {
+        return window.api.onRewardsUpdate(callback)
+    }
 
     return {
         rewards,
         rewardData,
-        fetchRewards,
+        getRewards,
         addReward,
         updateReward,
-        deleteReward
+        deleteReward,
+        unlockReward,
+        onRewardsUpdate
     }
 }

@@ -12,7 +12,9 @@ const api = {
   addBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_BALANCE, amount),
   removeBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.REMOVE_BALANCE, amount),
   onBalanceUpdate: (callback) => {
-    ipcRenderer.on(IPC_CHANNELS.BALANCE_UPDATED, (event, newBalance) => callback(newBalance))
+    const handler = (event, newBalance) => callback(newBalance);
+    ipcRenderer.on(IPC_CHANNELS.BALANCE_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.BALANCE_UPDATED, handler);
   },
 
   // Idea Functions
@@ -26,19 +28,31 @@ const api = {
   addTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TAG, tag),
   updateTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_TAG, tag),
   deleteTag: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_TAG, id),
+  onTagsUpdate: (callback) => {
+    const handler = (event, newTags) => callback(newTags);
+    ipcRenderer.on(IPC_CHANNELS.TAGS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.TAGS_UPDATED, handler);
+  },
 
   // Reward Functions
   getRewards: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_REWARDS),
-  addReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_REWARD, reward),
+  addReward: async () => await ipcRenderer.invoke(IPC_CHANNELS.ADD_REWARD),
   updateReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_REWARD, reward),
   deleteReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_REWARD, id),
+  unlockReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.UNLOCK_REWARD, id),
+  onRewardsUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.REWARDS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.REWARDS_UPDATED, handler);
+  },
 
-  // Habit Functions
+  // HabitStack Functions
   getHabitStacks: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABIT_STACKS),
   addHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT_STACK, habitStack),
   updateHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT_STACK, habitStack),
   deleteHabitStack: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT_STACK, id),
 
+  // Habit Functions
   getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
   addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
   updateHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT, habit),
