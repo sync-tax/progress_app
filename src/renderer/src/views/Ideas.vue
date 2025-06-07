@@ -12,7 +12,7 @@ import { useKeydowns } from '../composables/helpers/useKeydowns'
 
 const { fetchIdeas, ideas, deleteIdea, updateIdea, addIdea } = useIdeas()
 onMounted(async () => {
-  fetchIdeas()
+  await fetchIdeas()
 })
 
 //EDIT LOGIC
@@ -36,16 +36,16 @@ const saveEditing = async () => {
   if (!editingId.value) return
   // toRaw() is a vue function that removes reactivity from an object
   // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  updateIdea(toRaw(editedIdea.value))
-  fetchIdeas()
+  await updateIdea(toRaw(editedIdea.value))
+  await fetchIdeas()
   cancelEditing()
 }
 
-const deleteEditing = () => {
+const deleteEditing = async () => {
   // just to make sure lol
   if (!editingId.value) return
-  deleteIdea(editingId.value)
-  fetchIdeas()
+  await deleteIdea(editingId.value)
+  await fetchIdeas()
   cancelEditing()
 }
 

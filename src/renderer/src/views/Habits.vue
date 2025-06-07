@@ -4,6 +4,7 @@ import EditIcon from '../assets/edit.svg'
 
 import ModuleTitle from '../components/ModuleTitle.vue'
 
+import { useDates } from '../composables/helpers/useDates'
 import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useHabits } from '../composables/db_functions/useHabits'
 import { useHabitStacks } from '../composables/db_functions/useHabitStacks'
@@ -11,13 +12,18 @@ import { useTags } from '../composables/db_functions/useTags'
 
 import { onMounted, ref, toRaw } from 'vue'
 
+const { getStartOfDay, isSameDateAsToday } = useDates()
 const { fetchTags, tags } = useTags()
-const { fetchHabits, habits, addHabit, updateHabit, deleteHabit } = useHabits()
+const { fetchHabits, habits, addHabit, updateHabit, deleteHabit, updateStreaks } = useHabits()
 const { fetchHabitStacks, habitStacks, addHabitStack, updateHabitStack, deleteHabitStack } = useHabitStacks()
 onMounted(async () => {
-  fetchHabits()
-  fetchTags()
-  fetchHabitStacks()
+  await fetchHabits()
+  const streaksUpdated = await updateStreaks(); //returns boolean
+  if (streaksUpdated) {
+    await fetchHabits(); // Re-fetch if updateStreaks changed anything in the DB
+  }
+  await fetchTags()
+  await fetchHabitStacks()
 })
 
 //EDIT LOGIC
@@ -44,29 +50,29 @@ const saveEditing = async () => {
   if (!editingId.value || !editingType.value) return
 
   if (editingType.value === 'habit') {
-    updateHabit(toRaw(editedData.value))
-    fetchHabits()
+    await updateHabit(toRaw(editedData.value))
+    await fetchHabits()
   } else if (editingType.value === 'stack') {
-    updateHabitStack(toRaw(editedData.value))
-    fetchHabitStacks()
+    await updateHabitStack(toRaw(editedData.value))
+    await fetchHabitStacks()
   }
   cancelEditing()
 }
 
-const deleteEditing = () => {
+const deleteEditing = async () => {
   if (!editingId.value || !editingType.value) return
 
   if (editingType.value === 'habit') {
-    deleteHabit(editingId.value)
-    fetchHabits()
+    await deleteHabit(editingId.value)
+    await fetchHabits()
   } else if (editingType.value === 'stack') {
     const isStackPopulated = habits.value.some(h => h.stack_id === editingId.value)
     if (isStackPopulated) {
       alert('Cannot delete stack: It has habits assigned to it. Please move or delete the habits first.')
       return // prevent deletion if stack contains habits
     }
-    deleteHabitStack(editingId.value)
-    fetchHabitStacks()
+    await deleteHabitStack(editingId.value)
+    await fetchHabitStacks()
   }
   cancelEditing()
 }
@@ -93,61 +99,32 @@ const getRank = (habit) => {
   else return 'common'
 }
 
-// --- Checkbox Logic for Habit Completion ---
-const getStartOfDay = (dateInput) => {
-  if (!dateInput && dateInput !== 0) return null; // Handle null, undefined. Allow 0 for epoch.
-  const date = new Date(dateInput);
-  if (isNaN(date.getTime())) return null; // Handle invalid date strings
-  date.setHours(0, 0, 0, 0);
-  return date;
-};
-
-const isSameDateAsToday = (dateValue) => {
-  if (!dateValue) return false;
-  const dateToCompare = getStartOfDay(dateValue);
-  if (!dateToCompare) return false;
-  const today = getStartOfDay(new Date());
-  return dateToCompare.getTime() === today.getTime();
-};
-
+// Checkbox Logic
 const toggleHabitCompletion = async (habit) => {
-  const todayStart = getStartOfDay(new Date());
-  // Create a mutable copy for modification and update
-  // toRaw() is essential here before spreading, if habit is a reactive proxy
-  const habitDataToUpdate = { ...toRaw(habit) }; 
+  const today = getStartOfDay(new Date());
+  //create a mutable copy for modification and update
+  const habitData = { ...toRaw(habit) };
 
-  if (isSameDateAsToday(habitDataToUpdate.last_time_completed)) {
-    // Currently checked (completed today), so we are unchecking
-    habitDataToUpdate.counter = Math.max(0, habitDataToUpdate.counter - 1);
-    habitDataToUpdate.current_streak = Math.max(0, habitDataToUpdate.current_streak - 1);
-    // No need to change best_streak when unchecking
-    // Set last_time_completed to yesterday to make it not today
-    const yesterday = getStartOfDay(new Date(todayStart.getTime() - 24 * 60 * 60 * 1000));
-    habitDataToUpdate.last_time_completed = yesterday;
+  if (isSameDateAsToday(habitData.last_time_completed)) {
+    // UNCHECKING on the same day-> DECREMENT counters
+    habitData.counter = habitData.counter - 1;
+    habitData.current_streak = habitData.current_streak - 1;
+    // Set last_time_completed to a date that is not today (e.g., yesterday)
+    const yesterday = getStartOfDay(new Date(today.getTime() - 24 * 60 * 60 * 1000));
+    habitData.last_time_completed = yesterday;
   } else {
-    // Currently unchecked (or completed on a previous day), so we are checking for today
-    habitDataToUpdate.counter++;
-    
-    const yesterdayStart = getStartOfDay(new Date(todayStart.getTime() - 24 * 60 * 60 * 1000));
-    const lastCompletedDayStart = getStartOfDay(habitDataToUpdate.last_time_completed);
-
-    if (lastCompletedDayStart && lastCompletedDayStart.getTime() === yesterdayStart.getTime()) {
-      // Completed yesterday, so continue streak
-      habitDataToUpdate.current_streak++;
-    } else {
-      // Not completed yesterday (or first time), so reset streak to 1
-      habitDataToUpdate.current_streak = 1;
+    // Currently unchecked (or completed on a previous day), so we are CHECKING for today
+    habitData.counter++;
+    habitData.current_streak++;
+    // Update best_streak if current_streak is now greater
+    if (habitData.current_streak > habitData.best_streak) {
+      habitData.best_streak = habitData.current_streak;
     }
 
-    // Update best_streak if current_streak is greater
-    if (habitDataToUpdate.current_streak > habitDataToUpdate.best_streak) {
-      habitDataToUpdate.best_streak = habitDataToUpdate.current_streak;
-    }
-
-    habitDataToUpdate.last_time_completed = todayStart;
+    habitData.last_time_completed = today;
   }
 
-  await updateHabit(habitDataToUpdate); // updateHabit expects a raw object or handles reactivity
+  await updateHabit(habitData);
   fetchHabits(); // Refresh local data
 };
 </script>
@@ -193,9 +170,8 @@ const toggleHabitCompletion = async (habit) => {
               <div class="habitWrapper">
 
                 <div class="labelDoneContainer">
-                  <input type="checkbox"
-                         :checked="isSameDateAsToday(habit.last_time_completed)"
-                         @change="toggleHabitCompletion(habit)">
+                  <input type="checkbox" :checked="isSameDateAsToday(habit.last_time_completed)"
+                    @change="toggleHabitCompletion(habit)">
                   <h4 class="habitLabel">
                     {{ habit.title }}
                   </h4>

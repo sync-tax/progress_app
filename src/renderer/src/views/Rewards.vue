@@ -14,8 +14,8 @@ import { onMounted, ref, toRaw } from 'vue'
 const { fetchBalance, balance, removeBalance } = useBalance()
 const { fetchRewards, rewards, deleteReward, updateReward, addReward } = useRewards()
 onMounted(async () => {
-  fetchRewards()
-  fetchBalance()
+  await fetchRewards()
+  await fetchBalance()
 })
 
 //EDIT LOGIC
@@ -39,16 +39,16 @@ const saveEditing = async () => {
   if (!editingId.value) return
   // toRaw() is a vue function that removes reactivity from an object
   // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  updateReward(toRaw(editedReward.value))
-  fetchRewards()
+  await updateReward(toRaw(editedReward.value))
+  await fetchRewards()
   cancelEditing()
 }
 
-const deleteEditing = () => {
+const deleteEditing = async () => {
   // just to make sure lol
   if (!editingId.value) return
-  deleteReward(editingId.value)
-  fetchRewards()
+  await deleteReward(editingId.value)
+  await fetchRewards()
   cancelEditing()
 }
 
@@ -77,9 +77,9 @@ const updateBalanceAndDeleteReward = async (reward) => {
   }
   removeBalance(reward.cost)
   if (!reward.repeatable) {
-    deleteReward(reward.id)
+    await deleteReward(reward.id)
   }
-  fetchRewards()
+  await fetchRewards()
 }
 </script>
 

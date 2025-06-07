@@ -11,7 +11,7 @@ import { onMounted, ref, toRaw } from 'vue'
 
 const { fetchTags, tags, deleteTag, updateTag, addTag } = useTags()
 onMounted(async () => {
-  fetchTags()
+  await fetchTags()
 })
 
 //EDIT LOGIC
@@ -35,16 +35,16 @@ const saveEditing = async () => {
   if (!editingId.value) return
   // toRaw() is a vue function that removes reactivity from an object
   // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  updateTag(toRaw(editedTag.value))
-  fetchTags()
+  await updateTag(toRaw(editedTag.value))
+  await fetchTags()
   cancelEditing()
 }
 
-const deleteEditing = () => {
+const deleteEditing = async () => {
   // just to make sure lol
   if (!editingId.value) return
-  deleteTag(editingId.value)
-  fetchTags()
+  await deleteTag(editingId.value)
+  await fetchTags()
   cancelEditing()
 }
 
