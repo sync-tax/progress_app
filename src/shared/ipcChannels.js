@@ -18,6 +18,11 @@ export const IPC_CHANNELS = {
     DELETE_IDEA: 'delete-idea',
 
     // ========== HABITS ==========
+    GET_HABIT_STACKS: 'get-habit-stacks',
+    ADD_HABIT_STACK: 'add-habit-stack',
+    UPDATE_HABIT_STACK: 'update-habit-stack',
+    DELETE_HABIT_STACK: 'delete-habit-stack',
+
     GET_HABITS: 'get-habits',
     ADD_HABIT: 'add-habit',
     UPDATE_HABIT: 'update-habit',

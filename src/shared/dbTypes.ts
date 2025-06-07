@@ -35,13 +35,22 @@ export interface Idea {
 }
 
 // ========== HABITS ==========
-export interface Habit {
+interface HabitStack {
   id: number
   title: string
+  position: number
+}
+
+interface Habit {
+  id: number
+  stack_id: number
+  title: string
+  position: number
   counter: number
   current_streak: number
   best_streak: number
   tag_name: string
+  last_time_completed: Date
 }
 
 // ========== TAGS ==========
@@ -98,6 +107,7 @@ export interface DbSchema {
   todo_items: TodoItem[]
   tags: Tag[]
   ideas: Idea[]
+  habitstacks: HabitStack[]
   habits: Habit[]
   stats: Statistics
   daily_stats: DailyStats[]

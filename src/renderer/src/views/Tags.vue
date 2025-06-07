@@ -7,7 +7,7 @@ import ModuleTitle from '../components/ModuleTitle.vue'
 import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useTags } from '../composables/db_functions/useTags'
 
-import { onMounted, ref, computed, toRaw } from 'vue'
+import { onMounted, ref, toRaw } from 'vue'
 
 const { fetchTags, tags, deleteTag, updateTag, addTag } = useTags()
 onMounted(async () => {
@@ -76,16 +76,16 @@ const getRank = (tag) => {
 
   <div id="tagsWrapper" class="moduleWrapper">
     <!-- Reward Card START -->
-    <div v-for="tag in tags" :key="tag.id" id="tagCard" :class="getRank(tag) + '-opac'">
+    <div v-for="tag in tags" :key="tag.id" id="tagCard">
       <!-- Normal Template START -->
       <template v-if="editingId !== tag.id">
         <div class="cardWrapper">
           <div class="rankGems">
-            <img v-if="tag.level >= 1" src="../assets/COMMON_MARK.png" alt="tagIcon" class="rankMark">
-            <img v-if="tag.level >= 10" src="../assets/UNCOMMON_MARK.png" alt="tagIcon" class="rankMark">
-            <img v-if="tag.level >= 25" src="../assets/RARE_MARK.png" alt="tagIcon" class="rankMark">
-            <img v-if="tag.level >= 40" src="../assets/EPIC_MARK.png" alt="tagIcon" class="rankMark">
-            <img v-if="tag.level >= 55" src="../assets/LEGENDARY_MARK.png" alt="tagIcon" class="rankMark">
+            <img v-if="getRank(tag) == 'legendary'" src="../assets/LEGENDARY_MARK.png" alt="tagIcon" class="rankMark" :class="getRank(tag) + '-glow'">
+            <img v-if="getRank(tag) == 'epic'" src="../assets/EPIC_MARK.png" alt="tagIcon" class="rankMark" :class="getRank(tag) + '-glow'">
+            <img v-if="getRank(tag) == 'rare'" src="../assets/RARE_MARK.png" alt="tagIcon" class="rankMark" :class="getRank(tag) + '-glow'">
+            <img v-if="getRank(tag) == 'uncommon'" src="../assets/UNCOMMON_MARK.png" alt="tagIcon" class="rankMark" :class="getRank(tag) + '-glow'">
+            <img v-if="getRank(tag) == 'common'" src="../assets/COMMON_MARK.png" alt="tagIcon" class="rankMark" :class="getRank(tag) + '-glow'">
           </div>
           <div class="tagContent">
             <div class="labelLvlWrapper">
@@ -96,12 +96,12 @@ const getRank = (tag) => {
                 Level {{ tag.level }}
               </p>
             </div>
-            <div class="editIconContainer" @click="startEditing(tag)">
-              <EditIcon class="editIcon" />
-            </div>
             <progress class="expBar" :value="tag.exp_current" :max="tag.exp_needed">
               EXP
             </progress>
+          </div>
+          <div class="editIconContainer" @click="startEditing(tag)">
+            <EditIcon class="editIcon" />
           </div>
         </div>
       </template>

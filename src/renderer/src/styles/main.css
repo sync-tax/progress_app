@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --bg-color: #1B1B1F;
   --ui-bg-color: #222227;
@@ -16,6 +17,10 @@
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -57,21 +62,6 @@ body main .moduleWrapper .cardWrapper {
   border-radius: 5px 5px 5px 5px;
   transition: all 0.15s ease-in-out;
 }
-body main .moduleWrapper .cardWrapper.common-opac:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-body main .moduleWrapper .cardWrapper.uncommon-opac:hover {
-  background-color: rgba(30, 255, 0, 0.05);
-}
-body main .moduleWrapper .cardWrapper.rare-opac:hover {
-  background-color: rgba(0, 112, 221, 0.05);
-}
-body main .moduleWrapper .cardWrapper.epic-opac:hover {
-  background-color: rgba(163, 53, 238, 0.05);
-}
-body main .moduleWrapper .cardWrapper.legendary-opac:hover {
-  background-color: rgba(255, 128, 0, 0.05);
-}
 body main .moduleWrapper .cardWrapper .editIconContainer {
   position: absolute;
   top: 5px;
@@ -94,28 +84,6 @@ body main .moduleWrapper .cardWrapper .editIconContainer .editIcon:hover {
 body main .moduleWrapper .cardWrapper:hover .editIconContainer {
   opacity: 0.75;
   cursor: pointer;
-}
-body main .moduleWrapper .cardWrapper .rankColor {
-  display: flex;
-  justify-content: center;
-  border-radius: 5px 0 0 5px;
-  width: 50px;
-  z-index: 10;
-}
-body main .moduleWrapper .cardWrapper .common {
-  background: linear-gradient(to right, #FFFFFF, #999999);
-}
-body main .moduleWrapper .cardWrapper .uncommon {
-  background: linear-gradient(to right, #1EFF00, #129900);
-}
-body main .moduleWrapper .cardWrapper .rare {
-  background: linear-gradient(to right, #0070DD, #003C77);
-}
-body main .moduleWrapper .cardWrapper .epic {
-  background: linear-gradient(to right, #A335EE, #5D1E88);
-}
-body main .moduleWrapper .cardWrapper .legendary {
-  background: linear-gradient(to right, #FF8000, #994D00);
 }
 
 .plus {
@@ -212,7 +180,7 @@ body main .moduleWrapper .cardWrapper .legendary {
   display: flex;
   justify-content: space-between;
   width: 65px;
-  position: fixed;
+  position: absolute;
   top: 35px;
   right: 40px;
   z-index: 10;
@@ -441,17 +409,40 @@ body main .moduleWrapper .cardWrapper .legendary {
   height: 3px;
   position: relative;
   top: -8px;
-  left: -34px;
+  left: -40px;
   z-index: 20;
   opacity: 50%;
 }
+#tagsWrapper #tagCard .rankGems {
+  position: relative;
+  width: 100px;
+  height: 60px;
+  overflow: visible;
+  z-index: 100;
+  pointer-events: none;
+}
 #tagsWrapper #tagCard .rankMark {
+  position: absolute;
   width: 130px;
   height: 130px;
-  margin: auto 0;
-  position: absolute;
   top: -35px;
   left: -40px;
+  transition: all 0.15s ease-in-out;
+}
+#tagsWrapper #tagCard .rankMark.legendary-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 128, 0, 0.15));
+}
+#tagsWrapper #tagCard .rankMark.epic-glow {
+  filter: drop-shadow(0px 0px 2px rgba(163, 53, 238, 0.15));
+}
+#tagsWrapper #tagCard .rankMark.rare-glow {
+  filter: drop-shadow(0px 0px 2px rgba(0, 112, 221, 0.15));
+}
+#tagsWrapper #tagCard .rankMark.uncommon-glow {
+  filter: drop-shadow(0px 0px 2px rgba(30, 255, 0, 0.15));
+}
+#tagsWrapper #tagCard .rankMark.common-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.15));
 }
 
 progress::-webkit-progress-bar {
@@ -466,91 +457,209 @@ progress::-webkit-progress-value {
 #habitsWrapper {
   display: grid;
   grid-template-columns: repeat(4, 227px);
-  grid-auto-rows: 50px;
+  grid-auto-rows: fit-content;
   gap: 10px;
 }
-#habitsWrapper #habitCard .habitContent {
-  padding-left: 5px;
-  width: 200px;
-  overflow: hidden;
+#habitsWrapper .habitStackCard {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  gap: 10px;
+  height: -moz-fit-content;
+  height: fit-content;
 }
-#habitsWrapper #habitCard .habitContent.common-opac:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+#habitsWrapper .habitStackCard .stackTitleWrapper {
+  display: flex;
+  justify-content: space-between;
 }
-#habitsWrapper #habitCard .habitContent.uncommon-opac:hover {
-  background-color: rgba(30, 255, 0, 0.05);
-}
-#habitsWrapper #habitCard .habitContent.rare-opac:hover {
-  background-color: rgba(0, 112, 221, 0.05);
-}
-#habitsWrapper #habitCard .habitContent.epic-opac:hover {
-  background-color: rgba(163, 53, 238, 0.05);
-}
-#habitsWrapper #habitCard .habitContent.legendary-opac:hover {
-  background-color: rgba(255, 128, 0, 0.05);
-}
-#habitsWrapper #habitCard .habitContent h4 {
+#habitsWrapper .habitStackCard h2 {
   font-family: "Cinzel", sans-serif;
   font-weight: 600;
   font-size: 18px;
   color: #DBB997;
-  padding-top: 2px;
-  height: 26px;
 }
-#habitsWrapper #habitCard .habitContent p {
+#habitsWrapper .habitStackCard .editStackIcon {
+  width: 20px;
+  height: 20px;
+  fill: #DBB997;
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in-out;
+  cursor: pointer;
+}
+#habitsWrapper .habitStackCard .editStackIcon:hover {
+  opacity: 1;
+  filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.5));
+}
+#habitsWrapper .habitEditWrapper {
+  background-color: #211E1D;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  width: 227px;
+  height: 100px;
+  border-radius: 5px;
+  z-index: 200;
+  padding: 0 5px;
+}
+#habitsWrapper .habitEditWrapper select {
+  width: 218px;
   font-family: "Cinzel", sans-serif;
-  font-weight: 300;
+  font-weight: 600;
   font-size: 14px;
   color: #DBB997;
-  padding-top: 5px;
-  line-height: 18px;
+  background-color: #211E1D;
+  margin: auto 0;
+  height: 26px;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #DBB997;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
 }
-#habitsWrapper .common-reward {
-  background: linear-gradient(to right, #FFFFFF, #999999);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
+#habitsWrapper .habitEditWrapper select:focus {
+  opacity: 1;
 }
-#habitsWrapper .common-reward:hover {
-  opacity: 0.75;
+#habitsWrapper .addHabitWrapper {
+  width: 227px;
+  height: 60px;
+  border-radius: 5px;
+  border: 3px dashed #211E1D;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
 }
-#habitsWrapper .uncommon-reward {
-  background: linear-gradient(to right, #1EFF00, #129900);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
+#habitsWrapper .addHabitWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #211E1D;
 }
-#habitsWrapper .uncommon-reward:hover {
-  opacity: 0.75;
+#habitsWrapper .addHabitWrapper .addIcon {
+  align-self: center;
+  fill: #4A612F;
+  opacity: 100%;
 }
-#habitsWrapper .rare-reward {
-  background: linear-gradient(to right, #0070DD, #003C77);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
+#habitsWrapper #habitCard {
+  height: 60px;
 }
-#habitsWrapper .rare-reward:hover {
-  opacity: 0.75;
+#habitsWrapper #habitCard .habitContent {
+  width: 200px;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
 }
-#habitsWrapper .epic-reward {
-  background: linear-gradient(to right, #A335EE, #5D1E88);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
+#habitsWrapper #habitCard .habitContent .habitStreak {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  color: #DBB997;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 1px 10px;
+  position: absolute;
+  bottom: 2px;
+  right: -2px;
 }
-#habitsWrapper .epic-reward:hover {
-  opacity: 0.75;
+#habitsWrapper #habitCard .habitContent .habitWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 50px;
+  position: absolute;
+  left: 55px;
+  top: 5px;
 }
-#habitsWrapper .legendary-reward {
-  background: linear-gradient(to right, #FF8000, #994D00);
-  opacity: 0.5;
-  transition: opacity 0.15s ease-in-out;
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer {
+  display: flex;
+  align-items: center;
 }
-#habitsWrapper .legendary-reward:hover {
-  opacity: 0.75;
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox] {
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  margin: auto 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #DBB997;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:checked {
+  background-color: #DBB997;
+}
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: #181818;
+  font-size: 10px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(219, 185, 151, 0.2);
+}
+#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer h4 {
+  padding-left: 4px;
+}
+#habitsWrapper #habitCard .habitContent h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #DBB997;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+#habitsWrapper #habitCard .habitContent .habitTag {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: #DBB997;
+  border-radius: 20px;
+  background-color: #181818;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 1px 10px;
+}
+#habitsWrapper .rankGems {
+  width: 100px;
+  height: 60px;
+  overflow: visible;
+  z-index: 100;
+  pointer-events: none;
+}
+#habitsWrapper .rankMark {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  top: -35px;
+  left: -40px;
+  transition: all 0.15s ease-in-out;
+}
+#habitsWrapper .rankMark.legendary-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 128, 0, 0.15));
+}
+#habitsWrapper .rankMark.epic-glow {
+  filter: drop-shadow(0px 0px 2px rgba(163, 53, 238, 0.15));
+}
+#habitsWrapper .rankMark.rare-glow {
+  filter: drop-shadow(0px 0px 2px rgba(0, 112, 221, 0.15));
+}
+#habitsWrapper .rankMark.uncommon-glow {
+  filter: drop-shadow(0px 0px 2px rgba(30, 255, 0, 0.15));
+}
+#habitsWrapper .rankMark.common-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.15));
 }
 
 .addHabitWrapper {
   width: 227px;
-  height: 50px;
+  height: 60px;
   border-radius: 5px;
   border: 3px dashed #211E1D;
   display: flex;
@@ -567,6 +676,54 @@ progress::-webkit-progress-value {
   align-self: center;
   fill: #4A612F;
   opacity: 100%;
+}
+
+.addHabitStackWrapper {
+  width: 227px;
+  height: 30px;
+  border-radius: 5px;
+  border: 3px dashed #211E1D;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.addHabitStackWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #211E1D;
+}
+.addHabitStackWrapper .addIcon {
+  align-self: center;
+  fill: #4A612F;
+  opacity: 100%;
+}
+.addHabitStackWrapper p {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #DBB997;
+  padding-top: 2px;
+}
+
+.titleInput {
+  width: 218px;
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #DBB997;
+  background-color: #211E1D;
+  margin: auto 0;
+  height: 26px;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #DBB997;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
+}
+.titleInput:focus {
+  opacity: 1;
 }
 
 #rewardsWrapper {

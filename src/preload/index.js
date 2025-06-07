@@ -34,6 +34,11 @@ const api = {
   deleteReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_REWARD, id),
 
   // Habit Functions
+  getHabitStacks: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABIT_STACKS),
+  addHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT_STACK, habitStack),
+  updateHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT_STACK, habitStack),
+  deleteHabitStack: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT_STACK, id),
+
   getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
   addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
   updateHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT, habit),

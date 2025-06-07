@@ -1,103 +1,246 @@
 #habitsWrapper {
-    @include module-grid-layout($row-height: 50px);
+    @include module-grid-layout($row-height: fit-content);
+
+    .habitStackCard {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 10px;
+        height: fit-content;
+
+        .stackTitleWrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h2{
+            @include base-font($weight: 600, $size: 18px);
+            color: $main-txt-color;
+        }
+
+        .editStackIcon {
+            width: 20px;
+            height: 20px;
+            fill: $main-txt-color;
+            opacity: 0.3;
+            transition: opacity .15s ease-in-out;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 1;
+                filter: drop-shadow(0px 0px 10px rgba($main-txt-color, 0.5));
+            }
+        }
+    }
+
+    .habitEditWrapper {
+        background-color: $ui-color-medium;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: absolute;
+
+        width: 227px;
+        height: 100px;
+        border-radius: 5px;
+
+        z-index: 200;
+        padding: 0 5px;
+
+        select {
+            width: 218px;
+            @include base-font($weight: 600, $size: 14px);
+            color: $main-txt-color;
+            background-color: $ui-color-medium;
+
+            margin: auto 0;
+            height: 26px;
+
+            border: none;
+            outline: none;
+            border-bottom: 2px solid $main-txt-color;
+
+            opacity: .35;
+            transition: opacity .2s ease-in-out;
+
+            &:focus {
+                opacity: 1;
+            }
+        }
+    }
+
+    .addHabitWrapper {
+        @include add-wrapper(60px);
+    }
 
     #habitCard {
+        height: 60px;
 
         .habitContent {
-            padding-left: 5px;
             width: 200px;
-            overflow: hidden;
+            height: 60px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-around;
 
-            &.common-opac:hover {
-                background-color: rgba(255, 255, 255, 0.05);
+
+            .habitStreak {
+                @include base-font($weight: 300, $size: 10px);
+                color: $main-txt-color;
+
+                width: fit-content;
+                padding: 1px 10px;
+
+                position: absolute;
+                bottom: 2px;
+                right: -2px;
             }
-    
-            &.uncommon-opac:hover {
-                background-color: rgba(30, 255, 0, 0.05);
-            }
-    
-            &.rare-opac:hover {
-                background-color: rgba(0, 112, 221, 0.05);
-            }
-    
-            &.epic-opac:hover {
-                background-color: rgba(163, 53, 238, 0.05);
-            }
-    
-            &.legendary-opac:hover {
-                background-color: rgba(255, 128, 0, 0.05);
+
+            .habitWrapper {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+
+                height: 50px;
+
+                position: absolute;
+                left: 55px;
+                top: 5px;
+
+                .labelDoneContainer {
+                    display: flex;
+                    align-items: center;
+
+                    input[type="checkbox"] {
+                        appearance: none;
+                        -webkit-appearance: none;
+                        margin: auto 0;
+                        width: 14px;
+                        height: 14px;
+                        border: 1px solid $main-txt-color;
+                        border-radius: 2px;
+                        position: relative;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        &:checked {
+                            background-color: $main-txt-color;
+
+                            &::after {
+                                content: '✓';
+                                position: absolute;
+                                color: $ui-color-dark;
+                                font-size: 10px;
+                                font-weight: bold;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                            }
+                        }
+
+                        &:focus {
+                            outline: none;
+                            box-shadow: 0 0 0 2px rgba($main-txt-color, 0.2);
+                        }
+                    }
+
+                    h4 {
+                        padding-left: 4px;
+                    }
+                }
+
             }
 
 
             h4 {
-                @include base-font($weight: 600, $size: 18px);
+                @include base-font($weight: 600, $size: 16px);
                 color: $main-txt-color;
-                padding-top: 2px;
-                height: 26px
+                height: fit-content;
             }
 
-            p {
-                @include base-font($weight: 300, $size: 14px);
+            .habitTag {
+                @include inter-font($weight: 300, $size: 12px);
                 color: $main-txt-color;
-                padding-top: 5px;
-                line-height: 18px;
+                border-radius: 20px;
+                background-color: $ui-color-dark;
+
+                width: fit-content;
+                padding: 1px 10px;
             }
         }
     }
 
-    .common-reward {
-        background: linear-gradient(to right, #FFFFFF, #999999);
-        opacity: 0.5;
-        transition: opacity .15s ease-in-out;
-        
-        &:hover {
-            opacity: 0.75;
-        }
+    .rankGems {
+        width: 100px;
+        height: 60px;
+        overflow: visible;
+        z-index: 100;
+
+        pointer-events: none;
     }
 
-    .uncommon-reward {
-        background: linear-gradient(to right, #1EFF00, #129900);
-        opacity: 0.5;
-        transition: opacity .15s ease-in-out;
-        
-        &:hover {
-            opacity: 0.75;
-        }
-    }
+    .rankMark {
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        top: -35px;
+        left: -40px;
 
-    .rare-reward {
-        background: linear-gradient(to right, #0070DD, #003C77);
-        opacity: 0.5;
-        transition: opacity .15s ease-in-out;
-        
-        &:hover {
-            opacity: 0.75;
-        }
-    }
+        transition: all .15s ease-in-out;
 
-    .epic-reward {
-        background: linear-gradient(to right, #A335EE, #5D1E88);
-        opacity: 0.5;
-        transition: opacity .15s ease-in-out;
-        
-        &:hover {
-            opacity: 0.75;
+        &.legendary-glow {
+            filter: drop-shadow(0px 0px 2px rgba($legendary-color, 0.15));
         }
-    }
 
-    .legendary-reward {
-        background: linear-gradient(to right, #FF8000, #994D00);
-        opacity: 0.5;
-        transition: opacity .15s ease-in-out;
-        
-        &:hover {
-            opacity: 0.75;
+        &.epic-glow {
+            filter: drop-shadow(0px 0px 2px rgba($epic-color, 0.15));
+        }
+
+        &.rare-glow {
+            filter: drop-shadow(0px 0px 2px rgba($rare-color, 0.15));
+        }
+
+        &.uncommon-glow {
+            filter: drop-shadow(0px 0px 2px rgba($uncommon-color, 0.15));
+        }
+
+        &.common-glow {
+            filter: drop-shadow(0px 0px 2px rgba($common-color, 0.15));
         }
     }
 }
 
 .addHabitWrapper {
-@include add-wrapper(50px);
+    @include add-wrapper(60px);
+}
+
+.addHabitStackWrapper {
+    @include add-wrapper(30px);
+    margin-top: 5px;
+
+    p{
+        @include base-font($weight: 600, $size: 16px);
+        color: $main-txt-color;
+        padding-top: 2px;
+    }
+}
+
+.titleInput {
+    width: 218px;
+    @include base-font($weight: 600, $size: 14px);
+    color: $main-txt-color;
+    background-color: $ui-color-medium;
+
+    margin: auto 0;
+    height: 26px;
+
+    border: none;
+    outline: none;
+    border-bottom: 2px solid $main-txt-color;
+
+    opacity: .35;
+    transition: opacity .2s ease-in-out;
+
+    &:focus {
+        opacity: 1;
+    }
 }
