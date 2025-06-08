@@ -1,3 +1,4 @@
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR REWARDS ========== 
 import { ref } from 'vue'
 
 export function useRewards() {

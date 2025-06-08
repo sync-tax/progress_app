@@ -1,3 +1,4 @@
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABITS ========== 
 import { ref } from 'vue'
 import { useDates } from '../helpers/useDates'
 

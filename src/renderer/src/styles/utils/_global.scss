@@ -39,55 +39,7 @@ body {
         .moduleWrapper {
             position: absolute;
             margin-top: 10px;
-
-
-            .cardWrapper {
-                position: relative;
-                display: flex;
-                justify-content: space-around;
-                filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.2));
-
-                cursor: pointer;
-
-                background-color: $ui-color-medium;
-                border-radius: 5px 5px 5px 5px;
-
-                transition: all .15s ease-in-out;
-
-                .editIconContainer {
-                    position: absolute;
-                    top: 5px;
-                    right: 5px;
-                    opacity: 0;
-                    transition: opacity 0.2s ease-in-out;
-                    cursor: pointer;
-                
-                    .editIcon {
-                      width: 20px;
-                      height: 20px;
-                      fill: $main-txt-color;
-                      opacity: 0.3;
-                      transition: opacity .15s ease-in-out;
-        
-                      &:hover {
-                        opacity: 1;
-                        filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.5));
-                      }
-                    }
-                  }
-                
-                  &:hover .editIconContainer {
-                    opacity: 0.75; 
-                    cursor: pointer;
-                  }
-
-            }
         }
     }
 }
 
-.plus {
-    fill: #FAF9C4;
-    transform: scale(.75);
-    margin: auto 0;
-}

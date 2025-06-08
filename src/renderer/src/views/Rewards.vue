@@ -1,19 +1,20 @@
 <script setup>
+ // ========== IMPORTS ==========
+ // Icons
 import PlusIcon from '../assets/plus.svg'
-import EditIcon from '../assets/edit.svg'
-import RepeatIcon from '../assets/repeat.svg'
-
+// Components
 import ModuleTitle from '../components/ModuleTitle.vue'
-
+import Card from '../components/Card.vue'
+import EditItem from '../components/EditItem.vue'
+// Composables
 import { useBalance } from '../composables/db_functions/useBalance'
 import { useRewards } from '../composables/db_functions/useRewards'
-import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useToasts } from '../composables/ui/useToasts'
 import { useInlineEditor } from '../composables/ui/useEdit'
-
-//toRaw removes reactivity from an object -> required for ipc communication
+// Vue
 import { onMounted, onUnmounted, toRaw } from 'vue'
 
+// ========== DATA ==========
 const { fetchBalance, onBalanceUpdate } = useBalance()
 const { getRewards, rewards, deleteReward, updateReward, addReward: addRewardLogic, unlockReward: unlockRewardLogic, onRewardsUpdate } = useRewards()
 const { addToast } = useToasts()
@@ -21,20 +22,21 @@ const { addToast } = useToasts()
 let cleanupBalanceUpdate = null
 let cleanupRewardsUpdate = null
 
+// ========== LIFECYCLE ==========
 onMounted(async () => {
+  // fetch data
   await getRewards();
-
+  // set listeners
   cleanupBalanceUpdate = onBalanceUpdate(() => {
     fetchBalance()
   })
-
   cleanupRewardsUpdate = onRewardsUpdate(() => {
     getRewards()
   })
 });
 
 onUnmounted(() => {
-  //cleanup listeners
+  // cleanup listeners
   if (cleanupBalanceUpdate) {
     cleanupBalanceUpdate();
   }
@@ -43,14 +45,14 @@ onUnmounted(() => {
   }
 });
 
-// USE EDITOR
-const { 
-  editingId, 
-  editedItemData, 
-  startEditing, 
-  cancelEditing, 
-  saveEditing, 
-  deleteEditing 
+// ========== EDITOR CONFIGS ==========
+const {
+  editingId,
+  editedItemData,
+  startEditing,
+  cancelEditing,
+  saveEditing,
+  deleteEditing
 } = useInlineEditor({
   updateFn: updateReward,
   deleteFn: deleteReward,
@@ -63,47 +65,38 @@ const {
   }
 });
 
-// KEYDOWN LOGIC
-// TODO: Implement Buttons
-useKeydowns({
-  onSave: () => {
-    saveEditing()
-  },
-  onCancel: () => {
-    cancelEditing()
-  },
-  onDelete: () => {
-    deleteEditing()
-  }
-})
-
-// REWARD UNLOCK LOGIC
+// ========== CUSTOM FUNCTIONS ==========
 const unlockReward = async (reward) => {
-  // no purchases while editing
+  // avoid unlocking while editing
   if (editingId.value) return
 
   try {
-    const result = await unlockRewardLogic(reward);
-
+    const result = await unlockRewardLogic(reward); // returns { success: boolean, message: string, rewardCost: number }
     if (result.success) {
+      addToast({message: '-' + result.rewardCost + ' Crystals', type: 'crystals'})
       addToast({ message: result.message, type: 'success' })
     } else {
       addToast({ message: result.message, type: 'error' })
     }
   } catch (error) {
     console.error('Error unlocking reward:', error)
-    addToast({ message: 'An error occurred while trying to unlock the reward.', type: 'error' })
+    addToast({ message: 'An error occured...', type: 'error' })
   }
 };
 
 const addReward = async () => {
-  const result = await addRewardLogic();
-  //check if all return values arrived
-  if (result && result.success && result.newReward) {
-    startEditing(toRaw(result.newReward));
-    addToast({ message: result.message, type: 'info' }); 
-  } else {
-    addToast({ message: 'Failed to add reward.', type: 'error' });
+  try {
+    const result = await addRewardLogic(); // returns { success: boolean, message: string, newReward: object }
+    if (result.success) {
+      // starts edit on new reward
+      startEditing(toRaw(result.newReward));
+      addToast({ message: result.message, type: 'info' });
+    } else {
+      addToast({ message: 'Failed to add reward.', type: 'error' });
+    }
+  } catch (error) {
+    console.error('Error adding reward:', error)
+    addToast({ message: 'An error occured...', type: 'error' })
   }
 }
 
@@ -113,44 +106,30 @@ const addReward = async () => {
   <ModuleTitle title="Rewards" />
 
   <div id="rewardsWrapper" class="moduleWrapper">
-    <!-- Reward Card START -->
-    <div id="rewardCard" v-for="reward in rewards" :key="reward.id">
-      <!-- Normal Template START -->
+    <div v-for="reward in rewards" :key="reward.id" class="rewardItemContainer">
+      <!-- Render Card if not editing a specific reward -->
       <template v-if="editingId !== reward.id">
-        <div class="cardWrapper">
-          <div class="rankColor" @click="!editingId ? unlockReward(toRaw(reward)) : null">
-            <div class="costWrapper">
-              <img src="../assets/crystal.png" alt="crystal cost">
-              <p>{{ reward.cost }}</p>
-            </div>
-          </div>
-          <div class="rewardContent">
-            <h4>{{ reward.title }}</h4>
-          </div>
-          <div class="editIconContainer" @click="startEditing(reward)">
-            <EditIcon class="editIcon" />
-          </div>
-        </div>
+        <Card
+          :itemData="reward" 
+          :itemType="'reward'" 
+          @start-edit="startEditing(reward)"
+          @unlock-reward="!editingId ? unlockReward(toRaw(reward)) : null" 
+        />
       </template>
-      <!-- Normal Template END -->
 
-      <!-- Edit Template START -->
+      <!-- Render EditItem if editing a specific reward -->
       <template v-else>
-        <div class="rewardEditWrapper">
-          <div>
-            <input class="titleInput" type="text" placeholder="Title" v-model="editedItemData.title">
-            <input class="costInput" type="number" placeholder="Cost" v-model.number="editedItemData.cost">
-          </div>
-          <div class="repeatIconContainer" @click="editedItemData.repeatable = !editedItemData.repeatable">
-            <RepeatIcon :class="editedItemData.repeatable ? 'repeatEnabled' : 'repeatDisabled'" />
-          </div>
-        </div>
+        <EditItem 
+          :itemType="'reward'" 
+          v-model="editedItemData" 
+          @save="saveEditing"
+          @cancel="cancelEditing"
+          @delete="deleteEditing"
+        />
       </template>
-      <!-- Edit Template END -->
     </div>
-    <!-- Reward Card END -->
-    <div class="addRewardWrapper"
-      @click="addReward()">
+
+    <div class="addRewardWrapper" @click="addReward()">
       <PlusIcon class="addIcon" />
     </div>
   </div>

@@ -1,4 +1,5 @@
-import { ref, computed } from 'vue'
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR TAGS ========== 
+import { ref } from 'vue'
 
 export function useTags() {
   // initiates tag array

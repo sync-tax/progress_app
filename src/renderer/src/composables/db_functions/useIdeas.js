@@ -1,3 +1,4 @@
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR IDEAS ========== 
 import { ref } from 'vue'
 
 export function useIdeas() {
@@ -8,7 +9,7 @@ export function useIdeas() {
         rank: 'common',
     })
     
-    const fetchIdeas = async () => {
+    const getIdeas = async () => {
         ideas.value = await window.api.getIdeas()
     }
 
@@ -24,12 +25,17 @@ export function useIdeas() {
         return await window.api.deleteIdea(id)
     }
 
+    const onIdeasUpdate = (callback) => {
+        return window.api.onIdeasUpdate(callback)
+    }
+
     return {
         ideas,
         ideaData,
-        fetchIdeas,
+        getIdeas,
         addIdea,
         updateIdea,
-        deleteIdea
+        deleteIdea,
+        onIdeasUpdate
     }
 }

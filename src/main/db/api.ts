@@ -90,18 +90,24 @@ export function registerDBHandlers() {
     return db.data.ideas
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event, newIdea: { title: string, description: string }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event) => {
     db.read()
     const nextId = (db.data.ideas.at(-1)?.id || 0) + 1
 
-    db.data.ideas.push({
+    const newIdea = {
       id: nextId,
-      title: newIdea.title,
-      description: newIdea.description,
-    })
+      title: '',
+      description: '',
+    }
+    db.data.ideas.push(newIdea)
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
+    return {
+      success: true,
+      message: 'New idea added!',
+      newIdea
+    }
   })
 
   ipcMain.handle(IPC_CHANNELS.UPDATE_IDEA, (event, updatedIdea: { id: number, title?: string, description?: string }) => {
@@ -138,7 +144,7 @@ export function registerDBHandlers() {
    const newReward = {
       id: nextId,
       title: '',
-      cost: 0,
+      cost: 10,
       repeatable: false,
       position: nextPosition,
     }
@@ -191,7 +197,8 @@ export function registerDBHandlers() {
     }
 
     // pay crystals for reward
-    db.data.balance -= reward.cost
+    const newBalance = db.data.balance - reward.cost
+    db.data.balance = newBalance
 
     // remove non-repeatable rewards
     if (!reward.repeatable) {
@@ -207,7 +214,7 @@ export function registerDBHandlers() {
     return { 
       success: true, 
       message: 'You unlocked ' + reward.title + '!', 
-      newBalance: db.data.balance 
+      rewardCost: reward.cost
     }
   })
 }

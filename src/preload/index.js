@@ -22,6 +22,11 @@ const api = {
   addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
   updateIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_IDEA, idea),
   deleteIdea: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_IDEA, id),
+  onIdeasUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.IDEAS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.IDEAS_UPDATED, handler);
+  },
   
   // Tag Functions
   getTags: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_TAGS),
@@ -51,12 +56,22 @@ const api = {
   addHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT_STACK, habitStack),
   updateHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT_STACK, habitStack),
   deleteHabitStack: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT_STACK, id),
+  onHabitStacksUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.HABIT_STACKS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.HABIT_STACKS_UPDATED, handler);
+  },
 
   // Habit Functions
   getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
   addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
   updateHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT, habit),
   deleteHabit: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT, id),
+  onHabitsUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.HABITS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.HABITS_UPDATED, handler);
+  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

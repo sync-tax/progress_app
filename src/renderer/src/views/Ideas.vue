@@ -1,66 +1,79 @@
 <script setup>
+// ========== IMPORTS ==========
+// Icons
 import PlusIcon from '../assets/plus.svg'
-import EditIcon from '../assets/edit.svg'
-import IdeaIcon from '../assets/idea.svg'
 
+// Components
 import ModuleTitle from '../components/ModuleTitle.vue'
+import Card from '../components/Card.vue'
+import EditItem from '../components/EditItem.vue'
 
-import { onMounted, ref, toRaw } from 'vue'
-
+// Composables
 import { useIdeas } from '../composables/db_functions/useIdeas'
 import { useKeydowns } from '../composables/helpers/useKeydowns'
+import { useToasts } from '../composables/ui/useToasts'
+import { useInlineEditor } from '../composables/ui/useEdit'
 
-const { fetchIdeas, ideas, deleteIdea, updateIdea, addIdea } = useIdeas()
+// Vue
+import { onMounted, onUnmounted, toRaw } from 'vue'
+
+// ========== DATA ==========
+const { getIdeas, ideas, deleteIdea, updateIdea, addIdea: addIdeaLogic, onIdeasUpdate } = useIdeas()
+const { addToast } = useToasts()
+
+let cleanupIdeaUpdate = null
+
+// ========== LIFECYCLE ========== 
 onMounted(async () => {
-  await fetchIdeas()
+  await getIdeas()
+
+  cleanupIdeaUpdate = onIdeasUpdate(() => {
+    getIdeas()
+  })
 })
 
-//EDIT LOGIC
-const editingId = ref(null)
-const editedIdea = ref({})
-
-const startEditing = (idea) => {
-  editingId.value = idea.id
-  //spread operator is used to create a new object (clone)
-  editedIdea.value = { ...idea }
-}
-
-const cancelEditing = () => {
-  //reset reactive references
-  editingId.value = null
-  editedIdea.value = {}
-}
-
-const saveEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  // toRaw() is a vue function that removes reactivity from an object
-  // this is needed because updateReward() takes an object as a parameter -> doesn't work with reactive objects
-  await updateIdea(toRaw(editedIdea.value))
-  await fetchIdeas()
-  cancelEditing()
-}
-
-const deleteEditing = async () => {
-  // just to make sure lol
-  if (!editingId.value) return
-  await deleteIdea(editingId.value)
-  await fetchIdeas()
-  cancelEditing()
-}
-
-//Who needs Buttons in a MVP?
-useKeydowns({
-  onSave: () => {
-    saveEditing()
-  },
-  onCancel: () => {
-    cancelEditing()
-  },
-  onDelete: () => {
-    deleteEditing()
+onUnmounted(() => {
+  if (cleanupIdeaUpdate) {
+    cleanupIdeaUpdate()
   }
 })
+
+// ========== EDITOR CONFIGS ========== 
+const { 
+  editingId, 
+  editedItemData, 
+  startEditing, 
+  cancelEditing, 
+  saveEditing, 
+  deleteEditing 
+} = useInlineEditor({
+  updateFn: updateIdea,
+  deleteFn: deleteIdea,
+  fetchFn: getIdeas,
+  onSaveSuccess: () => {
+    addToast({ message: 'Saved Idea.', type: 'success' });
+  },
+  onDeleteSuccess: () => {
+    addToast({ message: 'Deleted Idea.', type: 'warning' });
+  }
+});
+
+// ========== FUNCTIONS ========== 
+const addIdea = async () => {
+  try {
+    const result = await addIdeaLogic();
+    if (result.success) {
+      //starts edit on new idea
+      startEditing(toRaw(result.newIdea));
+      addToast({ message: result.message, type: 'info' });
+    } else {
+      addToast({ message: 'Failed to add idea.', type: 'error' });
+    }
+  } catch (error) {
+    console.error('Error adding idea:', error)
+    addToast({ message: 'An error occured', type: 'error' })
+  }
+}
 </script>
 
 <template>
@@ -71,38 +84,28 @@ useKeydowns({
     <div id="ideaCard" v-for="idea in ideas" :key="idea.id">
       <!-- Normal Template START -->
       <template v-if="editingId !== idea.id">
-        <div id="ideaCard">
-          <div class="cardWrapper">
-            <div class="bulbWrapper">
-              <IdeaIcon class="bulb" />
-            </div>
-
-            <div class="ideaContent">
-              <h4>{{ idea.title }}</h4>
-              <p>{{ idea.description }}</p>
-            </div>
-
-            <div class="editIconContainer" @click="startEditing(idea)">
-              <EditIcon class="editIcon" />
-            </div>
-          </div>
-        </div>
+         <Card
+          :itemData="idea" 
+          :itemType="'idea'" 
+          @start-edit="startEditing(idea)"
+        />
       </template>
       <!-- Normal Template END -->
        
        <!-- Edit Template START -->
       <template v-else>
-        <div class="ideaEditWrapper">
-          <div>
-            <input class="titleInput" type="text" v-model="editedIdea.title">
-            <textarea class="descriptionInput" spellcheck="false" v-model="editedIdea.description"></textarea>
-          </div>
-        </div>
+        <EditItem 
+          :itemType="'idea'" 
+          v-model="editedItemData" 
+          @save="saveEditing"
+          @cancel="cancelEditing"
+          @delete="deleteEditing"
+        />
       </template>
       <!-- Edit Template END -->
     </div>
     <!-- Idea Card END -->
-    <div class="addIdeaWrapper" @click="addIdea({ title: 'New Idea', description: 'Description' }); fetchIdeas();">
+    <div class="addIdeaWrapper" @click="addIdea()">
       <PlusIcon class="addIcon" />
     </div>
 

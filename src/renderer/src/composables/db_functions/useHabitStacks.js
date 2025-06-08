@@ -1,3 +1,4 @@
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABIT STACKS ========== 
 import { ref } from 'vue'
 
 export function useHabitStacks() {

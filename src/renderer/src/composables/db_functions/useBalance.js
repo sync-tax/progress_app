@@ -1,4 +1,4 @@
-
+// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR BALANCE ========== 
 import { ref } from 'vue'    
 
 export function useBalance() {
