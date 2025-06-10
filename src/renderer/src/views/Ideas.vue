@@ -10,9 +10,8 @@ import EditItem from '../components/EditItem.vue'
 
 // Composables
 import { useIdeas } from '../composables/db_functions/useIdeas'
-import { useKeydowns } from '../composables/helpers/useKeydowns'
 import { useToasts } from '../composables/ui/useToasts'
-import { useInlineEditor } from '../composables/ui/useEdit'
+import { useEdit } from '../composables/ui/useEdit'
 
 // Vue
 import { onMounted, onUnmounted, toRaw } from 'vue'
@@ -46,17 +45,10 @@ const {
   cancelEditing, 
   saveEditing, 
   deleteEditing 
-} = useInlineEditor({
-  updateFn: updateIdea,
+} = useEdit({
+  editFn: updateIdea,
   deleteFn: deleteIdea,
-  fetchFn: getIdeas,
-  onSaveSuccess: () => {
-    addToast({ message: 'Saved Idea.', type: 'success' });
-  },
-  onDeleteSuccess: () => {
-    addToast({ message: 'Deleted Idea.', type: 'warning' });
-  }
-});
+})
 
 // ========== FUNCTIONS ========== 
 const addIdea = async () => {

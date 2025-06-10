@@ -1,5 +1,8 @@
 // ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR REWARDS ========== 
 import { ref } from 'vue'
+import { useToasts } from '../ui/useToasts'
+
+const { addToast } = useToasts()
 
 export function useRewards() {
     const rewards = ref([])
@@ -14,24 +17,35 @@ export function useRewards() {
         rewards.value = await window.api.getRewards()
     }
 
-    const addReward = async () => {
-        return await window.api.addReward()
+    const addReward = async (reward) => {
+        return await window.api.addReward(reward)
     }
 
-    const updateReward = async (reward) => {
-        return await window.api.updateReward(reward)
+    const editReward = async (reward) => {
+        return await window.api.editReward(reward)
     }
 
     const deleteReward = async (id) => {
         return await window.api.deleteReward(id)
     }
-    
-    const unlockReward = async (reward) => {
-        return await window.api.unlockReward(reward)
-    }
 
     const onRewardsUpdate = (callback) => {
         return window.api.onRewardsUpdate(callback)
+    }
+    
+    const unlockReward = async (reward) => {
+        try {
+            const result = await window.api.unlockReward(reward); // returns { success: boolean, message: string, rewardCost: number }
+            if (result.success) {
+              addToast({message: '-' + result.rewardCost + ' Crystals', type: 'crystals'})
+              addToast({ message: result.message, type: 'success' })
+            } else {
+              addToast({ message: result.message, type: 'error' })
+            }
+          } catch (error) {
+            console.error('Error unlocking reward:', error)
+            addToast({ message: 'An error occured...', type: 'error' })
+          }
     }
 
     return {
@@ -39,7 +53,7 @@ export function useRewards() {
         rewardData,
         getRewards,
         addReward,
-        updateReward,
+        editReward,
         deleteReward,
         unlockReward,
         onRewardsUpdate

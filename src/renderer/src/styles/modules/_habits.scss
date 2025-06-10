@@ -13,11 +13,6 @@
             justify-content: space-between;
         }
 
-        h2{
-            @include base-font($weight: 600, $size: 18px);
-            color: $main-txt-color;
-        }
-
         .editStackIcon {
             width: 20px;
             height: 20px;
@@ -39,98 +34,6 @@
 
     #habitCard {
         height: 60px;
-
-        .habitContent {
-            width: 200px;
-            height: 60px;
-            display: flex;
-            justify-content: space-around;
-
-
-            .habitStreak {
-                @include base-font($weight: 300, $size: 10px);
-                color: $main-txt-color;
-
-                width: fit-content;
-                padding: 1px 10px;
-
-                position: absolute;
-                bottom: 2px;
-                right: -2px;
-            }
-
-            .habitWrapper {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-around;
-
-                height: 50px;
-
-                position: absolute;
-                left: 55px;
-                top: 5px;
-
-                .labelDoneContainer {
-                    display: flex;
-                    align-items: center;
-
-                    input[type="checkbox"] {
-                        appearance: none;
-                        -webkit-appearance: none;
-                        margin: auto 0;
-                        width: 14px;
-                        height: 14px;
-                        border: 1px solid $main-txt-color;
-                        border-radius: 2px;
-                        position: relative;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-
-                        &:checked {
-                            background-color: $main-txt-color;
-
-                            &::after {
-                                content: '✓';
-                                position: absolute;
-                                color: $ui-color-dark;
-                                font-size: 10px;
-                                font-weight: bold;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%);
-                            }
-                        }
-
-                        &:focus {
-                            outline: none;
-                            box-shadow: 0 0 0 2px rgba($main-txt-color, 0.2);
-                        }
-                    }
-
-                    h4 {
-                        padding-left: 4px;
-                    }
-                }
-
-            }
-
-
-            h4 {
-                @include base-font($weight: 600, $size: 16px);
-                color: $main-txt-color;
-                height: fit-content;
-            }
-
-            .habitTag {
-                @include inter-font($weight: 300, $size: 12px);
-                color: $main-txt-color;
-                border-radius: 20px;
-                background-color: $ui-color-dark;
-
-                width: fit-content;
-                padding: 1px 10px;
-            }
-        }
     }
 
     .rankGems {

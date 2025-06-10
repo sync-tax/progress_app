@@ -13,7 +13,13 @@
             .bulb{
                 fill: $main-txt-color;
                 transform: scale(.75);
+                opacity: .35;
+                transition: opacity .2s ease-in-out;
                 filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
+                &:hover {
+                    opacity: 1;
+                    filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.5));
+                }
             }
         }
 
@@ -30,7 +36,7 @@
             h4 {
                 @include base-font($weight: 600, $size: 16px);
                 color: $main-txt-color;
-                padding-top: 2px;
+                padding-top: 5px;
                 height: 26px
             }
 

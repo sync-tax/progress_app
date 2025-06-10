@@ -9,7 +9,7 @@ import EditItem from '../components/EditItem.vue'
 // Composables
 import { useTags } from '../composables/db_functions/useTags'
 import { useToasts } from '../composables/ui/useToasts'
-import { useInlineEditor } from '../composables/ui/useEdit'
+import { useEdit } from '../composables/ui/useEdit'
 // Vue
 import { onMounted, onUnmounted, toRaw } from 'vue'
 
@@ -42,16 +42,9 @@ const {
   cancelEditing, 
   saveEditing, 
   deleteEditing 
-} = useInlineEditor({
-  updateFn: updateTag,
+} = useEdit({
+  editFn: updateTag,
   deleteFn: deleteTag,
-  fetchFn: getTags,
-  onSaveSuccess: () => {
-    addToast({ message: 'Saved Tag.', type: 'success' });
-  },
-  onDeleteSuccess: () => {
-    addToast({ message: 'Deleted Tag.', type: 'warning' });
-  }
 });
 
 // ========== FUNCTIONS ========== 

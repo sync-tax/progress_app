@@ -41,6 +41,8 @@ export const IPC_CHANNELS = {
     UPDATE_HABIT: 'update-habit',
     DELETE_HABIT: 'delete-habit',
     HABITS_UPDATED: 'habits-updated',
+    TOGGLE_HABIT_COMPLETION: 'toggle-habit-completion',
+    UPDATE_ALL_STREAKS: 'update-all-streaks',
 
     // ========== TAGS ==========
     GET_TAGS: 'get-tags',
@@ -64,7 +66,7 @@ export const IPC_CHANNELS = {
     // ========== REWARDS ==========
     GET_REWARDS: 'get-rewards',
     ADD_REWARD: 'add-reward',
-    UPDATE_REWARD: 'update-reward',
+    EDIT_REWARD: 'edit-reward',
     DELETE_REWARD: 'delete-reward',
     UNLOCK_REWARD: 'redeem-reward',
     REWARDS_UPDATED: 'rewards-updated',

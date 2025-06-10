@@ -137,7 +137,7 @@ body main .moduleWrapper {
   margin-bottom: 10px;
 }
 
-.editWrapper {
+.editWrapper, .addWrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -146,8 +146,11 @@ body main .moduleWrapper {
   background-color: #211E1D;
   position: relative;
   z-index: 200;
+  margin-bottom: 20px;
+  height: -moz-fit-content;
+  height: fit-content;
 }
-.editWrapper h2 {
+.editWrapper .editTitle, .editWrapper .addTitle, .addWrapper .editTitle, .addWrapper .addTitle {
   font-family: "Cinzel", sans-serif;
   font-weight: 600;
   font-size: 16px;
@@ -155,16 +158,16 @@ body main .moduleWrapper {
   background-color: #DBB997;
   padding: 5px;
 }
-.editWrapper .inputWrapper {
+.editWrapper .inputWrapper, .addWrapper .inputWrapper {
   padding: 5px;
 }
-.editWrapper .inputWrapper label {
+.editWrapper .inputWrapper label, .addWrapper .inputWrapper label {
   font-family: "Cinzel", sans-serif;
   font-weight: 600;
   font-size: 16px;
   color: #DBB997;
 }
-.editWrapper .inputWrapper input {
+.editWrapper .inputWrapper input, .addWrapper .inputWrapper input {
   font-family: "Cinzel", sans-serif;
   font-weight: 200;
   font-size: 16px;
@@ -177,10 +180,10 @@ body main .moduleWrapper {
   opacity: 0.35;
   transition: opacity 0.2s ease-in-out;
 }
-.editWrapper .inputWrapper input:focus {
+.editWrapper .inputWrapper input:focus, .addWrapper .inputWrapper input:focus {
   opacity: 1;
 }
-.editWrapper .inputWrapper textarea {
+.editWrapper .inputWrapper textarea, .addWrapper .inputWrapper textarea {
   font-family: "Inter", sans-serif;
   font-weight: 200;
   font-size: 14px;
@@ -193,18 +196,36 @@ body main .moduleWrapper {
   opacity: 0.35;
   transition: opacity 0.2s ease-in-out;
 }
-.editWrapper .inputWrapper textarea:focus {
+.editWrapper .inputWrapper textarea:focus, .addWrapper .inputWrapper textarea:focus {
   opacity: 1;
 }
-.editWrapper .cancelButton {
+.editWrapper .inputWrapper select, .addWrapper .inputWrapper select {
+  width: 95%;
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #DBB997;
+  background-color: #211E1D;
+  margin: auto 0;
+  height: 26px;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #DBB997;
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
+}
+.editWrapper .inputWrapper select:focus, .addWrapper .inputWrapper select:focus {
+  opacity: 1;
+}
+.editWrapper .cancelButton, .addWrapper .cancelButton {
   position: absolute;
   top: 8.5px;
   right: 51px;
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 10px;
-  background-color: #DBB997;
   color: #211E1D;
+  background-color: #DBB997;
   border: none;
   outline: none;
   border-radius: 4px;
@@ -214,10 +235,10 @@ body main .moduleWrapper {
   transition: all 0.2s ease-in-out;
   margin: 0 auto;
 }
-.editWrapper .cancelButton:hover {
+.editWrapper .cancelButton:hover, .addWrapper .cancelButton:hover {
   text-decoration: underline;
 }
-.editWrapper .saveButton {
+.editWrapper .saveButton, .addWrapper .saveButton {
   position: absolute;
   top: 5.5px;
   right: 2px;
@@ -233,11 +254,11 @@ body main .moduleWrapper {
   padding: 2px 10px;
   margin: 0 auto;
 }
-.editWrapper .saveButton:hover {
+.editWrapper .saveButton:hover, .addWrapper .saveButton:hover {
   background-color: #211E1D;
   color: #DBB997;
 }
-.editWrapper .deleteButton {
+.editWrapper .deleteButton, .addWrapper .deleteButton {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 11px;
@@ -253,10 +274,10 @@ body main .moduleWrapper {
   margin: 0 auto;
   margin-bottom: 5px;
 }
-.editWrapper .deleteButton:hover {
+.editWrapper .deleteButton:hover, .addWrapper .deleteButton:hover {
   text-decoration: underline;
 }
-.editWrapper #repeatIcon {
+.editWrapper #repeatIcon, .addWrapper #repeatIcon {
   width: 50px;
   height: 50px;
   margin-bottom: 20px;
@@ -264,23 +285,26 @@ body main .moduleWrapper {
   transition: opacity 0.2s ease-in-out;
   cursor: pointer;
 }
-.editWrapper #repeatIcon.repeatEnabled {
+.editWrapper #repeatIcon.repeatEnabled, .addWrapper #repeatIcon.repeatEnabled {
   opacity: 1;
   fill: #DBB997;
   filter: drop-shadow(0px 0px 5px rgba(219, 185, 151, 0.2));
 }
-.editWrapper #repeatIcon.repeatDisabled {
+.editWrapper #repeatIcon.repeatDisabled, .addWrapper #repeatIcon.repeatDisabled {
   opacity: 0.35;
   fill: #DBB997;
 }
-.editWrapper .repeatIconContainer {
+.editWrapper .repeatIconContainer, .addWrapper .repeatIconContainer {
   display: flex;
   justify-content: center;
 }
 .editWrapper input[type=number]::-webkit-outer-spin-button,
-.editWrapper input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* WebKit/Blink */
-  margin: 0; /* WebKit/Blink */
+.editWrapper input[type=number]::-webkit-inner-spin-button, .addWrapper input[type=number]::-webkit-outer-spin-button,
+.addWrapper input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  /* WebKit/Blink */
+  margin: 0;
+  /* WebKit/Blink */
 }
 
 .confirmationWrapper {
@@ -388,6 +412,96 @@ body main .moduleWrapper {
 .cardWrapper:hover .editIconContainer {
   opacity: 0.75;
   cursor: pointer;
+}
+
+.habitStackTitle {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #DBB997;
+  width: 227px;
+  height: -moz-fit-content;
+  height: fit-content;
+  background-color: #181818;
+  filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0));
+}
+
+.habitStreak {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  color: #DBB997;
+  width: -moz-fit-content;
+  width: fit-content;
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+}
+
+.habitCardContent {
+  width: 300px;
+  height: 60px;
+  padding-top: 10px;
+}
+.habitCardContent h4 {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #DBB997;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+input[type=checkbox] {
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  margin: auto 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #DBB997;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+input[type=checkbox]:checked {
+  background-color: #DBB997;
+}
+input[type=checkbox]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: #181818;
+  font-size: 10px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+input[type=checkbox]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(219, 185, 151, 0.2);
+}
+
+.habitTag {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: #DBB997;
+  border-radius: 20px;
+  padding: 2px 5px;
+  background-color: #181818;
+  opacity: 0.5;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.habitCompletionWrapper {
+  display: flex;
+  align-items: center;
+}
+.habitCompletionWrapper h4 {
+  padding-left: 4px;
 }
 
 .costWrapper {
@@ -564,7 +678,13 @@ progress::-webkit-progress-value {
 #ideasWrapper #ideaCard .bulbWrapper .bulb {
   fill: #DBB997;
   transform: scale(0.75);
+  opacity: 0.35;
+  transition: opacity 0.2s ease-in-out;
   filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
+}
+#ideasWrapper #ideaCard .bulbWrapper .bulb:hover {
+  opacity: 1;
+  filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.5));
 }
 #ideasWrapper #ideaCard .ideaContent {
   padding-left: 5px;
@@ -579,7 +699,7 @@ progress::-webkit-progress-value {
   font-weight: 600;
   font-size: 16px;
   color: #DBB997;
-  padding-top: 2px;
+  padding-top: 5px;
   height: 26px;
 }
 #ideasWrapper #ideaCard .ideaContent p {
@@ -659,12 +779,6 @@ progress::-webkit-progress-value {
   display: flex;
   justify-content: space-between;
 }
-#habitsWrapper .habitStackCard h2 {
-  font-family: "Cinzel", sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: #DBB997;
-}
 #habitsWrapper .habitStackCard .editStackIcon {
   width: 20px;
   height: 20px;
@@ -699,89 +813,6 @@ progress::-webkit-progress-value {
 }
 #habitsWrapper #habitCard {
   height: 60px;
-}
-#habitsWrapper #habitCard .habitContent {
-  width: 200px;
-  height: 60px;
-  display: flex;
-  justify-content: space-around;
-}
-#habitsWrapper #habitCard .habitContent .habitStreak {
-  font-family: "Cinzel", sans-serif;
-  font-weight: 300;
-  font-size: 10px;
-  color: #DBB997;
-  width: -moz-fit-content;
-  width: fit-content;
-  padding: 1px 10px;
-  position: absolute;
-  bottom: 2px;
-  right: -2px;
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 50px;
-  position: absolute;
-  left: 55px;
-  top: 5px;
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer {
-  display: flex;
-  align-items: center;
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox] {
-  -moz-appearance: none;
-       appearance: none;
-  -webkit-appearance: none;
-  margin: auto 0;
-  width: 14px;
-  height: 14px;
-  border: 1px solid #DBB997;
-  border-radius: 2px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:checked {
-  background-color: #DBB997;
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:checked::after {
-  content: "✓";
-  position: absolute;
-  color: #181818;
-  font-size: 10px;
-  font-weight: bold;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer input[type=checkbox]:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(219, 185, 151, 0.2);
-}
-#habitsWrapper #habitCard .habitContent .habitWrapper .labelDoneContainer h4 {
-  padding-left: 4px;
-}
-#habitsWrapper #habitCard .habitContent h4 {
-  font-family: "Cinzel", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: #DBB997;
-  height: -moz-fit-content;
-  height: fit-content;
-}
-#habitsWrapper #habitCard .habitContent .habitTag {
-  font-family: "Inter", sans-serif;
-  font-weight: 300;
-  font-size: 12px;
-  color: #DBB997;
-  border-radius: 20px;
-  background-color: #181818;
-  width: -moz-fit-content;
-  width: fit-content;
-  padding: 1px 10px;
 }
 #habitsWrapper .rankGems {
   width: 100px;

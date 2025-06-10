@@ -50,7 +50,7 @@ export interface Habit {
   current_streak: number
   best_streak: number
   tag_name: string
-  last_time_completed: Date
+  last_time_completed: Date | null
 }
 
 // ========== TAGS ==========

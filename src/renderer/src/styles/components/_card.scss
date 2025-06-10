@@ -69,6 +69,96 @@
 
 }
 
+//=== HABIT SPECIFIC STYLES ===
+
+.habitStackTitle {
+    @include base-font($weight: 600, $size: 16px);
+    color: $main-txt-color;
+    width: 227px;
+    height: fit-content;
+    background-color: $ui-color-dark;
+    filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.0));
+}
+
+.habitStreak {
+    @include base-font($weight: 300, $size: 10px);
+    color: $main-txt-color;
+
+    width: fit-content;
+
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+}
+
+.habitCardContent {
+    width: 300px;
+    height: 60px;
+    padding-top: 10px;
+
+
+    h4 {
+        @include base-font($weight: 600, $size: 16px);
+        color: $main-txt-color;
+        height: fit-content;
+    }
+
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: auto 0;
+    width: 14px;
+    height: 14px;
+    border: 1px solid $main-txt-color;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:checked {
+        background-color: $main-txt-color;
+
+        &::after {
+            content: '✓';
+            position: absolute;
+            color: $ui-color-dark;
+            font-size: 10px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba($main-txt-color, 0.2);
+    }
+}
+
+
+.habitTag {
+    @include inter-font($weight: 300, $size: 12px);
+    color: $main-txt-color;
+    border-radius: 20px;
+    padding: 2px 5px;
+    background-color: $ui-color-dark;
+    opacity: .5;
+
+    width: fit-content;
+    
+}
+
+.habitCompletionWrapper {
+    display: flex;
+    align-items: center;
+
+    h4 {
+        padding-left: 4px;
+    }
+}
 //=== REWARD SPECIFIC STYLES ===
 .costWrapper {
     width: 60px;

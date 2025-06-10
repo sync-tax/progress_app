@@ -6,17 +6,19 @@ import PlusIcon from '../assets/plus.svg'
 import ModuleTitle from '../components/ModuleTitle.vue'
 import Card from '../components/Card.vue'
 import EditItem from '../components/EditItem.vue'
+import AddItem from '../components/AddItem.vue'
 // Composables
 import { useBalance } from '../composables/db_functions/useBalance'
 import { useRewards } from '../composables/db_functions/useRewards'
 import { useToasts } from '../composables/ui/useToasts'
-import { useInlineEditor } from '../composables/ui/useEdit'
+import { useEdit } from '../composables/ui/useEdit'
+import { useAdd } from '../composables/ui/useAdd'
 // Vue
 import { onMounted, onUnmounted, toRaw } from 'vue'
 
 // ========== DATA ==========
 const { fetchBalance, onBalanceUpdate } = useBalance()
-const { getRewards, rewards, deleteReward, updateReward, addReward: addRewardLogic, unlockReward: unlockRewardLogic, onRewardsUpdate } = useRewards()
+const { rewards,getRewards, deleteReward, editReward, addReward, unlockReward, onRewardsUpdate } = useRewards()
 const { addToast } = useToasts()
 
 let cleanupBalanceUpdate = null
@@ -24,9 +26,9 @@ let cleanupRewardsUpdate = null
 
 // ========== LIFECYCLE ==========
 onMounted(async () => {
-  // fetch data
+  // get initial rewards data
   await getRewards();
-  // set listeners
+  // set backend listeners
   cleanupBalanceUpdate = onBalanceUpdate(() => {
     fetchBalance()
   })
@@ -53,52 +55,22 @@ const {
   cancelEditing,
   saveEditing,
   deleteEditing
-} = useInlineEditor({
-  updateFn: updateReward,
-  deleteFn: deleteReward,
-  fetchFn: getRewards,
-  onSaveSuccess: () => {
-    addToast({ message: 'Saved Reward.', type: 'success' });
-  },
-  onDeleteSuccess: () => {
-    addToast({ message: 'Deleted Reward.', type: 'warning' });
-  }
+} = useEdit({
+  editFn: editReward,
+  deleteFn: deleteReward
 });
 
-// ========== CUSTOM FUNCTIONS ==========
-const unlockReward = async (reward) => {
-  // avoid unlocking while editing
-  if (editingId.value) return
-
-  try {
-    const result = await unlockRewardLogic(reward); // returns { success: boolean, message: string, rewardCost: number }
-    if (result.success) {
-      addToast({message: '-' + result.rewardCost + ' Crystals', type: 'crystals'})
-      addToast({ message: result.message, type: 'success' })
-    } else {
-      addToast({ message: result.message, type: 'error' })
-    }
-  } catch (error) {
-    console.error('Error unlocking reward:', error)
-    addToast({ message: 'An error occured...', type: 'error' })
-  }
-};
-
-const addReward = async () => {
-  try {
-    const result = await addRewardLogic(); // returns { success: boolean, message: string, newReward: object }
-    if (result.success) {
-      // starts edit on new reward
-      startEditing(toRaw(result.newReward));
-      addToast({ message: result.message, type: 'info' });
-    } else {
-      addToast({ message: 'Failed to add reward.', type: 'error' });
-    }
-  } catch (error) {
-    console.error('Error adding reward:', error)
-    addToast({ message: 'An error occured...', type: 'error' })
-  }
-}
+// ========== ADDER CONFIGS ==========
+const {
+  isAdding,
+  addedItemData,
+  startAdding,
+  cancelAdding,
+  saveAdding
+} = useAdd({
+  addFn: addReward,
+  itemType: 'reward'
+})
 
 </script>
 
@@ -114,7 +86,7 @@ const addReward = async () => {
           :itemType="'reward'" 
           @start-edit="startEditing(reward)"
           @unlock-reward="!editingId ? unlockReward(toRaw(reward)) : null" 
-        />
+        /><!-- avoid unlocking while editing -->
       </template>
 
       <!-- Render EditItem if editing a specific reward -->
@@ -122,15 +94,28 @@ const addReward = async () => {
         <EditItem 
           :itemType="'reward'" 
           v-model="editedItemData" 
-          @save="saveEditing"
-          @cancel="cancelEditing"
-          @delete="deleteEditing"
+          @save-edit="saveEditing()"
+          @cancel-edit="cancelEditing()"
+          @delete-edit="deleteEditing()"
         />
       </template>
     </div>
 
-    <div class="addRewardWrapper" @click="addReward()">
-      <PlusIcon class="addIcon" />
-    </div>
+    <!-- Render AddIcon -->
+     <template v-if="!isAdding">
+      <div class="addRewardWrapper" @click="startAdding()">
+        <PlusIcon class="addIcon" />
+      </div>
+     </template>
+
+     <!-- Render AddItem if adding button is clicked -->
+     <template v-else>
+      <AddItem
+        :itemType="'reward'"
+        v-model="addedItemData"
+        @save-add="saveAdding()"
+        @cancel-add="cancelAdding()"
+      />
+     </template>
   </div>
 </template>

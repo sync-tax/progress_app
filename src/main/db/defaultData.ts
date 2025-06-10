@@ -130,7 +130,7 @@ const defaultData: DbSchema = {
       counter: 20,
       current_streak: 5,
       best_streak: 10,
-      tag_name: 'Mind',
+      tag_name: 'Creativity',
       last_time_completed: new Date('2024-06-01T07:00:00'),
     },
     {
@@ -141,7 +141,7 @@ const defaultData: DbSchema = {
       counter: 15,
       current_streak: 3,
       best_streak: 8,
-      tag_name: 'Body',
+      tag_name: 'Creativity',
       last_time_completed: new Date('2024-06-01T07:05:00'),
     },
     {
@@ -152,7 +152,7 @@ const defaultData: DbSchema = {
       counter: 10,
       current_streak: 2,
       best_streak: 5,
-      tag_name: 'Mind',
+      tag_name: 'Discipline',
       last_time_completed: new Date('2024-06-01T07:10:00'),
     },
   
@@ -165,7 +165,7 @@ const defaultData: DbSchema = {
       counter: 30,
       current_streak: 10,
       best_streak: 15,
-      tag_name: 'Productivity',
+      tag_name: 'Agility',
       last_time_completed: new Date('2024-06-01T09:00:00'),
     },
     {
@@ -176,7 +176,7 @@ const defaultData: DbSchema = {
       counter: 28,
       current_streak: 7,
       best_streak: 12,
-      tag_name: 'Productivity',
+      tag_name: 'Strength',
       last_time_completed: new Date('2024-06-01T09:15:00'),
     },
     {
@@ -187,7 +187,7 @@ const defaultData: DbSchema = {
       counter: 22,
       current_streak: 6,
       best_streak: 12,
-      tag_name: 'Planning',
+      tag_name: 'Agility',
       last_time_completed: new Date('2024-06-01T17:00:00'),
     },
   
@@ -200,7 +200,7 @@ const defaultData: DbSchema = {
       counter: 18,
       current_streak: 4,
       best_streak: 9,
-      tag_name: 'Knowledge',
+      tag_name: 'Writing',
       last_time_completed: new Date('2024-06-01T20:00:00'),
     },
     {
@@ -211,7 +211,7 @@ const defaultData: DbSchema = {
       counter: 14,
       current_streak: 3,
       best_streak: 7,
-      tag_name: 'Health',
+      tag_name: 'Focus',
       last_time_completed: new Date('2024-06-01T20:30:00'),
     },
     {
@@ -222,7 +222,7 @@ const defaultData: DbSchema = {
       counter: 16,
       current_streak: 5,
       best_streak: 10,
-      tag_name: 'Planning',
+      tag_name: 'Discipline',
       last_time_completed: new Date('2024-06-01T20:45:00'),
     },
     {
@@ -233,7 +233,7 @@ const defaultData: DbSchema = {
       counter: 10,
       current_streak: 2,
       best_streak: 5,
-      tag_name: 'Mind',
+      tag_name: 'Creativity',
       last_time_completed: new Date('2024-06-01T21:00:00'),
     },
     {
@@ -244,7 +244,7 @@ const defaultData: DbSchema = {
       counter: 18,
       current_streak: 4,
       best_streak: 9,
-      tag_name: 'Knowledge',
+      tag_name: 'Agility',
       last_time_completed: new Date('2024-06-01T21:00:00'),
     },
   ],

@@ -1,8 +1,8 @@
 // ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABITS ========== 
 import { ref } from 'vue'
-import { useDates } from '../helpers/useDates'
+import { useToasts } from '../ui/useToasts'
 
-const { getStartOfDay } = useDates()
+const { addToast } = useToasts()
 
 export function useHabits() {
     const habits = ref([])
@@ -30,37 +30,56 @@ export function useHabits() {
         return await window.api.deleteHabit(id)
     }
 
-    const updateStreaks = async () => {
-        if (!habits.value || habits.value.length === 0) {
-            return // No habits to check yet
-        }
-
-        const todayStart = getStartOfDay(new Date())
-        const yesterdayStart = getStartOfDay(new Date(todayStart.getTime() - 24 * 60 * 60 * 1000))
-
-        //iterate over habits.value array
-        for (const habit of habits.value) { 
-            if (habit.current_streak > 0) {
-                const lastCompleted = getStartOfDay(habit.last_time_completed)
-                let resetStreak = false
-
-                if (lastCompleted) {
-                    const isToday = lastCompleted.getTime() === todayStart.getTime()
-                    const wasYesterday = lastCompleted.getTime() === yesterdayStart.getTime()
-                    if (!isToday && !wasYesterday) {
-                        resetStreak = true
-                    }
-                } else {
-                    resetStreak = true // has a streak but no valid last_time_completed
+    const toggleHabitCompletion = async (habitId) => {
+        try {
+            const result = await window.api.toggleHabitCompletion(habitId)
+            if (result && result.success && result.habit) {
+                const index = habits.value.findIndex(h => h.id === habitId)
+                if (index !== -1) {
+                    // Update only the fields managed by this backend call
+                    habits.value[index].counter = result.habit.counter;
+                    habits.value[index].current_streak = result.habit.current_streak;
+                    habits.value[index].best_streak = result.habit.best_streak;
+                    habits.value[index].last_time_completed = result.habit.last_time_completed;
                 }
-
-                if (resetStreak) {
-                    if (habit.current_streak > habit.best_streak) habit.best_streak = habit.current_streak
-                    const updatedHabitData = { ...habit, current_streak: 0 }
-                    await window.api.updateHabit(updatedHabitData)
-                }
+                return { success: true, habit: result.habit };
+            } else {
+                console.error('Failed to toggle habit completion:', result?.error);
+                return { success: false, error: result?.error || 'Unknown error toggling habit.' };
             }
+        } catch (error) {
+            console.error('Error in toggleHabitCompletionOnBackend:', error);
+            return { success: false, error: 'Exception occurred while toggling habit.' };
         }
+    }
+
+    const runDailyStreakUpdate = async () => {
+        try {
+            const result = await window.api.updateAllStreaks();
+            if (result && result.success) {
+                if (result.updatedCount > 0) {
+                    addToast({ message: `You lost ${result.updatedCount} streaks!`, type: 'warning' });
+                    await fetchHabits(); // Refresh the list if any streaks were reset
+                }
+                if (result.errors && result.errors.length > 0) {
+                    addToast({ message: `Errors during daily streak update: ${result.errors}`, type: 'error' });
+                }
+                return result;
+            } else {
+                addToast({ message: 'Daily streak update failed or did not run successfully.', type: 'error' });
+                return { success: false, message: 'Daily streak update failed.', errors: result?.errors };
+            }
+        } catch (error) {
+            console.error('Error running daily streak update on backend:', error);
+            return { success: false, message: 'Exception occurred during daily streak update.' };
+        }
+    };
+
+    // Listener for HABITS_UPDATED event from main process
+    // This helps keep data in sync if backend changes habits outside direct user action
+    // (e.g. after daily streak update from another window or on app start)
+    const onHabitsUpdate = (callback) => {
+        return window.api.onHabitsUpdate(callback)
     }
 
     return {
@@ -70,6 +89,8 @@ export function useHabits() {
         addHabit,
         updateHabit,
         deleteHabit,
-        updateStreaks
+        toggleHabitCompletion,
+        runDailyStreakUpdate,
+        onHabitsUpdate
     }
 }
