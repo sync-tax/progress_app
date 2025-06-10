@@ -17,28 +17,33 @@ const { addToast } = useToasts()
  */
 export function useEdit({
   editFn,
-  deleteFn
+  deleteFn,
 }) {
   const editingId = ref(null)
+  const editingType = ref(null)
   const editedItemData = ref({})
 
-  const startEditing = (item) => {
+
+  const startEditing = (item, type) => {
     editingId.value = item.id
     editedItemData.value = { ...item }
+    editingType.value = type
+
+    console.log(editingId.value, editingType.value)
   }
 
   const cancelEditing = () => {
     editingId.value = null
     editedItemData.value = {}
+    editingType.value = null
   }
 
   const saveEditing = async () => {
     if (editingId.value === null) return
     try {
-      console.log(editedItemData.value)
       const payload = toRaw(editedItemData.value)
       const result = await editFn(payload)
-      if (result && result.success && result.message) {
+      if (result.success) {
         addToast({ message: result.message, type: 'success' })
       } else {
         addToast({ message: result.message, type: 'error' })
@@ -53,12 +58,8 @@ export function useEdit({
   const deleteEditing = async () => {
     if (editingId.value === null) return
     try{
-      const result = await deleteFn(editingId.value)
-      if (result && result.success && result.message) {
-        addToast({ message: result.message, type: 'warning' })
-      } else {
-        addToast({ message: result.message, type: 'error' })
-      }
+      const result = await deleteFn(toRaw(editingId.value), toRaw(editingType.value))
+      addToast({ message: result.message, type: 'warning' })
     } catch (error) {
       console.error('Error deleting item:', error)
       addToast({ message: 'An error occured...', type: 'error' })
@@ -69,7 +70,7 @@ export function useEdit({
   return {
     editingId: readonly(editingId), // readonly for safety -> ID not editable
     editedItemData, 
-
+    editingType,
     startEditing,
     cancelEditing,
     saveEditing,

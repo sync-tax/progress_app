@@ -7,10 +7,13 @@ const api = {
   // Custom window control panel
   windowControl: (action) => ipcRenderer.send('window-control', action),
 
-  // Balance Functions
+  // Universal Functions
+  moveItem: (item, itemType, direction) => ipcRenderer.invoke(IPC_CHANNELS.MOVE_ITEM, item, itemType, direction),
+  getItems: (itemType) => ipcRenderer.invoke(IPC_CHANNELS.GET_ITEMS, itemType),
+  deleteItem: (id, itemType) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_ITEM, id, itemType),
+
+  // User Functions
   getBalance: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_BALANCE),
-  addBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_BALANCE, amount),
-  removeBalance: async (amount) => await ipcRenderer.invoke(IPC_CHANNELS.REMOVE_BALANCE, amount),
   onBalanceUpdate: (callback) => {
     const handler = (event, newBalance) => callback(newBalance);
     ipcRenderer.on(IPC_CHANNELS.BALANCE_UPDATED, handler);
@@ -20,7 +23,7 @@ const api = {
   // Idea Functions
   getIdeas: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_IDEAS),
   addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
-  updateIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_IDEA, idea),
+  editIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_IDEA, idea),
   deleteIdea: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_IDEA, id),
   onIdeasUpdate: (callback) => {
     const handler = () => callback();
@@ -29,10 +32,8 @@ const api = {
   },
   
   // Tag Functions
-  getTags: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_TAGS),
   addTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TAG, tag),
-  updateTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_TAG, tag),
-  deleteTag: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_TAG, id),
+  editTag: async (tag) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_TAG, tag),
   onTagsUpdate: (callback) => {
     const handler = (event, newTags) => callback(newTags);
     ipcRenderer.on(IPC_CHANNELS.TAGS_UPDATED, handler);
@@ -44,6 +45,7 @@ const api = {
   addReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_REWARD, reward),
   editReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_REWARD, reward),
   deleteReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_REWARD, id),
+  moveReward: async (reward) => await ipcRenderer.invoke(IPC_CHANNELS.MOVE_REWARD, reward),
   unlockReward: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.UNLOCK_REWARD, id),
   onRewardsUpdate: (callback) => {
     const handler = () => callback();
@@ -54,7 +56,7 @@ const api = {
   // HabitStack Functions
   getHabitStacks: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABIT_STACKS),
   addHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT_STACK, habitStack),
-  updateHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT_STACK, habitStack),
+  editHabitStack: async (habitStack) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_HABIT_STACK, habitStack),
   deleteHabitStack: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT_STACK, id),
   onHabitStacksUpdate: (callback) => {
     const handler = () => callback();
@@ -65,7 +67,7 @@ const api = {
   // Habit Functions
   getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
   addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
-  updateHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_HABIT, habit),
+  editHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_HABIT, habit),
   deleteHabit: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT, id),
   toggleHabitCompletion: async (habitId) => await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, habitId),
   updateAllStreaks: async () => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_ALL_STREAKS),

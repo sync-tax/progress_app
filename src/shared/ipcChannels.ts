@@ -1,54 +1,56 @@
 export const IPC_CHANNELS = {
-    // ========== CRYSTALS ==========
+
+    // ========== GLOBAL ==========
+    MOVE_ITEM: 'move-item',
+    GET_ITEMS: 'get-items',
+    DELETE_ITEM: 'delete-item',
+
+    // ========== USER ==========
     GET_BALANCE: 'get-balance',
-    ADD_BALANCE: 'add-balance',
-    REMOVE_BALANCE: 'remove-balance',
     BALANCE_UPDATED: 'balance-updated',
 
     // ========== PROJECTS ==========
     GET_PROJECTS: 'get-projects',
     ADD_PROJECT: 'add-project',
-    UPDATE_PROJECT: 'update-project',
+    EDIT_PROJECT: 'edit-project',
     DELETE_PROJECT: 'delete-project',
 
     GET_TODO_LISTS: 'get-todo-lists',
     ADD_TODO_LIST: 'add-todo-list',
-    UPDATE_TODO_LIST: 'update-todo-list',
+    EDIT_TODO_LIST: 'edit-todo-list',
     DELETE_TODO_LIST: 'delete-todo-list',
 
     GET_TODO_ITEMS: 'get-todo-items',
     ADD_TODO_ITEM: 'add-todo-item',
-    UPDATE_TODO_ITEM: 'update-todo-item',
+    EDIT_TODO_ITEM: 'edit-todo-item',
     DELETE_TODO_ITEM: 'delete-todo-item',
 
     // ========== IDEAS ==========      
     GET_IDEAS: 'get-ideas',
     ADD_IDEA: 'add-idea',
-    UPDATE_IDEA: 'update-idea',
+    EDIT_IDEA: 'edit-idea',
     DELETE_IDEA: 'delete-idea',
     IDEAS_UPDATED: 'ideas-updated',
 
     // ========== HABITS STACK ==========
     GET_HABIT_STACKS: 'get-habit-stacks',
     ADD_HABIT_STACK: 'add-habit-stack',
-    UPDATE_HABIT_STACK: 'update-habit-stack',
+    EDIT_HABIT_STACK: 'edit-habit-stack',
     DELETE_HABIT_STACK: 'delete-habit-stack',
     HABIT_STACKS_UPDATED: 'habit-stacks-updated',
 
     // ========== HABITS ==========
     GET_HABITS: 'get-habits',
     ADD_HABIT: 'add-habit',
-    UPDATE_HABIT: 'update-habit',
+    EDIT_HABIT: 'edit-habit',
     DELETE_HABIT: 'delete-habit',
     HABITS_UPDATED: 'habits-updated',
     TOGGLE_HABIT_COMPLETION: 'toggle-habit-completion',
     UPDATE_ALL_STREAKS: 'update-all-streaks',
 
     // ========== TAGS ==========
-    GET_TAGS: 'get-tags',
     ADD_TAG: 'add-tag',
-    UPDATE_TAG: 'update-tag',
-    DELETE_TAG: 'delete-tag',
+    EDIT_TAG: 'edit-tag',
     TAGS_UPDATED: 'tags-updated',
 
     // ========== STATISTICS ==========
@@ -74,7 +76,7 @@ export const IPC_CHANNELS = {
     // ========== ACHIEVEMENTS ==========
     GET_ACHIEVEMENTS: 'get-achievements',
     ADD_ACHIEVEMENT: 'add-achievement',
-    UPDATE_ACHIEVEMENT: 'update-achievement',
+    EDIT_ACHIEVEMENT: 'edit-achievement',
     DELETE_ACHIEVEMENT: 'delete-achievement',
   }
 

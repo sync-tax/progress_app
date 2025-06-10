@@ -1,18 +1,11 @@
-// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR IDEAS ========== 
-import { ref } from 'vue'
-
+/**
+ * IDEAS RELATED COMPOSABLE
+ * --------------------------------------------------------------------------------------------------------------
+ * @function addIdea {function} - Adds a new idea to the database
+ * @function updateIdea {function} - Updates an existing idea in the database
+ * @function onIdeasUpdate {function} - Listens for ideas updates from the database
+ */
 export function useIdeas() {
-    const ideas = ref([])
-    const ideaData = ref({
-        title: '',
-        description: '',
-        rank: 'common',
-    })
-    
-    const getIdeas = async () => {
-        ideas.value = await window.api.getIdeas()
-    }
-
     const addIdea = async (idea) => {
         return await window.api.addIdea(idea)
     }
@@ -21,21 +14,13 @@ export function useIdeas() {
         return await window.api.updateIdea(idea)
     }
 
-    const deleteIdea = async (id) => {
-        return await window.api.deleteIdea(id)
-    }
-
     const onIdeasUpdate = (callback) => {
         return window.api.onIdeasUpdate(callback)
     }
 
     return {
-        ideas,
-        ideaData,
-        getIdeas,
         addIdea,
         updateIdea,
-        deleteIdea,
         onIdeasUpdate
     }
 }

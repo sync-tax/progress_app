@@ -1,22 +1,15 @@
-// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR REWARDS ========== 
-import { ref } from 'vue'
 import { useToasts } from '../ui/useToasts'
-
 const { addToast } = useToasts()
 
+/**
+ * REWARDS RELATED COMPOSABLE
+ * --------------------------------------------------------------------------------------------------------------
+ * @function addReward {function} - Adds a new reward to the database
+ * @function editReward {function} - Edits an existing reward in the database
+ * @function onRewardsUpdate {function} - Listens for rewards updates from the database
+ * @function unlockReward {function} - Unlocks a reward and updates the balance
+ */
 export function useRewards() {
-    const rewards = ref([])
-    const rewardData = ref({
-        title: '',
-        cost: 0,
-        rank: 'common',
-        repeatable: false
-    })
-    
-    const getRewards = async () => {
-        rewards.value = await window.api.getRewards()
-    }
-
     const addReward = async (reward) => {
         return await window.api.addReward(reward)
     }
@@ -25,17 +18,13 @@ export function useRewards() {
         return await window.api.editReward(reward)
     }
 
-    const deleteReward = async (id) => {
-        return await window.api.deleteReward(id)
-    }
-
     const onRewardsUpdate = (callback) => {
         return window.api.onRewardsUpdate(callback)
     }
     
     const unlockReward = async (reward) => {
         try {
-            const result = await window.api.unlockReward(reward); // returns { success: boolean, message: string, rewardCost: number }
+            const result = await window.api.unlockReward(reward); 
             if (result.success) {
               addToast({message: '-' + result.rewardCost + ' Crystals', type: 'crystals'})
               addToast({ message: result.message, type: 'success' })
@@ -49,12 +38,8 @@ export function useRewards() {
     }
 
     return {
-        rewards,
-        rewardData,
-        getRewards,
         addReward,
         editReward,
-        deleteReward,
         unlockReward,
         onRewardsUpdate
     }

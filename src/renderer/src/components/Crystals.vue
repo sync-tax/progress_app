@@ -1,18 +1,16 @@
 <script setup>
-import { ref, onMounted} from 'vue'
+import { onMounted} from 'vue'
+import { useUser } from '../composables/db_functions/useUser'
 
-const balance = ref(0)
-
-const updateBalance = (newBalance) => {
-  balance.value = newBalance
-}
+const { balance, getBalance, onBalanceUpdate } = useUser()
 
 onMounted(async () => {
   // Initial fetch
-  balance.value = await window.api.getBalance()
+  getBalance()
 
-  // Listen for balance updates
-  window.api.onBalanceUpdate(updateBalance)
+  onBalanceUpdate(() => {
+    getBalance()
+  })
 })
 
 </script>

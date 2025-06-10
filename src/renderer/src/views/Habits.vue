@@ -14,7 +14,7 @@ import { useHabitStacks } from '../composables/db_functions/useHabitStacks'
 import { useTags } from '../composables/db_functions/useTags'
 import { useToasts } from '../composables/ui/useToasts'
 import { useEdit } from '../composables/ui/useEdit'
-import { useBalance } from '../composables/db_functions/useBalance'
+import { useUser } from '../composables/db_functions/useUser'
 
 // Vue
 import { onMounted, ref, toRaw } from 'vue'
@@ -31,7 +31,7 @@ const {
   runDailyStreakUpdate 
 } = useHabits()
 const { fetchHabitStacks, habitStacks, addHabitStack, updateHabitStack, deleteHabitStack } = useHabitStacks()
-const { addBalance } = useBalance()
+const { balance } = useUser()
 // ========= LIFECYCLE =========
 onMounted(async () => {
   await fetchHabits()
@@ -120,7 +120,7 @@ const addHabit = async (stackId) => {
           :itemData="habit" 
           :itemType="'habit'" 
           @start-edit="habitStartEditing(habit)"
-          @toggle-completion="toggleHabitCompletion(habit.id); addBalance(10); addToast({ message: '+10 crystals.', type: 'crystals' })"
+          @toggle-completion="toggleHabitCompletion(habit.id); addToast({ message: '+10 crystals.', type: 'crystals' })"
         />
         </template>
         <template v-else>

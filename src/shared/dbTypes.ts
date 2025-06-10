@@ -1,13 +1,30 @@
-// ========== CRYSTALS ==========
-export type Balance = number
+// ========== USER ==========
+export interface User {
+  balance: number
+  level: number
+  exp_current: number
+  exp_needed: number
+  focused_time: number
+  total_time: number
+  pomodoros: number
+  projects_done: number
+  todos_done: number
+  ideas_total: number
+  habits_implemented: number
+  EXP_gained: number
+  crystals_gained: number
+  created_at: string
+}
 
 // ========== PROJECTS ==========
 export interface Project {
   id: number
   title: string
   rank: string
+  time_spent: number
   active: boolean
   todo_lists: TodoList[]
+  created_at: string
 }
 
 // ========== TODO LISTS ==========
@@ -15,8 +32,8 @@ export interface TodoList {
   id: number
   title: string
   project_id: number
-  todo_items: TodoItem[]
   tag_id: number
+  position: number
 }
 
 // ========== TODO ITEMS ==========
@@ -25,6 +42,14 @@ export interface TodoItem {
   title: string
   todo_list_id: number
   completed: boolean
+  position: number
+}
+
+// ========== PROJECTS DONE ========== 
+export interface ProjectsDone {
+  id: number
+  name: string
+  created_at: string
 }
 
 // ========== IDEAS ==========
@@ -32,6 +57,7 @@ export interface Idea {
   id: number
   title: string
   description: string
+  position: number
 }
 
 // ========== HABITS ==========
@@ -45,12 +71,12 @@ export interface Habit {
   id: number
   stack_id: number
   title: string
-  position: number
   counter: number
   current_streak: number
   best_streak: number
   tag_name: string
-  last_time_completed: Date | null
+  last_time_completed: string | null
+  position: number
 }
 
 // ========== TAGS ==========
@@ -61,25 +87,8 @@ export interface Tag {
   exp_current: number
   exp_needed: number
   time_spent: number
-  created_at: Date
-}
-
-// ========== STATISTICS ==========
-export interface Statistics {
-  focused_time: number
-  total_time: number
-  pomodoros: number
-  projects_done: number
-  todos_done: number
-  ideas_total: number
-  habits_implemented: number
-  EXP_gained: number
-  crystals_gained: number
-}
-
-export interface DailyStats {
-  date: string
-  focused_time: number
+  created_at: string
+  position: number
 }
 
 // ========== REWARDS ==========
@@ -101,7 +110,7 @@ export interface Achievement {
 
 // ========== FULL DB SCHEMA ==========
 export interface DbSchema {
-  balance: Balance
+  user: User
   projects: Project[]
   todo_lists: TodoList[]
   todo_items: TodoItem[]
@@ -109,8 +118,6 @@ export interface DbSchema {
   ideas: Idea[]
   habitstacks: HabitStack[]
   habits: Habit[]
-  stats: Statistics
-  daily_stats: DailyStats[]
   rewards: Reward[]
   achievements: Achievement[]
 }

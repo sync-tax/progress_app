@@ -3,6 +3,7 @@
 // Icons
 import EditIcon from '../assets/edit.svg';
 import IdeaIcon from '../assets/idea.svg';
+import ArrowIcon from '../assets/arrow.svg';
 // Composables
 import { useDates } from '../../../shared/helpers/useDate'; // Added for isSameDateAsToday
 
@@ -18,37 +19,25 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['start-edit', 'unlock-reward', 'idea-to-project', 'toggle-completion']); // Added 'toggle-completion'
+const emit = defineEmits(['start-edit', 'move-item', 'unlock-reward', 'idea-to-project', 'toggle-completion']); // Added 'toggle-completion'
 
 const { isSameDateAsToday } = useDates(); // Added for checkbox
 
 // ========== FUNCTIONS ========== 
 // Initializes edit mode
-const handleEditClick = () => {
-    emit('start-edit', props.itemData);
-};
 
-// Initializes reward unlock mode (REWARD)
-const handleRewardUnlock = () => {
-    if (props.itemType === 'reward') {
-        emit('unlock-reward', props.itemData);
-    }
-};
-
-const handleIdeaToProjectConversion = () => {
-    if (props.itemType === 'idea') {
-        emit('idea-to-project', props.itemData);
-    }
+const handleMoveItem = (direction) => {
+    emit('move-item', props.itemData, direction);
 }
 
 // ========== HELPERS ========== 
 // TODO: move to composables (useRanks)
 // Returns rank based on level (TAGS)
 const getTagRank = (tag) => { // Renamed from getRank to be specific
-    if (tag.level >= 20) return 'legendary';
-    else if (tag.level >= 15) return 'epic';
-    else if (tag.level >= 10) return 'rare';
-    else if (tag.level >= 5) return 'uncommon';
+    if (tag.level >= 55) return 'legendary';
+    else if (tag.level >= 40) return 'epic';
+    else if (tag.level >= 25) return 'rare';
+    else if (tag.level >= 10) return 'uncommon';
     else return 'common';
 };
 
@@ -66,23 +55,19 @@ const getHabitRank = (habit) => {
 <template>
     <div class="cardWrapper">
         <!-- IDEA -->
-        <template v-if="itemType === 'idea'">
+        <template v-if="itemType === 'ideas'">
             <div class="bulbWrapper">
-                <IdeaIcon class="bulb" @click="handleIdeaToProjectConversion()" />
+                <IdeaIcon class="bulb" @click="emit('idea-to-project')" />
             </div>
 
             <div class="ideaContent">
                 <h4>{{ itemData.title }}</h4>
                 <p>{{ itemData.description }}</p>
             </div>
-
-            <div class="editIconContainer" @click="handleEditClick()">
-                <EditIcon class="editIcon" />
-            </div>
         </template>
 
         <!-- TAG -->
-        <template v-if="itemType === 'tag'">
+        <template v-if="itemType === 'tags'">
             <div class="rankGems">
                 <img v-if="getTagRank(itemData) == 'legendary'" src="../assets/LEGENDARY_MARK.png" alt="tagIcon"
                     class="rankMark" :class="getTagRank(itemData) + '-glow'">
@@ -111,7 +96,7 @@ const getHabitRank = (habit) => {
         </template>
 
         <!-- HABIT -->
-        <template v-if="itemType === 'habit'">
+        <template v-if="itemType === 'habits'">
             <div class="rankGems">
                 <img v-if="getHabitRank(itemData) == 'legendary'" src="../assets/LEGENDARY_MARK.png" alt="habitRankIcon"
                     class="rankMark" :class="getHabitRank(itemData) + '-glow'">
@@ -136,13 +121,13 @@ const getHabitRank = (habit) => {
         </template>
 
         <!-- STACK -->
-        <template v-if="itemType === 'stack'">
+        <template v-if="itemType === 'stacks'">
             <h2 class="habitStackTitle">{{ itemData.title }}</h2>
         </template>
 
         <!-- REWARD -->
-        <template v-if="itemType === 'reward'">
-            <div class="costWrapper" @click="handleRewardUnlock()">
+        <template v-if="itemType === 'rewards'">
+            <div class="costWrapper" @click="emit('unlock-reward')">
                 <img src="../assets/crystal.png" alt="crystal cost">
                 <p>{{ itemData.cost }}</p>
             </div>
@@ -150,8 +135,12 @@ const getHabitRank = (habit) => {
                 <h4>{{ itemData.title }}</h4>
             </div>
         </template>
-        <div class="editIconContainer" @click="handleEditClick()">
+        <div class="editIconContainer" @click="emit('start-edit')">
             <EditIcon class="editIcon" />
+        </div>
+        <div class="moveIconContainer">
+            <ArrowIcon class="moveIcon moveUpIcon" @click="emit('move-item', 'up')" />
+            <ArrowIcon class="moveIcon moveDownIcon" @click="emit('move-item', 'down')" />
         </div>
     </div>
 </template>

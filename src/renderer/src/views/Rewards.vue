@@ -1,6 +1,6 @@
 <script setup>
- // ========== IMPORTS ==========
- // Icons
+// ========== IMPORTS ==========
+// Icons
 import PlusIcon from '../assets/plus.svg'
 // Components
 import ModuleTitle from '../components/ModuleTitle.vue'
@@ -8,32 +8,34 @@ import Card from '../components/Card.vue'
 import EditItem from '../components/EditItem.vue'
 import AddItem from '../components/AddItem.vue'
 // Composables
-import { useBalance } from '../composables/db_functions/useBalance'
+import { useUniversals } from '../composables/db_functions/useUniversals'
+import { useUser } from '../composables/db_functions/useUser'
 import { useRewards } from '../composables/db_functions/useRewards'
-import { useToasts } from '../composables/ui/useToasts'
 import { useEdit } from '../composables/ui/useEdit'
 import { useAdd } from '../composables/ui/useAdd'
+import { useSort } from '../composables/ui/useSort'
 // Vue
 import { onMounted, onUnmounted, toRaw } from 'vue'
 
 // ========== DATA ==========
-const { fetchBalance, onBalanceUpdate } = useBalance()
-const { rewards,getRewards, deleteReward, editReward, addReward, unlockReward, onRewardsUpdate } = useRewards()
-const { addToast } = useToasts()
+const { items, getItems, deleteItem, moveItem } = useUniversals()
+const { getBalance, onBalanceUpdate } = useUser()
+const { editReward, addReward, unlockReward, onRewardsUpdate } = useRewards()
+const { sortByPosition } = useSort()
 
 let cleanupBalanceUpdate = null
 let cleanupRewardsUpdate = null
 
 // ========== LIFECYCLE ==========
-onMounted(async () => {
+onMounted(() => {
   // get initial rewards data
-  await getRewards();
+  getItems('rewards');
   // set backend listeners
   cleanupBalanceUpdate = onBalanceUpdate(() => {
-    fetchBalance()
+    getBalance()
   })
   cleanupRewardsUpdate = onRewardsUpdate(() => {
-    getRewards()
+    getItems('rewards')
   })
 });
 
@@ -57,7 +59,7 @@ const {
   deleteEditing
 } = useEdit({
   editFn: editReward,
-  deleteFn: deleteReward
+  deleteFn: deleteItem,
 });
 
 // ========== ADDER CONFIGS ==========
@@ -69,7 +71,7 @@ const {
   saveAdding
 } = useAdd({
   addFn: addReward,
-  itemType: 'reward'
+  itemType: 'rewards'
 })
 
 </script>
@@ -78,44 +80,30 @@ const {
   <ModuleTitle title="Rewards" />
 
   <div id="rewardsWrapper" class="moduleWrapper">
-    <div v-for="reward in rewards" :key="reward.id" class="rewardItemContainer">
-      <!-- Render Card if not editing a specific reward -->
+    <div v-for="reward in sortByPosition(items)" :key="reward.id" class="rewardItemContainer">
+      <!-- Show Card if not editing a specific reward -->
       <template v-if="editingId !== reward.id">
-        <Card
-          :itemData="reward" 
-          :itemType="'reward'" 
-          @start-edit="startEditing(reward)"
+        <Card :itemData="reward" :itemType="'rewards'" @start-edit="startEditing(reward, 'rewards')"
           @unlock-reward="!editingId ? unlockReward(toRaw(reward)) : null" 
-        /><!-- avoid unlocking while editing -->
-      </template>
-
-      <!-- Render EditItem if editing a specific reward -->
-      <template v-else>
-        <EditItem 
-          :itemType="'reward'" 
-          v-model="editedItemData" 
-          @save-edit="saveEditing()"
-          @cancel-edit="cancelEditing()"
-          @delete-edit="deleteEditing()"
+          @move-item="moveItem(reward, 'rewards', $event)"
         />
+      </template>
+      <!-- Show EditItem if editing a specific reward -->
+      <template v-else>
+        <EditItem :itemType="'rewards'" v-model="editedItemData" @save-edit="saveEditing()"
+          @cancel-edit="cancelEditing()" @delete-edit="deleteEditing()" />
       </template>
     </div>
 
-    <!-- Render AddIcon -->
-     <template v-if="!isAdding">
+    <!-- Show AddIcon -->
+    <template v-if="!isAdding">
       <div class="addRewardWrapper" @click="startAdding()">
         <PlusIcon class="addIcon" />
       </div>
-     </template>
-
-     <!-- Render AddItem if adding button is clicked -->
-     <template v-else>
-      <AddItem
-        :itemType="'reward'"
-        v-model="addedItemData"
-        @save-add="saveAdding()"
-        @cancel-add="cancelAdding()"
-      />
-     </template>
+    </template>
+    <!-- Show AddItem if adding button is clicked -->
+    <template v-else>
+      <AddItem :itemType="'rewards'" v-model="addedItemData" @save-add="saveAdding()" @cancel-add="cancelAdding()" />
+    </template>
   </div>
 </template>

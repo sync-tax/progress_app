@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['reward', 'tag', 'idea', 'habit', 'stack'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
   },
   allTags: {
     type: Array,
@@ -56,7 +56,7 @@ useKeydowns({
   <div class="editWrapper">
     <h2 class="editTitle">Edit {{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }}</h2>
     <!-- IDEA -->
-    <template v-if="itemType === 'idea'">
+    <template v-if="itemType === 'ideas'">
       <div class="inputWrapper">
         <label for="title">Title</label>
         <input type="text" placeholder="Add Idea Title" spellcheck="false" v-model="editableItem.title" />
@@ -68,7 +68,7 @@ useKeydowns({
     </template>
 
     <!-- HABIT STACK -->
-    <template v-if="itemType === 'stack'">
+    <template v-if="itemType === 'stacks'">
       <div class="inputWrapper">
         <label for="stackTitle">Stack Title</label>
         <input type="text" placeholder="Stack Title" spellcheck="false" v-model="editableItem.title" />
@@ -76,7 +76,7 @@ useKeydowns({
     </template>
 
     <!-- HABIT -->
-    <template v-if="itemType === 'habit'">
+    <template v-if="itemType === 'habits'">
       <div class="inputWrapper">
         <label for="habitTitle">Habit Title</label>
         <input type="text" placeholder="Habit Title" spellcheck="false" v-model="editableItem.title" />
@@ -102,7 +102,7 @@ useKeydowns({
     </template>
 
     <!-- TAG -->
-    <template v-if="itemType === 'tag'">
+    <template v-if="itemType === 'tags'">
 
       <div class="inputWrapper">
         <label for="title">Title</label>
@@ -111,7 +111,7 @@ useKeydowns({
     </template>
 
     <!-- REWARD -->
-    <template v-if="itemType === 'reward'">
+    <template v-if="itemType === 'rewards'">
       <div class="inputWrapper">
         <label for="title">Title</label>
         <input type="text" placeholder="Add Reward Title" spellcheck="false" v-model="editableItem.title" />

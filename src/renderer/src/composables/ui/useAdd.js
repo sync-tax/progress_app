@@ -32,10 +32,19 @@ export function useAdd({
   }
 
   const saveAdding = async () => {
+    if (addedItemData.value.title.trim() === '') {
+      addToast({ message: 'Title is required', type: 'error' })
+      return
+    }
+    if (addedItemData.value.cost <= 0) {
+      addToast({ message: 'Cost must be greater than 0!', type: 'error' })
+      return
+    }
+    
     try {
       const payload = toRaw(addedItemData.value)
       const result = await addFn(payload)
-      if (result && result.success && result.message) {
+      if (result.success) {
         addToast({ message: result.message, type: 'success' })
       } else {
         addToast({ message: result.message, type: 'error' })

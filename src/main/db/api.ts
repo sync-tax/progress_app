@@ -3,53 +3,100 @@ import db from './lowdb.js'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
 import { useDates } from '../../shared/helpers/useDate'
-import { Reward, Habit } from '../../shared/dbTypes'
+import { Reward, Habit, Tag, Idea, TodoList, TodoItem, HabitStack, Project } from '../../shared/dbTypes'
 
 const { getStartOfDay, isSameDateAsToday } = useDates()
 
 // register handlers for ipc channels
 // these handlers are used to update the database
 export function registerDBHandlers() {
-  // ========== CRYSTALS ==========
+  // ========== UNIVERSAL ==========
+
+  ipcMain.handle(IPC_CHANNELS.GET_ITEMS, (event, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habitStacks' | 'projects' | 'todoLists' | 'todoItems') => {
+    db.read()
+    return db.data[type]
+  })
+
+  ipcMain.handle(IPC_CHANNELS.DELETE_ITEM, (event, id: number, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habitStacks' | 'projects' | 'todoLists' | 'todoItems') => {
+    db.read()
+    const items = db.data[type]
+    const itemToDeleteIndex = items.findIndex(item => item.id === id)
+    if (itemToDeleteIndex === -1) return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found` }
+
+    items.splice(itemToDeleteIndex, 1)
+    db.write()
+    event.sender.send(IPC_CHANNELS[type.toUpperCase() + '_UPDATED'])
+    return { success: true, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} deleted!` }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.MOVE_ITEM, (event, passedItem: Reward | Habit | Idea | Tag | HabitStack | TodoList | TodoItem, type: 'reward' | 'habit' | 'idea' | 'tag' | 'habitStack' | 'todoList' | 'todoItem', direction: 'up' | 'down') => {
+    db.read()
+    const items = db.data[type]
+    const itemToMoveIndex = items.findIndex(item => item.id === passedItem.id)
+
+    if (itemToMoveIndex === -1) return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found` }
+    if (direction !== 'up' && direction !== 'down') return { success: false, message: 'No valid Direction specified' }
+
+    const itemToMove = items[itemToMoveIndex]
+    const originalPosition = itemToMove.position
+
+    if (direction === 'up') {
+      if (originalPosition === 0) {
+        return {
+          success: false,
+          message: `${type.charAt(0).toUpperCase() + type.slice(1)} already placed first.`
+        }
+      }
+      const newPosition = originalPosition - 1
+      const itemToSwapIndex = items.findIndex(item => item.position === newPosition)
+
+      if (itemToSwapIndex > -1) {
+        items[itemToSwapIndex].position = originalPosition
+      }
+      itemToMove.position = newPosition
+    } else if (direction === 'down') {
+      const maxPosition = items.length - 1
+      if (originalPosition === maxPosition) {
+        return {
+          success: false,
+          message: `${type.charAt(0).toUpperCase() + type.slice(1)} already placed last.`
+        }
+      }
+      const newPosition = originalPosition + 1
+      const itemToSwapIndex = items.findIndex(item => item.position === newPosition)
+
+      if (itemToSwapIndex > -1) {
+        items[itemToSwapIndex].position = originalPosition
+      }
+      itemToMove.position = newPosition
+    }
+
+    db.write()
+    event.sender.send(IPC_CHANNELS[type.toUpperCase() + '_UPDATED'])
+    return { success: true, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} moved!` }
+  })
+
+  // ========== USER ==========
   ipcMain.handle(IPC_CHANNELS.GET_BALANCE, () => {
     db.read()
-    return db.data.balance
-  })
-
-  ipcMain.handle(IPC_CHANNELS.ADD_BALANCE, (event, amount: number) => {
-    db.read()
-    if (db.data.balance < amount) return { success: false, message: 'Not enough crystals!' }
-    db.data.balance += amount
-    db.write()
-    return { success: true, message: 'Added ' + amount + ' crystals.' }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.REMOVE_BALANCE, (event, amount: number) => {
-    db.read()
-    db.data.balance -= amount
-    db.write()
-    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.balance)
-    return true
+    return db.data.user.balance
   })
 
   // ========== TAGS ==========
-  ipcMain.handle(IPC_CHANNELS.GET_TAGS, () => {
-    db.read()
-    return db.data.tags
-  })
-
-  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event, addedTag: Tag) => {
     db.read()
     const nextId = (db.data.tags.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.tags.length
 
     const newTag = {
       id: nextId,
-      title: '',
+      title: addedTag.title,
       level: 1,
       exp_current: 0,
       exp_needed: 60,
       time_spent: 0,
-      created_at: new Date()
+      created_at: (new Date()).toISOString(),
+      position: nextPosition
     }
     db.data.tags.push(newTag)
 
@@ -57,34 +104,21 @@ export function registerDBHandlers() {
     event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
     return {
       success: true,
-      message: 'New tag added!',
-      newTag
+      message: 'New tag added!'
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_TAG, (event, updatedTag: { id: number, title?: string, level?: number, exp_current?: number, exp_needed?: number, time_spent?: number, created_at?: Date }) => {
+  ipcMain.handle(IPC_CHANNELS.EDIT_TAG, (event, editedTag: Tag) => {
     db.read()
-    const index = db.data.tags.findIndex(tag => tag.id === updatedTag.id)
-    if (index === -1) return false
+    const index = db.data.tags.findIndex(tag => tag.id === editedTag.id)
+    if (index === -1) return { success: false, message: 'Tag not found' }
 
     const tagToUpdate = db.data.tags[index]
-    if (updatedTag.title !== undefined) tagToUpdate.title = updatedTag.title
-    if (updatedTag.level !== undefined) tagToUpdate.level = updatedTag.level
-    if (updatedTag.exp_current !== undefined) tagToUpdate.exp_current = updatedTag.exp_current
-    if (updatedTag.exp_needed !== undefined) tagToUpdate.exp_needed = updatedTag.exp_needed
-    if (updatedTag.time_spent !== undefined) tagToUpdate.time_spent = updatedTag.time_spent
-    if (updatedTag.created_at !== undefined) tagToUpdate.created_at = updatedTag.created_at
+    tagToUpdate.title = editedTag.title
 
-    db.write()
-    return true
-  })
-
-  ipcMain.handle(IPC_CHANNELS.DELETE_TAG, (event, id: number) => {
-    db.read()
-    db.data.tags = db.data.tags.filter(tag => tag.id !== id)
     db.write()
     event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
-    return true
+    return { success: true, message: 'Tag updated!' }
   })
 
   // ========== IDEAS ==========
@@ -93,14 +127,16 @@ export function registerDBHandlers() {
     return db.data.ideas
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event, addedIdea: Idea) => {
     db.read()
     const nextId = (db.data.ideas.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.ideas.length
 
     const newIdea = {
       id: nextId,
-      title: '',
-      description: '',
+      title: addedIdea.title,
+      description: addedIdea.description,
+      position: nextPosition
     }
     db.data.ideas.push(newIdea)
 
@@ -108,29 +144,39 @@ export function registerDBHandlers() {
     event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
     return {
       success: true,
-      message: 'New idea added!',
-      newIdea
+      message: 'New idea added!'
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_IDEA, (event, updatedIdea: { id: number, title?: string, description?: string }) => {
+  ipcMain.handle(IPC_CHANNELS.EDIT_IDEA, (event, updatedIdea: Idea) => {
     db.read()
     const index = db.data.ideas.findIndex(idea => idea.id === updatedIdea.id)
-    if (index === -1) return false
+    if (index === -1) return { success: false, message: 'Idea not found' }
 
     const ideaToUpdate = db.data.ideas[index]
-    if (updatedIdea.title !== undefined) ideaToUpdate.title = updatedIdea.title
-    if (updatedIdea.description !== undefined) ideaToUpdate.description = updatedIdea.description
+    ideaToUpdate.title = updatedIdea.title
+    ideaToUpdate.description = updatedIdea.description
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
+    return {
+      success: true,
+      message: 'Idea updated!'
+    }
   })
 
   ipcMain.handle(IPC_CHANNELS.DELETE_IDEA, (event, id: number) => {
     db.read()
-    db.data.ideas = db.data.ideas.filter(idea => idea.id !== id)
+    const index = db.data.ideas.findIndex(idea => idea.id === id)
+    if (index === -1) return { success: false, message: 'Idea not found' }
+
+    db.data.ideas.splice(index, 1)
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
+    return {
+      success: true,
+      message: 'Idea deleted!'
+    }
   })
 
   // ========== REWARDS ==========
@@ -142,10 +188,7 @@ export function registerDBHandlers() {
   ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event, addedReward: Reward) => {
     db.read()
     const nextId = (db.data.rewards.at(-1)?.id || 0) + 1
-    const nextPosition = (db.data.rewards.at(-1)?.position || 0) + 1
-
-    if (addedReward.title === '') return { success: false, message: 'Reward title cannot be empty' }
-    if (addedReward.cost === 0) return { success: false, message: 'Reward cost cannot be 0' }
+    const nextPosition = db.data.rewards.length
 
     const newReward = {
       id: nextId,
@@ -161,8 +204,7 @@ export function registerDBHandlers() {
     db.write()
     return {
       success: true,
-      message: 'Reward added!',
-      newReward
+      message: 'Reward added!'
     }
   })
 
@@ -194,31 +236,25 @@ export function registerDBHandlers() {
 
   ipcMain.handle(IPC_CHANNELS.UNLOCK_REWARD, (event, passedReward: Reward) => {
     db.read();
-    const rewardIndex = db.data.rewards.findIndex(r => r.id === passedReward.id)
+    const index = db.data.rewards.findIndex(reward => reward.id === passedReward.id)
+    if (index === -1) return { success: false, message: 'Reward not found' }
 
-    if (rewardIndex === -1) {
-      return { success: false, message: 'Uups, this reward does not exist.' }
-    }
+    const reward = db.data.rewards[index]
 
-    const reward = db.data.rewards[rewardIndex]
+    // check if enough crystals
+    if (reward.cost > db.data.user.balance) return { success: false, message: 'Not enough crystals!' }
 
-    if (reward.cost > db.data.balance) {
-      return { success: false, message: 'Not enough crystals!' }
-    }
-
-    // pay crystals for reward
-    const newBalance = db.data.balance - reward.cost
-    db.data.balance = newBalance
+    // substract crystals from balance
+    const newBalance = db.data.user.balance - reward.cost
+    db.data.user.balance = newBalance
 
     // remove non-repeatable rewards
-    if (!reward.repeatable) {
-      db.data.rewards.splice(rewardIndex, 1)
-    }
+    if (!reward.repeatable) db.data.rewards.splice(index, 1)
 
     db.write()
 
-    // send updates to renderer
-    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.balance)
+    // TODO: Remove passing user balance -> don't need it
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
     event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
 
     return {
@@ -234,38 +270,55 @@ export function registerDBHandlers() {
     return db.data.habitstacks
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_HABIT_STACK, (event, newHabitStack: { title: string, position: number }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_HABIT_STACK, (event, addedHabitStack: HabitStack) => {
     db.read()
     const nextId = (db.data.habitstacks.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.habitstacks.length
 
-    db.data.habitstacks.push({
+    const newHabitStack = {
       id: nextId,
-      title: newHabitStack.title,
-      position: nextId,
-    })
+      title: addedHabitStack.title,
+      position: nextPosition,
+    }
+    db.data.habitstacks.push(newHabitStack)
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
+    return {
+      success: true,
+      message: 'New habit stack added!'
+    }
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_HABIT_STACK, (event, updatedHabitStack: { id: number, title?: string, position?: number }) => {
+  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT_STACK, (event, editedHabitStack: HabitStack) => {
     db.read()
-    const index = db.data.habitstacks.findIndex(habitStack => habitStack.id === updatedHabitStack.id)
-    if (index === -1) return false
+    const index = db.data.habitstacks.findIndex(habitStack => habitStack.id === editedHabitStack.id)
+    if (index === -1) return { success: false, message: 'Habit stack not found' }
 
     const habitStackToUpdate = db.data.habitstacks[index]
-    if (updatedHabitStack.title !== undefined) habitStackToUpdate.title = updatedHabitStack.title
-    if (updatedHabitStack.position !== undefined) habitStackToUpdate.position = updatedHabitStack.position
+    habitStackToUpdate.title = editedHabitStack.title
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
+
+    return {
+      success: true,
+      message: 'Habit stack updated!'
+    }
   })
 
   ipcMain.handle(IPC_CHANNELS.DELETE_HABIT_STACK, (event, id: number) => {
     db.read()
-    db.data.habitstacks = db.data.habitstacks.filter(habitStack => habitStack.id !== id)
+    const index = db.data.habitstacks.findIndex(habitStack => habitStack.id === id)
+    if (index === -1) return { success: false, message: 'Habit stack not found' }
+
+    db.data.habitstacks.splice(index, 1)
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
+    return {
+      success: true,
+      message: 'Habit stack deleted!'
+    }
   })
 
   // ========== HABITS ==========
@@ -274,22 +327,23 @@ export function registerDBHandlers() {
     return db.data.habits
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, newHabit: { stack_id: number }) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, addedHabit: Habit) => {
     db.read()
     const nextId = (db.data.habits.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.habits.length
 
-    const addedHabit = {
+    const newHabit = {
       id: nextId,
-      title: '',
-      tag_name: db.data.tags.at(-1)?.title || 'Other',
+      title: addedHabit.title,
+      tag_name: addedHabit.tag_name,
       counter: 0,
       current_streak: 0,
       best_streak: 0,
-      stack_id: newHabit.stack_id,
-      position: 0,
-      last_time_completed: new Date('1999-02-10T09:15:00'), // default value -> Probably kinda dumb solution
+      stack_id: addedHabit.stack_id,
+      position: nextPosition,
+      last_time_completed: (new Date('1999-02-10T09:15:00')).toISOString(), // just a default value
     }
-    db.data.habits.push(addedHabit)
+    db.data.habits.push(newHabit)
 
     db.write()
     event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
@@ -300,38 +354,36 @@ export function registerDBHandlers() {
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_HABIT, (event, updatedHabit: { id: number, title?: string, counter?: number, current_streak?: number, best_streak?: number, tag_name?: string, stack_id?: number, position?: number, last_time_completed?: Date }) => {
+  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT, (event, editedHabit: Habit) => {
     db.read()
-    const index = db.data.habits.findIndex(habit => habit.id === updatedHabit.id)
-    if (index === -1) return false
+    const index = db.data.habits.findIndex(habit => habit.id === editedHabit.id)
+    if (index === -1) return { success: false, message: 'Habit not found' }
 
     const habitToUpdate = db.data.habits[index]
-    if (updatedHabit.title !== undefined) habitToUpdate.title = updatedHabit.title
-    if (updatedHabit.counter !== undefined) habitToUpdate.counter = updatedHabit.counter
-    if (updatedHabit.current_streak !== undefined) habitToUpdate.current_streak = updatedHabit.current_streak
-    if (updatedHabit.best_streak !== undefined) habitToUpdate.best_streak = updatedHabit.best_streak
-    if (updatedHabit.tag_name !== undefined) habitToUpdate.tag_name = updatedHabit.tag_name
-    if (updatedHabit.stack_id !== undefined) habitToUpdate.stack_id = updatedHabit.stack_id
-    if (updatedHabit.position !== undefined) habitToUpdate.position = updatedHabit.position
-    if (updatedHabit.last_time_completed !== undefined) habitToUpdate.last_time_completed = updatedHabit.last_time_completed
+    habitToUpdate.title = editedHabit.title
+    habitToUpdate.tag_name = editedHabit.tag_name
+    habitToUpdate.stack_id = editedHabit.stack_id
 
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    return { success: true, message: 'Habit updated!' }
   })
 
   ipcMain.handle(IPC_CHANNELS.DELETE_HABIT, (event, id: number) => {
     db.read()
-    db.data.habits = db.data.habits.filter(habit => habit.id !== id)
+    const index = db.data.habits.findIndex(habit => habit.id === id)
+    if (index === -1) return { success: false, message: 'Habit not found' }
+
+    db.data.habits.splice(index, 1)
     db.write()
-    return true
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    return { success: true, message: 'Habit deleted!' }
   })
 
   ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habitId: number) => {
     db.read()
-    const habitIndex = db.data.habits.findIndex(h => h.id === habitId)
-    if (habitIndex === -1) {
-      return { success: false, error: 'Habit not found' }
-    }
+    const habitIndex = db.data.habits.findIndex(habit => habit.id === habitId)
+    if (habitIndex === -1) return { success: false, error: 'Habit not found' }
 
     const habitToUpdate: Habit = { ...db.data.habits[habitIndex] }
     const todayDate = getStartOfDay(new Date())
@@ -350,7 +402,7 @@ export function registerDBHandlers() {
       // Calculate yesterday relative to todayDate to ensure consistency
       const yesterdayDate = getStartOfDay(new Date(todayDate.getTime() - 24 * 60 * 60 * 1000))
       // yesterdayDate is Date | null, which is compatible with habitToUpdate.last_time_completed (Date | null)
-      habitToUpdate.last_time_completed = yesterdayDate || null
+      habitToUpdate.last_time_completed = yesterdayDate?.toISOString() || null
     } else {
       // CHECKING for today
       habitToUpdate.counter = (habitToUpdate.counter || 0) + 1
@@ -360,7 +412,7 @@ export function registerDBHandlers() {
         habitToUpdate.best_streak = habitToUpdate.current_streak
       }
       // todayDate is confirmed as Date here due to the check above, compatible with habitToUpdate.last_time_completed
-      habitToUpdate.last_time_completed = todayDate
+      habitToUpdate.last_time_completed = todayDate.toISOString()
     }
 
     // Ensure streaks and counters don't go below 0
