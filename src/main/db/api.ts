@@ -12,24 +12,53 @@ const { getStartOfDay, isSameDateAsToday } = useDates()
 export function registerDBHandlers() {
   // ========== UNIVERSAL ==========
 
-  ipcMain.handle(IPC_CHANNELS.GET_ITEMS, (event, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habitStacks' | 'projects' | 'todoLists' | 'todoItems') => {
+  ipcMain.handle(IPC_CHANNELS.GET_ITEMS, (event, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habit_stacks' | 'projects' | 'todo_lists' | 'todo_items') => {
     db.read()
     return db.data[type]
   })
 
-  ipcMain.handle(IPC_CHANNELS.DELETE_ITEM, (event, id: number, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habitStacks' | 'projects' | 'todoLists' | 'todoItems') => {
+  ipcMain.handle(IPC_CHANNELS.DELETE_ITEM, (event, id: number, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habit_stacks' | 'projects' | 'todo_lists' | 'todo_items') => {
     db.read()
     const items = db.data[type]
     const itemToDeleteIndex = items.findIndex(item => item.id === id)
     if (itemToDeleteIndex === -1) return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found` }
 
-    // update positions of items after deleting
+    // Handle position updates of non nested items
     const itemToDelete = items[itemToDeleteIndex]
-    items.forEach((item) => {
-      if (item.position > itemToDelete.position) {
-        item.position--
-      }
-    })
+
+    if (type !== 'habits' && type !== 'todo_items') {
+      items.forEach((item) => {
+        if (item.position > itemToDelete.position) {
+          item.position--
+        }
+      })
+    }
+
+    // Handle position updates of nested habits
+    if (type === 'habits') {
+      const habits = db.data.habits
+      const habitToDelete = habits[itemToDeleteIndex]
+      const habitToDeleteStack = habitToDelete.stack_id
+      habits.forEach((habit) => {
+        if (habit.stack_id === habitToDeleteStack && habit.position > habitToDelete.position) {
+          habit.position--
+        }
+      })
+    }
+
+    // Handle position updates of nested todo_items
+    if (type === 'todo_items') {
+      const todoItems = db.data.todo_items
+      const todoItemToDelete = todoItems[itemToDeleteIndex]
+      const todoItemToDeleteList = todoItemToDelete.todo_list_id
+      todoItems.forEach((todoItem) => {
+        if (todoItem.todo_list_id === todoItemToDeleteList && todoItem.position > todoItemToDelete.position) {
+          todoItem.position--
+        }
+      })
+    }
+
+
 
     items.splice(itemToDeleteIndex, 1)
     db.write()
@@ -37,7 +66,7 @@ export function registerDBHandlers() {
     return { success: true, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} deleted!` }
   })
 
-  ipcMain.handle(IPC_CHANNELS.MOVE_ITEM, (event, passedItem: Reward | Habit | Idea | Tag | HabitStack | TodoList | TodoItem, type: 'reward' | 'habit' | 'idea' | 'tag' | 'habitStack' | 'todoList' | 'todoItem', direction: 'up' | 'down') => {
+  ipcMain.handle(IPC_CHANNELS.MOVE_ITEM, (event, passedItem: Reward | Habit | Idea | Tag | HabitStack | TodoList | TodoItem, type: 'rewards' | 'habits' | 'ideas' | 'tags' | 'habit_stacks' | 'todo_lists' | 'todo_items', direction: 'up' | 'down') => {
     db.read()
     const items = db.data[type]
     const itemToMoveIndex = items.findIndex(item => item.id === passedItem.id)
@@ -45,38 +74,63 @@ export function registerDBHandlers() {
     if (itemToMoveIndex === -1) return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found` }
     if (direction !== 'up' && direction !== 'down') return { success: false, message: 'No valid Direction specified' }
 
-    const itemToMove = items[itemToMoveIndex]
-    const originalPosition = itemToMove.position
+    if (type !== 'habits' && type !== 'todo_items') {
+      const itemToMove = items[itemToMoveIndex]
+      const currentPosition = itemToMove.position
 
-    if (direction === 'up') {
-      if (originalPosition === 0) {
-        return {
-          success: false,
-          message: `${type.charAt(0).toUpperCase() + type.slice(1)} already placed first.`
-        }
-      }
-      const newPosition = originalPosition - 1
+      // Already at TOP
+      if (currentPosition === 0 && direction === 'up') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed first.` }
+      // Already at BOTTOM
+      if (currentPosition === items.length - 1 && direction === 'down') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed last.` }
+
+      const newPosition = direction === 'up' ? currentPosition - 1 : currentPosition + 1
       const itemToSwapIndex = items.findIndex(item => item.position === newPosition)
+      const itemToSwap = items[itemToSwapIndex]
 
-      if (itemToSwapIndex > -1) {
-        items[itemToSwapIndex].position = originalPosition
-      }
+      itemToSwap.position = currentPosition
       itemToMove.position = newPosition
-    } else if (direction === 'down') {
-      const maxPosition = items.length -1
-      if (originalPosition === maxPosition) {
-        return {
-          success: false,
-          message: `${type.charAt(0).toUpperCase() + type.slice(1)} already placed last.`
-        }
-      }
-      const newPosition = originalPosition + 1
-      const itemToSwapIndex = items.findIndex(item => item.position === newPosition)
+    }
 
-      if (itemToSwapIndex > -1) {
-        items[itemToSwapIndex].position = originalPosition
-      }
-      itemToMove.position = newPosition
+    if(type === 'habits') {
+      const habits = db.data.habits
+      const habitToMove = habits[itemToMoveIndex]
+      const habitToMoveStack = habitToMove.stack_id
+      const habitsInSameStack = habits.filter(habit => habit.stack_id === habitToMoveStack)
+
+      const currentPosition = habitToMove.position
+
+      // Already at TOP
+      if (currentPosition === 0 && direction === 'up') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed first.` }
+      // Already at BOTTOM
+      if (currentPosition === habitsInSameStack.length - 1 && direction === 'down') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed last.` }
+
+      const newPosition = direction === 'up' ? currentPosition - 1 : currentPosition + 1
+      const habitToSwapIndex = habitsInSameStack.findIndex(habit => habit.position === newPosition)
+      const habitToSwap = habitsInSameStack[habitToSwapIndex]
+
+      habitToSwap.position = currentPosition
+      habitToMove.position = newPosition
+    }
+
+    if(type === 'todo_items') {
+      const todoItems = db.data.todo_items
+      const todoItemToMove = todoItems[itemToMoveIndex]
+      const todoItemToMoveList = todoItemToMove.todo_list_id
+      const todoItemsInSameList = todoItems.filter(todoItem => todoItem.todo_list_id === todoItemToMoveList)
+
+      const currentPosition = todoItemToMove.position
+
+      // Already at TOP
+      if (currentPosition === 0 && direction === 'up') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed first.` }
+      // Already at BOTTOM
+      if (currentPosition === todoItemsInSameList.length - 1 && direction === 'down') return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1, -1)} already placed last.` }
+
+      const newPosition = direction === 'up' ? currentPosition - 1 : currentPosition + 1
+      const todoItemToSwapIndex = todoItemsInSameList.findIndex(todoItem => todoItem.position === newPosition)
+      const todoItemToSwap = todoItemsInSameList[todoItemToSwapIndex]
+
+      todoItemToSwap.position = currentPosition
+      todoItemToMove.position = newPosition
     }
 
     db.write()
@@ -320,7 +374,9 @@ export function registerDBHandlers() {
   ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, addedHabit: Habit) => {
     db.read()
     const nextId = (db.data.habits.at(-1)?.id || 0) + 1
-    const nextPosition = db.data.habits.length
+    // find the next position in the same stack
+    const nextPosition = db.data.habits.filter(habit => habit.stack_id === addedHabit.stack_id).length
+    console.log(nextPosition)
 
     if (!addedHabit.title || addedHabit.title.trim() === '') {
       return {
@@ -369,6 +425,13 @@ export function registerDBHandlers() {
     if (index === -1) return { success: false, message: 'Habit not found' }
 
     const habitToUpdate = db.data.habits[index]
+    const newHabitStack = editedHabit.stack_id
+    const oldHabitStack = habitToUpdate.stack_id
+    // update position if stack_id changed
+    if (newHabitStack !== oldHabitStack) {
+      habitToUpdate.position = db.data.habits.filter(habit => habit.stack_id === newHabitStack).length
+    }
+
     habitToUpdate.title = editedHabit.title
     habitToUpdate.tag_name = editedHabit.tag_name
     habitToUpdate.stack_id = editedHabit.stack_id

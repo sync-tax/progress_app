@@ -22,10 +22,10 @@ export function useAdd({
   const addedItemData = ref({})
   const activeListId = ref(null)
 
-  const startAdding = (activeList = null) => {
+  const startAdding = (listId = null) => {
     addedItemData.value = { ...constructPayload(itemType) }
     isAdding.value = true
-    if (activeList) activeListId.value = activeList
+    if (listId) activeListId.value = listId
   }
 
   const cancelAdding = () => {

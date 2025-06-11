@@ -8,9 +8,9 @@ const api = {
   windowControl: (action) => ipcRenderer.send('window-control', action),
 
   // Universal Functions
-  moveItem: (item, itemType, direction) => ipcRenderer.invoke(IPC_CHANNELS.MOVE_ITEM, item, itemType, direction),
   getItems: (itemType) => ipcRenderer.invoke(IPC_CHANNELS.GET_ITEMS, itemType),
   deleteItem: (id, itemType) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_ITEM, id, itemType),
+  moveItem: (item, itemType, direction) => ipcRenderer.invoke(IPC_CHANNELS.MOVE_ITEM, item, itemType, direction),
 
   // User Functions
   getBalance: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_BALANCE),
@@ -60,6 +60,7 @@ const api = {
   // Habit Functions
   addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
   editHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_HABIT, habit),
+  moveNestedHabit: async (habit, direction) => await ipcRenderer.invoke(IPC_CHANNELS.MOVE_NESTED_HABIT, habit, direction),
   toggleHabitCompletion: async (habitId) => await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, habitId),
   updateAllStreaks: async () => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_ALL_STREAKS),
   onHabitsUpdate: (callback) => {

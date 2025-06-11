@@ -110,12 +110,8 @@ const {
   itemType: 'habits',
 })
 
-const startAddingHabitToStack = (stackId) => {
-  habitStartAdding({ stack_id: stackId })
-}
-
 // TODO: Add Habit Stack Adder
-const {
+/*const {
   isAdding: habitStackIsAdding,
   addedItemData: habitStackAddedItemData,
   startAdding: habitStackStartAdding,
@@ -124,7 +120,7 @@ const {
 } = useAdd({
   addFn: addHabitStack,
   itemType: 'habit_stacks'
-})
+})*/
 </script>
 
 <template>
@@ -139,7 +135,8 @@ const {
       <div class="stackTitleWrapper">
         <template v-if="stackEditingId !== habit_stack.id">
           <Card :itemData="habit_stack" :itemType="'habit_stacks'"
-            @start-edit="stackStartEditing(habit_stack, 'habit_stacks')" />
+            @start-edit="stackStartEditing(habit_stack, 'habit_stacks')"
+            @move-item="moveItem(habit_stack, 'habit_stacks', $event)" />
         </template>
         <template v-else>
           <EditItem :itemType="'habit_stacks'" v-model="stackEditedItemData" @save-edit="stackSaveEditing"
@@ -150,7 +147,8 @@ const {
       <div v-for="habit in habits.filter(habit => habit.stack_id === habit_stack.id)" :key="habit.id" id="habitCard">
         <template v-if="habitEditingId !== habit.id">
           <Card :itemData="habit" :itemType="'habits'" @start-edit="habitStartEditing(habit, 'habits')"
-            @toggle-completion="toggleHabitCompletion(habit.id); addToast({ message: '+10 crystals.', type: 'crystals' })" />
+            @toggle-completion="toggleHabitCompletion(habit.id);"
+            @move-item="moveItem(habit, 'habits', $event)" />
         </template>
         <template v-else>
           <EditItem :itemType="'habits'" :allTags="tags" :allHabitStacks="habit_stacks" v-model="habitEditedItemData"

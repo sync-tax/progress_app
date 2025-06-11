@@ -25,6 +25,7 @@ export interface Project {
   active: boolean
   todo_lists: TodoList[]
   created_at: string
+  position: number
 }
 
 // ========== TODO LISTS ==========
