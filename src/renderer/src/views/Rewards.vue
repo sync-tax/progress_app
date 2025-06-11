@@ -15,10 +15,10 @@ import { useEdit } from '../composables/ui/useEdit'
 import { useAdd } from '../composables/ui/useAdd'
 import { useSort } from '../composables/ui/useSort'
 // Vue
-import { onMounted, onUnmounted, toRaw } from 'vue'
+import { onMounted, onUnmounted, toRaw, ref } from 'vue'
 
 // ========== DATA ==========
-const { items, getItems, deleteItem, moveItem } = useUniversals()
+const { getItems, deleteItem, moveItem } = useUniversals()
 const { getBalance, onBalanceUpdate } = useUser()
 const { editReward, addReward, unlockReward, onRewardsUpdate } = useRewards()
 const { sortByPosition } = useSort()
@@ -26,26 +26,29 @@ const { sortByPosition } = useSort()
 let cleanupBalanceUpdate = null
 let cleanupRewardsUpdate = null
 
+const rewards = ref([])
+
 // ========== LIFECYCLE ==========
-onMounted(() => {
+onMounted(async () => {
   // get initial rewards data
-  getItems('rewards');
+  rewards.value = sortByPosition(await getItems('rewards'))
+
   // set backend listeners
-  cleanupBalanceUpdate = onBalanceUpdate(() => {
-    getBalance()
+  cleanupBalanceUpdate = onBalanceUpdate(async () => {
+    await getBalance()
   })
-  cleanupRewardsUpdate = onRewardsUpdate(() => {
-    getItems('rewards')
+  cleanupRewardsUpdate = onRewardsUpdate(async () => {
+    rewards.value = sortByPosition(await getItems('rewards'))
   })
 });
 
-onUnmounted(() => {
+onUnmounted(async () => {
   // cleanup listeners
   if (cleanupBalanceUpdate) {
-    cleanupBalanceUpdate();
+    await cleanupBalanceUpdate();
   }
   if (cleanupRewardsUpdate) {
-    cleanupRewardsUpdate();
+    await cleanupRewardsUpdate();
   }
 });
 
@@ -80,7 +83,7 @@ const {
   <ModuleTitle title="Rewards" />
 
   <div id="rewardsWrapper" class="moduleWrapper">
-    <div v-for="reward in sortByPosition(items)" :key="reward.id" class="rewardItemContainer">
+    <div v-for="reward in rewards" :key="reward.id" class="rewardItemContainer">
       <!-- Show Card if not editing a specific reward -->
       <template v-if="editingId !== reward.id">
         <Card :itemData="reward" :itemType="'rewards'" @start-edit="startEditing(reward, 'rewards')"

@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'habit_stacks'].includes(value)
   },
   allTags: {
     type: Array,
@@ -68,7 +68,7 @@ useKeydowns({
     </template>
 
     <!-- HABIT STACK -->
-    <template v-if="itemType === 'stacks'">
+    <template v-if="itemType === 'habit_stacks'">
       <div class="inputWrapper">
         <label for="stackTitle">Stack Title</label>
         <input type="text" placeholder="Stack Title" spellcheck="false" v-model="editableItem.title" />

@@ -1,4 +1,4 @@
-import { toRaw, ref } from 'vue'
+import { toRaw } from 'vue'
 import { useToasts } from '../ui/useToasts'
 const { addToast } = useToasts()
 
@@ -10,10 +10,8 @@ const { addToast } = useToasts()
  * @function moveItem {function} - Updates an item's position property
  */
 export function useUniversals() {
-  const items = ref([])
-
   const getItems = async (itemType) => {
-    items.value = await window.api.getItems(itemType)
+    return await window.api.getItems(itemType)
   }
 
   const deleteItem = async (index, itemType) => {
@@ -23,11 +21,9 @@ export function useUniversals() {
   const moveItem = async (item, itemType, direction) => {
     try {
       const result = await window.api.moveItem(toRaw(item), itemType, direction)
-      if (result.success) {
-        addToast({ message: result.message, type: 'success' })
-      } else {
+      if (!result.success) {
         addToast({ message: result.message, type: 'error' })
-      }
+      } 
     } catch (error) {
       console.error('Error moving item:', error)
       addToast({ message: 'An error occured...', type: 'error' })
@@ -35,7 +31,6 @@ export function useUniversals() {
   }
   
   return {
-    items,
     getItems,
     deleteItem,
     moveItem

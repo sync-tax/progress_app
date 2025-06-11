@@ -16,31 +16,25 @@ const { addToast } = useToasts()
  */
 export function useAdd({
   addFn,
-  itemType
+  itemType,
 }) { 
   const isAdding = ref(false)
   const addedItemData = ref({})
+  const activeListId = ref(null)
 
-  const startAdding = () => {
+  const startAdding = (activeList = null) => {
     addedItemData.value = { ...constructPayload(itemType) }
     isAdding.value = true
+    if (activeList) activeListId.value = activeList
   }
 
   const cancelAdding = () => {
     isAdding.value = false
     addedItemData.value = {}
+    if (activeListId.value) activeListId.value = null
   }
 
   const saveAdding = async () => {
-    if (addedItemData.value.title.trim() === '') {
-      addToast({ message: 'Title is required', type: 'error' })
-      return
-    }
-    if (addedItemData.value.cost <= 0) {
-      addToast({ message: 'Cost must be greater than 0!', type: 'error' })
-      return
-    }
-    
     try {
       const payload = toRaw(addedItemData.value)
       const result = await addFn(payload)
@@ -48,6 +42,7 @@ export function useAdd({
         addToast({ message: result.message, type: 'success' })
       } else {
         addToast({ message: result.message, type: 'error' })
+        return
       }
     } catch (error) {
       console.error('Error adding item:', error)
@@ -59,6 +54,7 @@ export function useAdd({
   return {
     isAdding,
     addedItemData,
+    activeListId,
     startAdding,
     cancelAdding,
     saveAdding,
@@ -73,26 +69,26 @@ export function useAdd({
  */
 const constructPayload = (itemType) => {
     switch (itemType) {
-      case 'reward':
+      case 'rewards':
         return {
           title: '',
           cost: 0,
           repeatable: false,
         }
-      case 'tag':
+      case 'tags':
         return {
           title: ''
         }
-      case 'stack':
+      case 'habit_stacks':
         return {
           title: ''
         }
-      case 'idea':
+      case 'ideas':
         return {
           title: '',
           description: ''
         }
-      case 'habit':
+      case 'habits':
         return {
           title: '',
           tag_name: null,

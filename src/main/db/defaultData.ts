@@ -122,6 +122,16 @@ const defaultData: DbSchema = {
       "time_spent": 2000,
       "created_at": "2025-06-03T07:00:00Z",
       "position": 2
+    },
+    {
+      "id": 4,
+      "title": "CatDad",
+      "level": 56,
+      "exp_current": 0,
+      "exp_needed": 60,
+      "time_spent": 0,
+      "created_at": "2025-06-11T07:37:06.507Z",
+      "position": 3
     }
   ],
   "ideas": [
@@ -144,7 +154,7 @@ const defaultData: DbSchema = {
       "position": 2
     }
   ],
-  "habitstacks": [
+  "habit_stacks": [
     {
       "id": 1,
       "title": "Morning Routine",

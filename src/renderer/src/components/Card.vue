@@ -121,7 +121,7 @@ const getHabitRank = (habit) => {
         </template>
 
         <!-- STACK -->
-        <template v-if="itemType === 'stacks'">
+        <template v-if="itemType === 'habit_stacks'">
             <h2 class="habitStackTitle">{{ itemData.title }}</h2>
         </template>
 

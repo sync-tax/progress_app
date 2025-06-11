@@ -53,6 +53,14 @@ body main .moduleWrapper {
   margin-top: 10px;
 }
 
+#constructionIcon {
+  scale: 8;
+  fill: #DBB997;
+  position: absolute;
+  top: 300px;
+  left: 450px;
+}
+
 .dragBar {
   height: 20px;
   width: 100vw;
@@ -718,6 +726,7 @@ progress::-webkit-progress-value {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  padding-top: 18px;
 }
 #ideasWrapper #ideaCard .ideaContent h4 {
   font-family: "Cinzel", sans-serif;

@@ -1,33 +1,19 @@
 // ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABITS ========== 
-import { ref } from 'vue'
 import { useToasts } from '../ui/useToasts'
 
 const { addToast } = useToasts()
 
 export function useHabits() {
-    const habits = ref([])
-    const habitData = ref({
-        title: '',
-        counter: 0,
-        current_streak: 0,
-        best_streak: 0,
-        tag_name: ''
-    })
-    
-    const fetchHabits = async () => {
-        habits.value = await window.api.getHabits();
-    }
-
     const addHabit = async (habit) => {
         return await window.api.addHabit(habit)
     }
 
-    const updateHabit = async (habit) => {
-        return await window.api.updateHabit(habit)
+    const editHabit = async (habit) => {
+        return await window.api.editHabit(habit)
     }
 
-    const deleteHabit = async (id) => {
-        return await window.api.deleteHabit(id)
+    const onHabitsUpdate = (callback) => {
+        return window.api.onHabitsUpdate(callback)
     }
 
     const toggleHabitCompletion = async (habitId) => {
@@ -59,7 +45,6 @@ export function useHabits() {
             if (result && result.success) {
                 if (result.updatedCount > 0) {
                     addToast({ message: `You lost ${result.updatedCount} streaks!`, type: 'warning' });
-                    await fetchHabits(); // Refresh the list if any streaks were reset
                 }
                 if (result.errors && result.errors.length > 0) {
                     addToast({ message: `Errors during daily streak update: ${result.errors}`, type: 'error' });
@@ -75,20 +60,10 @@ export function useHabits() {
         }
     };
 
-    // Listener for HABITS_UPDATED event from main process
-    // This helps keep data in sync if backend changes habits outside direct user action
-    // (e.g. after daily streak update from another window or on app start)
-    const onHabitsUpdate = (callback) => {
-        return window.api.onHabitsUpdate(callback)
-    }
 
     return {
-        habits,
-        habitData,
-        fetchHabits,
         addHabit,
-        updateHabit,
-        deleteHabit,
+        editHabit,
         toggleHabitCompletion,
         runDailyStreakUpdate,
         onHabitsUpdate

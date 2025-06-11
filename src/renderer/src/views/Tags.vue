@@ -14,27 +14,29 @@ import { useAdd } from '../composables/ui/useAdd'
 import { useEdit } from '../composables/ui/useEdit'
 import { useSort } from '../composables/ui/useSort'
 // Vue
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 // ========== DATA ==========
-const {editTag, addTag, onTagsUpdate } = useTags()
-const { items, getItems, deleteItem, moveItem } = useUniversals()
+const { editTag, addTag, onTagsUpdate } = useTags()
+const { getItems, deleteItem, moveItem } = useUniversals()
 const { sortByPosition } = useSort()
+
+const tags = ref([])
 
 let cleanupTagsUpdate = null
 
 // ========== LIFECYCLE ==========
-onMounted(() => {
-  getItems('tags')
+onMounted(async () => {
+  tags.value = sortByPosition(await getItems('tags'))
 
-  cleanupTagsUpdate = onTagsUpdate(() => {
-    getItems('tags')
+  cleanupTagsUpdate = onTagsUpdate(async () => {
+    tags.value = sortByPosition(await getItems('tags'))
   })
 })
 
-onUnmounted(() => {
+onUnmounted(async () => {
   if (cleanupTagsUpdate) {
-    cleanupTagsUpdate()
+    await cleanupTagsUpdate()
   }
 })
 
@@ -68,7 +70,7 @@ const {
   <ModuleTitle title="Tags" />
 
   <div id="tagsWrapper" class="moduleWrapper">
-    <div v-for="tag in sortByPosition(items)" :key="tag.id" id="tagCard">
+    <div v-for="tag in tags" :key="tag.id" id="tagCard">
       <!-- Show Card if not editing this specific tag -->
       <template v-if="editingId !== tag.id">
         <Card

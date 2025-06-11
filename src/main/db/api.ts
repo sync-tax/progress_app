@@ -23,6 +23,14 @@ export function registerDBHandlers() {
     const itemToDeleteIndex = items.findIndex(item => item.id === id)
     if (itemToDeleteIndex === -1) return { success: false, message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found` }
 
+    // update positions of items after deleting
+    const itemToDelete = items[itemToDeleteIndex]
+    items.forEach((item) => {
+      if (item.position > itemToDelete.position) {
+        item.position--
+      }
+    })
+
     items.splice(itemToDeleteIndex, 1)
     db.write()
     event.sender.send(IPC_CHANNELS[type.toUpperCase() + '_UPDATED'])
@@ -55,7 +63,7 @@ export function registerDBHandlers() {
       }
       itemToMove.position = newPosition
     } else if (direction === 'down') {
-      const maxPosition = items.length - 1
+      const maxPosition = items.length -1
       if (originalPosition === maxPosition) {
         return {
           success: false,
@@ -87,6 +95,13 @@ export function registerDBHandlers() {
     db.read()
     const nextId = (db.data.tags.at(-1)?.id || 0) + 1
     const nextPosition = db.data.tags.length
+
+    if (!addedTag.title || addedTag.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
 
     const newTag = {
       id: nextId,
@@ -122,15 +137,24 @@ export function registerDBHandlers() {
   })
 
   // ========== IDEAS ==========
-  ipcMain.handle(IPC_CHANNELS.GET_IDEAS, () => {
-    db.read()
-    return db.data.ideas
-  })
 
   ipcMain.handle(IPC_CHANNELS.ADD_IDEA, (event, addedIdea: Idea) => {
     db.read()
     const nextId = (db.data.ideas.at(-1)?.id || 0) + 1
     const nextPosition = db.data.ideas.length
+
+    if (!addedIdea.title || addedIdea.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+    if (!addedIdea.description || addedIdea.description.trim() === '') {
+      return {
+        success: false,
+        message: 'Description is required'
+      }
+    }
 
     const newIdea = {
       id: nextId,
@@ -165,30 +189,24 @@ export function registerDBHandlers() {
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.DELETE_IDEA, (event, id: number) => {
-    db.read()
-    const index = db.data.ideas.findIndex(idea => idea.id === id)
-    if (index === -1) return { success: false, message: 'Idea not found' }
-
-    db.data.ideas.splice(index, 1)
-    db.write()
-    event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
-    return {
-      success: true,
-      message: 'Idea deleted!'
-    }
-  })
-
   // ========== REWARDS ==========
-  ipcMain.handle(IPC_CHANNELS.GET_REWARDS, () => {
-    db.read()
-    return db.data.rewards
-  })
-
   ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event, addedReward: Reward) => {
     db.read()
     const nextId = (db.data.rewards.at(-1)?.id || 0) + 1
     const nextPosition = db.data.rewards.length
+
+    if (!addedReward.title || addedReward.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+    if (!addedReward.cost || addedReward.cost <= 0) {
+      return {
+        success: false,
+        message: 'Cost must be greater than 0'
+      }
+    }
 
     const newReward = {
       id: nextId,
@@ -223,17 +241,6 @@ export function registerDBHandlers() {
     return { success: true, message: 'Reward updated!' }
   })
 
-  ipcMain.handle(IPC_CHANNELS.DELETE_REWARD, (event, id: number) => {
-    db.read()
-    const index = db.data.rewards.findIndex(reward => reward.id === id)
-    if (index === -1) return { success: false, message: 'Reward not found' }
-
-    db.data.rewards.splice(index, 1)
-    db.write()
-    event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
-    return { success: true, message: 'Reward deleted!' }
-  })
-
   ipcMain.handle(IPC_CHANNELS.UNLOCK_REWARD, (event, passedReward: Reward) => {
     db.read();
     const index = db.data.rewards.findIndex(reward => reward.id === passedReward.id)
@@ -265,22 +272,24 @@ export function registerDBHandlers() {
   })
 
   // ========== HABITS STACKS ==========
-  ipcMain.handle(IPC_CHANNELS.GET_HABIT_STACKS, () => {
-    db.read()
-    return db.data.habitstacks
-  })
-
   ipcMain.handle(IPC_CHANNELS.ADD_HABIT_STACK, (event, addedHabitStack: HabitStack) => {
     db.read()
-    const nextId = (db.data.habitstacks.at(-1)?.id || 0) + 1
-    const nextPosition = db.data.habitstacks.length
+    const nextId = (db.data.habit_stacks.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.habit_stacks.length
+
+    if (!addedHabitStack.title || addedHabitStack.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
 
     const newHabitStack = {
       id: nextId,
       title: addedHabitStack.title,
       position: nextPosition,
     }
-    db.data.habitstacks.push(newHabitStack)
+    db.data.habit_stacks.push(newHabitStack)
 
     db.write()
     event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
@@ -292,10 +301,10 @@ export function registerDBHandlers() {
 
   ipcMain.handle(IPC_CHANNELS.EDIT_HABIT_STACK, (event, editedHabitStack: HabitStack) => {
     db.read()
-    const index = db.data.habitstacks.findIndex(habitStack => habitStack.id === editedHabitStack.id)
+    const index = db.data.habit_stacks.findIndex(habitStack => habitStack.id === editedHabitStack.id)
     if (index === -1) return { success: false, message: 'Habit stack not found' }
 
-    const habitStackToUpdate = db.data.habitstacks[index]
+    const habitStackToUpdate = db.data.habit_stacks[index]
     habitStackToUpdate.title = editedHabitStack.title
 
     db.write()
@@ -307,30 +316,30 @@ export function registerDBHandlers() {
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.DELETE_HABIT_STACK, (event, id: number) => {
-    db.read()
-    const index = db.data.habitstacks.findIndex(habitStack => habitStack.id === id)
-    if (index === -1) return { success: false, message: 'Habit stack not found' }
-
-    db.data.habitstacks.splice(index, 1)
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
-    return {
-      success: true,
-      message: 'Habit stack deleted!'
-    }
-  })
-
   // ========== HABITS ==========
-  ipcMain.handle(IPC_CHANNELS.GET_HABITS, () => {
-    db.read()
-    return db.data.habits
-  })
-
   ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, addedHabit: Habit) => {
     db.read()
     const nextId = (db.data.habits.at(-1)?.id || 0) + 1
     const nextPosition = db.data.habits.length
+
+    if (!addedHabit.title || addedHabit.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+    if (!addedHabit.tag_name) {
+      return {
+        success: false,
+        message: 'Tag is required'
+      }
+    }
+    if (!addedHabit.stack_id) {
+      return {
+        success: false,
+        message: 'Stack ID is required'
+      }
+    }
 
     const newHabit = {
       id: nextId,
@@ -367,17 +376,6 @@ export function registerDBHandlers() {
     db.write()
     event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
     return { success: true, message: 'Habit updated!' }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.DELETE_HABIT, (event, id: number) => {
-    db.read()
-    const index = db.data.habits.findIndex(habit => habit.id === id)
-    if (index === -1) return { success: false, message: 'Habit not found' }
-
-    db.data.habits.splice(index, 1)
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
-    return { success: true, message: 'Habit deleted!' }
   })
 
   ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habitId: number) => {

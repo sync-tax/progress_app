@@ -10,8 +10,8 @@ export function useIdeas() {
         return await window.api.addIdea(idea)
     }
 
-    const updateIdea = async (idea) => {
-        return await window.api.updateIdea(idea)
+    const editIdea = async (idea) => {
+        return await window.api.editIdea(idea)
     }
 
     const onIdeasUpdate = (callback) => {
@@ -20,7 +20,7 @@ export function useIdeas() {
 
     return {
         addIdea,
-        updateIdea,
+        editIdea,
         onIdeasUpdate
     }
 }

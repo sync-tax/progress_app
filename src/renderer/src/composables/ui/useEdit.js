@@ -28,8 +28,6 @@ export function useEdit({
     editingId.value = item.id
     editedItemData.value = { ...item }
     editingType.value = type
-
-    console.log(editingId.value, editingType.value)
   }
 
   const cancelEditing = () => {

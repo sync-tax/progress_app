@@ -12,34 +12,34 @@ import AddItem from '../components/AddItem.vue'
 // Composables
 import { useUniversals } from '../composables/db_functions/useUniversals'
 import { useIdeas } from '../composables/db_functions/useIdeas'
-import { useToasts } from '../composables/ui/useToasts'
 import { useEdit } from '../composables/ui/useEdit'
 import { useAdd } from '../composables/ui/useAdd'
 import { useSort } from '../composables/ui/useSort'
 
 // Vue
-import { onMounted, onUnmounted, toRaw } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 // ========== DATA ==========
 const { items, getItems, deleteItem, moveItem } = useUniversals()
-const { updateIdea, addIdea: addIdeaLogic, onIdeasUpdate } = useIdeas()
-const { addToast } = useToasts()
+const { editIdea, addIdea, onIdeasUpdate } = useIdeas()
 const { sortByPosition } = useSort()
 
 let cleanupIdeaUpdate = null
 
+const ideas = ref([])
+
 // ========== LIFECYCLE ========== 
 onMounted(async () => {
-  await getItems('ideas')
+  ideas.value = sortByPosition(await getItems('ideas'))
 
-  cleanupIdeaUpdate = onIdeasUpdate(() => {
-    getItems('ideas')
+  cleanupIdeaUpdate = onIdeasUpdate(async () => {
+    ideas.value = sortByPosition(await getItems('ideas'))
   })
 })
 
-onUnmounted(() => {
+onUnmounted(async () => {
   if (cleanupIdeaUpdate) {
-    cleanupIdeaUpdate()
+    await cleanupIdeaUpdate()
   }
 })
 
@@ -52,7 +52,7 @@ const {
   saveEditing, 
   deleteEditing 
 } = useEdit({
-  editFn: updateIdea,
+  editFn: editIdea,
   deleteFn: deleteItem,
 })
 
@@ -64,26 +64,11 @@ const {
   cancelAdding,
   saveAdding
 } = useAdd({
-  addFn: addIdeaLogic,
+  addFn: addIdea,
   itemType: 'ideas'
 })
 
 // ========== FUNCTIONS ========== 
-const addIdea = async () => {
-  try {
-    const result = await addIdeaLogic();
-    if (result.success) {
-      //starts edit on new idea
-      startEditing(toRaw(result.newIdea));
-      addToast({ message: result.message, type: 'info' });
-    } else {
-      addToast({ message: 'Failed to add idea.', type: 'error' });
-    }
-  } catch (error) {
-    console.error('Error adding idea:', error)
-    addToast({ message: 'An error occured', type: 'error' })
-  }
-}
 </script>
 
 <template>
@@ -91,8 +76,8 @@ const addIdea = async () => {
 
   <div id="ideasWrapper" class="moduleWrapper">
     <!-- Idea Card START -->
-    <div id="ideaCard" v-for="idea in sortByPosition(items)" :key="idea.id">
-      <!-- Normal Template START -->
+    <div id="ideaCard" v-for="idea in ideas" :key="idea.id">
+      <!-- Show Card if not editing a specific idea -->
       <template v-if="editingId !== idea.id">
          <Card
           :itemData="idea" 
@@ -101,9 +86,8 @@ const addIdea = async () => {
           @move-item="moveItem(idea, 'ideas', $event)"
         />
       </template>
-      <!-- Normal Template END -->
        
-       <!-- Edit Template START -->
+       <!-- Show EditItem if editing a specific idea -->
       <template v-else>
         <EditItem 
           :itemType="'ideas'" 
@@ -113,9 +97,9 @@ const addIdea = async () => {
           @delete-edit="deleteEditing"
         />
       </template>
-      <!-- Edit Template END -->
     </div>
-    <!-- Idea Card END -->
+    
+     <!-- Show AddIcon -->
     <template v-if="!isAdding">
       <div class="addIdeaWrapper" @click="startAdding()">
         <PlusIcon class="addIcon" />

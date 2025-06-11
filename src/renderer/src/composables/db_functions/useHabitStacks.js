@@ -2,34 +2,21 @@
 import { ref } from 'vue'
 
 export function useHabitStacks() {
-    const habitStacks = ref([])
-    const habitStackData = ref({
-        title: '',
-        position: 0
-    })
-    
-    const fetchHabitStacks = async () => {
-        habitStacks.value = await window.api.getHabitStacks()
-    }
-
     const addHabitStack = async (habitStack) => {
         return await window.api.addHabitStack(habitStack)
     }
 
-    const updateHabitStack = async (habitStack) => {
-        return await window.api.updateHabitStack(habitStack)
+    const editHabitStack = async (habitStack) => {
+        return await window.api.editHabitStack(habitStack)
     }
 
-    const deleteHabitStack = async (id) => {
-        return await window.api.deleteHabitStack(id)
+    const onHabitStacksUpdate = (callback) => {
+        return window.api.onHabitStacksUpdate(callback)
     }
 
     return {
-        habitStacks,
-        habitStackData,
-        fetchHabitStacks,
         addHabitStack,
-        updateHabitStack,
-        deleteHabitStack
+        editHabitStack,
+        onHabitStacksUpdate
     }
 }

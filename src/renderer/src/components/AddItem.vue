@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'habit_stacks'].includes(value)
   },
   allTags: {
     type: Array,
@@ -26,6 +26,10 @@ const props = defineProps({
   allHabitStacks: {
     type: Array,
     default: () => []
+  },
+  stackId: {
+    type: Number,
+    default: null
   }
 });
 
@@ -37,6 +41,8 @@ const addedItem = computed({
     emit('update:modelValue', value);
   }
 });
+
+addedItem.value.stack_id = props.stackId
 
 // ========== EMITS ========== 
 const emit = defineEmits(['save-add', 'cancel-add']);
@@ -85,15 +91,6 @@ useKeydowns({
           <option disabled value="">Please select one</option>
           <option v-for="tag in allTags" :key="tag.id" :value="tag.title">
             #{{ tag.title }}
-          </option>
-        </select>
-      </div>
-      <div class="inputWrapper">
-        <label for="habitStack">Stack</label>
-        <select v-model="addedItem.stack_id">
-          <option disabled value="">Please select one</option>
-          <option v-for="stack in allHabitStacks" :key="stack.id" :value="stack.id">
-            {{ stack.title }}
           </option>
         </select>
       </div>

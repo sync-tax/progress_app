@@ -116,7 +116,7 @@ export interface DbSchema {
   todo_items: TodoItem[]
   tags: Tag[]
   ideas: Idea[]
-  habitstacks: HabitStack[]
+  habit_stacks: HabitStack[]
   habits: Habit[]
   rewards: Reward[]
   achievements: Achievement[]
