@@ -11,7 +11,7 @@ export interface User {
   todos_done: number
   ideas_total: number
   habits_implemented: number
-  EXP_gained: number
+  exp_gained: number
   crystals_gained: number
   created_at: string
 }
@@ -20,10 +20,9 @@ export interface User {
 export interface Project {
   id: number
   title: string
-  rank: string
+  description: string
   time_spent: number
   active: boolean
-  todo_lists: TodoList[]
   created_at: string
   position: number
 }
@@ -51,6 +50,7 @@ export interface ProjectsDone {
   id: number
   name: string
   created_at: string
+  time_spent: number
 }
 
 // ========== IDEAS ==========
@@ -76,7 +76,7 @@ export interface Habit {
   current_streak: number
   best_streak: number
   tag_name: string
-  last_time_completed: string | null
+  last_month_completed: string[]
   position: number
 }
 
@@ -113,6 +113,7 @@ export interface Achievement {
 export interface DbSchema {
   user: User
   projects: Project[]
+  projects_done: ProjectsDone[]
   todo_lists: TodoList[]
   todo_items: TodoItem[]
   tags: Tag[]

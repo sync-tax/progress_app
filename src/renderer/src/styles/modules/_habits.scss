@@ -11,6 +11,17 @@
         .stackTitleWrapper {
             display: flex;
             justify-content: space-between;
+            height: 30px;
+            background-color: $ui-color-medium;
+
+            .habitStackTitle {
+                @include base-font($weight: 600, $size: 16px);
+                color: $main-txt-color;
+                margin: auto 0;
+                height: fit-content;
+                background-color: $ui-color-medium;
+                padding-left: 10px;
+            }
         }
 
         .editStackIcon {
@@ -82,7 +93,6 @@
 
 .addHabitStackWrapper {
     @include add-wrapper(30px);
-    margin-top: 5px;
 
     p{
         @include base-font($weight: 600, $size: 16px);

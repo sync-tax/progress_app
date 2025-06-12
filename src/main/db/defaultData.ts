@@ -1,253 +1,112 @@
+import { useDates } from '../../shared/helpers/useDate'
 import type { DbSchema } from '../../shared/dbTypes'
+
+const { getToday } = useDates()
 
 const defaultData: DbSchema = {
   "user": {
-    "balance": 14872,
-    "level": 12,
-    "exp_current": 500,
-    "exp_needed": 2410,
-    "focused_time": 3600,
-    "total_time": 12600,
-    "pomodoros": 10,
-    "projects_done": 2,
-    "todos_done": 6,
-    "ideas_total": 3,
-    "habits_implemented": 3,
-    "EXP_gained": 500,
-    "crystals_gained": 20,
-    "created_at": "2025-06-01T10:00:00Z"
+    "balance": 6523,
+    "level": 1,
+    "exp_current": 0,
+    "exp_needed": 60,
+    "focused_time": 0,
+    "total_time": 0,
+    "pomodoros": 0,
+    "projects_done": 0,
+    "todos_done": 0,
+    "ideas_total": 0,
+    "habits_implemented": 0,
+    "exp_gained": 0,
+    "crystals_gained": 0,
+    "created_at": getToday()
   },
   "projects": [
     {
       "id": 1,
-      "title": "Fitness Tracker",
-      "rank": "A",
-      "time_spent": 1200,
+      "title": "Build App",
+      "description": "Description for project 1.",
+      "time_spent": 0,
       "active": true,
-      "todo_lists": [],
-      "created_at": "2025-06-01T10:00:00Z"
+      "created_at": "2025-06-12",
+      "position": 0
     },
     {
       "id": 2,
-      "title": "Blog Website",
-      "rank": "B",
-      "time_spent": 800,
+      "title": "Read Book",
+      "description": "Description for project 2.",
+      "time_spent": 0,
       "active": false,
-      "todo_lists": [],
-      "created_at": "2025-06-02T12:00:00Z"
-    },
-    {
-      "id": 3,
-      "title": "Language Learning",
-      "rank": "S",
-      "time_spent": 2400,
-      "active": true,
-      "todo_lists": [],
-      "created_at": "2025-06-03T09:00:00Z"
+      "created_at": "2025-06-12",
+      "position": 1
     }
   ],
   "todo_lists": [
-    {
-      "id": 1,
-      "title": "Setup Backend",
-      "project_id": 1,
-      "tag_id": 1,
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Write Articles",
-      "project_id": 2,
-      "tag_id": 2,
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Review Vocabulary",
-      "project_id": 3,
-      "tag_id": 3,
-      "position": 2
-    }
+    { "id": 1, "title": "List 1 of Project 1", "project_id": 1, "tag_id": 2, "position": 0 },
+    { "id": 2, "title": "List 2 of Project 1", "project_id": 1, "tag_id": 3, "position": 1 },
+    { "id": 3, "title": "List 3 of Project 1", "project_id": 1, "tag_id": 4, "position": 2 },
+    { "id": 4, "title": "List 1 of Project 2", "project_id": 2, "tag_id": 2, "position": 0 },
+    { "id": 5, "title": "List 2 of Project 2", "project_id": 2, "tag_id": 3, "position": 1 },
+    { "id": 6, "title": "List 3 of Project 2", "project_id": 2, "tag_id": 4, "position": 2 },
   ],
   "todo_items": [
-    {
-      "id": 1,
-      "title": "Design DB Schema",
-      "todo_list_id": 1,
-      "completed": false,
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Deploy API",
-      "todo_list_id": 1,
-      "completed": true,
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Translate 10 words",
-      "todo_list_id": 3,
-      "completed": false,
-      "position": 0
-    }
+    { "id": 1, "title": "Todo 1 of List 1", "todo_list_id": 1, "completed": false, "position": 0 },
+    { "id": 2, "title": "Todo 2 of List 1", "todo_list_id": 1, "completed": false, "position": 1 },
+    { "id": 3, "title": "Todo 3 of List 1", "todo_list_id": 2, "completed": false, "position": 0 },
+    { "id": 4, "title": "Todo 4 of List 1", "todo_list_id": 2, "completed": false, "position": 1 },
+    { "id": 5, "title": "Todo 1 of List 2", "todo_list_id": 3, "completed": false, "position": 0 },
+    { "id": 6, "title": "Todo 2 of List 2", "todo_list_id": 3, "completed": false, "position": 1 }
   ],
   "tags": [
-    {
-      "id": 1,
-      "title": "Programming",
-      "level":34,
-      "exp_current": 30,
-      "exp_needed": 100,
-      "time_spent": 1500,
-      "created_at": "2025-06-01T08:00:00Z",
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Writing",
-      "level": 14,
-      "exp_current": 60,
-      "exp_needed": 100,
-      "time_spent": 1000,
-      "created_at": "2025-06-02T11:00:00Z",
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Language",
-      "level": 47,
-      "exp_current": 20,
-      "exp_needed": 150,
-      "time_spent": 2000,
-      "created_at": "2025-06-03T07:00:00Z",
-      "position": 2
-    },
-    {
-      "id": 4,
-      "title": "CatDad",
-      "level": 56,
-      "exp_current": 0,
-      "exp_needed": 60,
-      "time_spent": 0,
-      "created_at": "2025-06-11T07:37:06.507Z",
-      "position": 3
-    }
+    { "id": 1, "title": "Focus", "level": 33, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 0 },
+    { "id": 2, "title": "Health", "level": 13, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 1 },
+    { "id": 3, "title": "Work", "level": 54, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 2 },
+    { "id": 4, "title": "Learn", "level": 37, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 3 },
+    { "id": 5, "title": "Mind", "level": 15, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 4 },
+    { "id": 6, "title": "Body", "level": 28, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 5 },
+    { "id": 7, "title": "Code", "level": 48, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 6 },
+    { "id": 8, "title": "Create", "level": 59, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 7 }
   ],
   "ideas": [
-    {
-      "id": 1,
-      "title": "Build AI chatbot",
-      "description": "A personal assistant chatbot to track tasks and habits.",
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Publish eBook",
-      "description": "Summarize blog posts and turn them into an eBook.",
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Travel Journal App",
-      "description": "App to log travel stories and share with friends.",
-      "position": 2
-    }
+    { "id": 1, "title": "Idea 1", "description": "Description for idea 1.", "position": 0 },
+    { "id": 2, "title": "Idea 2", "description": "Description for idea 2.", "position": 1 },
+    { "id": 3, "title": "Idea 3", "description": "Description for idea 3.", "position": 2 },
+    { "id": 4, "title": "Idea 4", "description": "Description for idea 4.", "position": 3 },
+    { "id": 5, "title": "Idea 5", "description": "Description for idea 5.", "position": 4 },
+    { "id": 6, "title": "Idea 6", "description": "Description for idea 6.", "position": 5 },
+    { "id": 7, "title": "Idea 7", "description": "Description for idea 7.", "position": 6 }
   ],
   "habit_stacks": [
-    {
-      "id": 1,
-      "title": "Morning Routine",
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Evening Reflection",
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Work Focus",
-      "position": 2
-    }
+    { "id": 1, "title": "Morning", "position": 0 },
+    { "id": 2, "title": "Evening", "position": 1 },
+    { "id": 3, "title": "Other", "position": 2 }
   ],
   "habits": [
-    {
-      "id": 1,
-      "stack_id": 1,
-      "title": "Meditation",
-      "counter": 10,
-      "current_streak": 5,
-      "best_streak": 7,
-      "tag_name": "Language",
-      "last_time_completed": "2025-06-09T07:00:00Z",
-      "position": 0
-    },
-    {
-      "id": 2,
-      "stack_id": 2,
-      "title": "Journal Entry",
-      "counter": 15,
-      "current_streak": 3,
-      "best_streak": 8,
-      "tag_name": "Writing",
-      "last_time_completed": "2025-06-09T21:00:00Z",
-      "position": 1
-    },
-    {
-      "id": 3,
-      "stack_id": 3,
-      "title": "Deep Work Session",
-      "counter": 20,
-      "current_streak": 6,
-      "best_streak": 10,
-      "tag_name": "Programming",
-      "last_time_completed": "2025-06-09T15:00:00Z",
-      "position": 2
-    }
+    { "id": 1, "stack_id": 1, "title": "Stretch", "counter": 0, "current_streak": 3, "best_streak": 0, "tag_name": "Focus", "last_month_completed": ["2025-06-12"], "position": 0 },
+    { "id": 2, "stack_id": 2, "title": "Read", "counter": 0, "current_streak": 4, "best_streak": 0, "tag_name": "Health", "last_month_completed": ["2025-06-12"], "position": 0 },
+    { "id": 3, "stack_id": 3, "title": "Code", "counter": 0, "current_streak": 6, "best_streak": 0, "tag_name": "Work", "last_month_completed": ["2025-06-10"], "position": 0 },
+    { "id": 4, "stack_id": 1, "title": "Write", "counter": 0, "current_streak": 2, "best_streak": 0, "tag_name": "Learn", "last_month_completed": ["2025-06-11"], "position": 1 },
+    { "id": 5, "stack_id": 2, "title": "Walk", "counter": 0, "current_streak": 3, "best_streak": 0, "tag_name": "Mind", "last_month_completed": ["2025-06-12"], "position": 1 },
+    { "id": 6, "stack_id": 3, "title": "Plan", "counter": 0, "current_streak": 5, "best_streak": 0, "tag_name": "Body", "last_month_completed": ["2025-06-11"], "position": 1 },
+    { "id": 7, "stack_id": 1, "title": "Meditate", "counter": 0, "current_streak": 1, "best_streak": 0, "tag_name": "Code", "last_month_completed": ["2025-06-12"], "position": 2 },
+    { "id": 8, "stack_id": 2, "title": "Clean", "counter": 0, "current_streak": 0, "best_streak": 0, "tag_name": "Create", "last_month_completed": [], "position": 2 }
   ],
   "rewards": [
-    {
-      "id": 1,
-      "title": "Watch a Movie",
-      "cost": 50,
-      "repeatable": true,
-      "position": 0
-    },
-    {
-      "id": 2,
-      "title": "Buy Coffee",
-      "cost": 30,
-      "repeatable": true,
-      "position": 1
-    },
-    {
-      "id": 3,
-      "title": "Day Off",
-      "cost": 100,
-      "repeatable": false,
-      "position": 2
-    }
+    { "id": 1, "title": "Book", "cost": 154, "repeatable": true, "position": 0 },
+    { "id": 2, "title": "Coffee", "cost": 220, "repeatable": true, "position": 1 },
+    { "id": 3, "title": "Snack", "cost": 45, "repeatable": true, "position": 2 },
+    { "id": 4, "title": "Game", "cost": 610, "repeatable": true, "position": 3 },
+    { "id": 5, "title": "Rest", "cost": 120, "repeatable": true, "position": 4 },
+    { "id": 6, "title": "Walk", "cost": 90, "repeatable": true, "position": 5 },
+    { "id": 7, "title": "Gift", "cost": 320, "repeatable": true, "position": 6 },
+    { "id": 8, "title": "Music", "cost": 85, "repeatable": true, "position": 7 },
+    { "id": 9, "title": "Movie", "cost": 450, "repeatable": true, "position": 8 }
   ],
   "achievements": [
-    {
-      "id": 1,
-      "title": "First Pomodoro",
-      "description": "Complete your first Pomodoro session.",
-      "unlocked": true
-    },
-    {
-      "id": 2,
-      "title": "Project Master",
-      "description": "Complete 3 projects.",
-      "unlocked": false
-    },
-    {
-      "id": 3,
-      "title": "Habit Streaker",
-      "description": "Maintain a 7-day habit streak.",
-      "unlocked": true
-    }
+    { "id": 1, "title": "First Step", "description": "Completed your first task", "unlocked": false },
+    { "id": 2, "title": "Getting Started", "description": "Completed your first project", "unlocked": false }
+  ],
+  "projects_done": [
+    { "id": 1, "name": "Old Project", "created_at": "2025-06-11", "time_spent": 120 }
   ]
 }
 

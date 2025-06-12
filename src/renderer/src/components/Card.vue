@@ -6,6 +6,7 @@ import IdeaIcon from '../assets/idea.svg';
 import ArrowIcon from '../assets/arrow.svg';
 // Composables
 import { useDates } from '../../../shared/helpers/useDate'; // Added for isSameDateAsToday
+import { useRanks } from '../../../shared/helpers/useRanks';
 
 // ========== DATA ==========
 const props = defineProps({
@@ -21,35 +22,8 @@ const props = defineProps({
 
 const emit = defineEmits(['start-edit', 'move-item', 'unlock-reward', 'idea-to-project', 'toggle-completion']); // Added 'toggle-completion'
 
-const { isSameDateAsToday } = useDates(); // Added for checkbox
-
-// ========== FUNCTIONS ========== 
-// Initializes edit mode
-
-const handleMoveItem = (direction) => {
-    emit('move-item', props.itemData, direction);
-}
-
-// ========== HELPERS ========== 
-// TODO: move to composables (useRanks)
-// Returns rank based on level (TAGS)
-const getTagRank = (tag) => { // Renamed from getRank to be specific
-    if (tag.level >= 55) return 'legendary';
-    else if (tag.level >= 40) return 'epic';
-    else if (tag.level >= 25) return 'rare';
-    else if (tag.level >= 10) return 'uncommon';
-    else return 'common';
-};
-
-// Returns rank based on streak and counter (HABITS)
-const getHabitRank = (habit) => {
-    const score = (habit.best_streak || 0) * (habit.counter || 0);
-    if (score >= 2000) return 'legendary';
-    else if (score >= 1000) return 'epic';
-    else if (score >= 500) return 'rare';
-    else if (score >= 100) return 'uncommon';
-    else return 'common';
-};
+const { getToday } = useDates(); // Added for checkbox
+const { getTagRank, getHabitRank } = useRanks();
 </script>
 
 <template>
@@ -111,7 +85,7 @@ const getHabitRank = (habit) => {
             </div>
             <div class="habitCardContent">
                 <div class="habitCompletionWrapper">
-                    <input type="checkbox" :checked="isSameDateAsToday(itemData.last_time_completed)"
+                    <input type="checkbox" :checked="itemData.last_month_completed[itemData.last_month_completed.length - 1] === getToday()"
                         @change="emit('toggle-completion', itemData)" class="habitCheckbox" />
                     <h4 class="habitTitle">{{ itemData.title }}</h4>
                 </div>
@@ -139,8 +113,8 @@ const getHabitRank = (habit) => {
             <EditIcon class="editIcon" />
         </div>
         <div class="moveIconContainer">
-            <ArrowIcon class="moveIcon moveUpIcon" @click="emit('move-item', 'up')" />
-            <ArrowIcon class="moveIcon moveDownIcon" @click="emit('move-item', 'down')" />
+            <ArrowIcon class="moveIcon moveUpIcon" :class="{ 'nestedMoveUpIcon': itemType === 'habits' || itemType === 'todo_items' }" @click="emit('move-item', 'up')" />
+            <ArrowIcon class="moveIcon moveDownIcon" :class="{ 'nestedMoveDownIcon': itemType === 'habits' || itemType === 'todo_items' }" @click="emit('move-item', 'down')" />
         </div>
     </div>
 </template>

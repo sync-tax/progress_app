@@ -19,10 +19,32 @@ const api = {
     ipcRenderer.on(IPC_CHANNELS.BALANCE_UPDATED, handler);
     return () => ipcRenderer.removeListener(IPC_CHANNELS.BALANCE_UPDATED, handler);
   },
+  getUserExp: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_USER_EXP),
+  onUserExpUpdate: (callback) => {
+    const handler = (event, newExpCurrent, newExpNeeded) => callback(newExpCurrent, newExpNeeded);
+    ipcRenderer.on(IPC_CHANNELS.USER_EXP_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.USER_EXP_UPDATED, handler);
+  },
+  getUserLevel: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_USER_LEVEL),
+  onUserLevelUpdate: (callback) => {
+    const handler = (event, newLevel) => callback(newLevel);
+    ipcRenderer.on(IPC_CHANNELS.USER_LEVEL_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.USER_LEVEL_UPDATED, handler);
+  },
+
+  // Project Functions
+  addProject: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_PROJECT, project),
+  editProject: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_PROJECT, project),
+  onProjectsUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.PROJECTS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.PROJECTS_UPDATED, handler);
+  },
 
   // Idea Functions
   addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
   editIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_IDEA, idea),
+  convertIdeaToProject: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.CONVERT_IDEA_TO_PROJECT, id),
   onIdeasUpdate: (callback) => {
     const handler = () => callback();
     ipcRenderer.on(IPC_CHANNELS.IDEAS_UPDATED, handler);

@@ -26,7 +26,7 @@ export function useRewards() {
         try {
             const result = await window.api.unlockReward(reward); 
             if (result.success) {
-              addToast({message: '-' + result.rewardCost + ' Crystals', type: 'crystals'})
+              addToast({message: '-' + result.rewardCost + ' Crystals', type: 'minusCrystals'})
               addToast({ message: result.message, type: 'success' })
             } else {
               addToast({ message: result.message, type: 'error' })

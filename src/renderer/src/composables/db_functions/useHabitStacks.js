@@ -1,5 +1,10 @@
-// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABIT STACKS ========== 
-import { ref } from 'vue'
+/**
+ * HABIT STACKS RELATED COMPOSABLE
+ * --------------------------------------------------------------------------------------------------------------
+ * @function addHabitStack {function} - Adds a habit stack to the database
+ * @function editHabitStack {function} - Edits a habit stack in the database
+ * @function onHabitStacksUpdate {function} - Listens for habit stack updates from the database
+ */
 
 export function useHabitStacks() {
     const addHabitStack = async (habitStack) => {

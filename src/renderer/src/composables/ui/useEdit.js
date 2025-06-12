@@ -39,7 +39,9 @@ export function useEdit({
   const saveEditing = async () => {
     if (editingId.value === null) return
     try {
-      const payload = toRaw(editedItemData.value)
+      // Create a clean, plain object from the reactive data
+      // toRaw did not seem to work anymore for Habit object - idk why actually lol
+      const payload = JSON.parse(JSON.stringify(editedItemData.value));
       const result = await editFn(payload)
       if (result.success) {
         addToast({ message: result.message, type: 'success' })

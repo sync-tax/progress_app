@@ -39,12 +39,20 @@
     background-color: $ui-color-medium;
 }
 
-.toast-success {
+.toast-success, .toast-plusCrystals {
     background-color: #4A612F;
 }
 
-.toast-warning, .toast-crystals {
+.toast-warning, .toast-minusCrystals, .toast-minusExp {
     background-color: #61372F;
+}
+
+.toast-plusExp {
+    background-color: $epic-color;
+}
+
+.toast-lvlup {
+    background-color: $legendary-color;
 }
 
 .toast-error {

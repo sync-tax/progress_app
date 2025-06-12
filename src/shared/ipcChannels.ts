@@ -8,20 +8,28 @@ export const IPC_CHANNELS = {
     // ========== USER ==========
     GET_BALANCE: 'get-balance',
     BALANCE_UPDATED: 'balance-updated',
+    GET_USER_EXP: 'get-user-exp',
+    USER_EXP_UPDATED: 'user-exp-updated',
+    GET_USER_LEVEL: 'get-user-level',
+    USER_LEVEL_UPDATED: 'user-level-updated',
 
     // ========== PROJECTS ==========
     ADD_PROJECT: 'add-project',
     EDIT_PROJECT: 'edit-project',
+    PROJECTS_UPDATED: 'projects-updated',
 
     ADD_TODO_LIST: 'add-todo-list',
     EDIT_TODO_LIST: 'edit-todo-list',
+    TODO_LISTS_UPDATED: 'todo-lists-updated',
 
     ADD_TODO_ITEM: 'add-todo-item',
     EDIT_TODO_ITEM: 'edit-todo-item',
+    TODO_ITEMS_UPDATED: 'todo-items-updated',
 
     // ========== IDEAS ==========      
     ADD_IDEA: 'add-idea',
     EDIT_IDEA: 'edit-idea',
+    CONVERT_IDEA_TO_PROJECT: 'convert-idea-to-project',
     IDEAS_UPDATED: 'ideas-updated',
 
     // ========== HABITS STACK ==========

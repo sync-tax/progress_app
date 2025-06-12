@@ -9,7 +9,6 @@ import EditItem from '../components/EditItem.vue'
 import AddItem from '../components/AddItem.vue'
 // Composables
 import { useUniversals } from '../composables/db_functions/useUniversals'
-import { useUser } from '../composables/db_functions/useUser'
 import { useRewards } from '../composables/db_functions/useRewards'
 import { useEdit } from '../composables/ui/useEdit'
 import { useAdd } from '../composables/ui/useAdd'
@@ -19,11 +18,9 @@ import { onMounted, onUnmounted, toRaw, ref } from 'vue'
 
 // ========== DATA ==========
 const { getItems, deleteItem, moveItem } = useUniversals()
-const { getBalance, onBalanceUpdate } = useUser()
 const { editReward, addReward, unlockReward, onRewardsUpdate } = useRewards()
 const { sortByPosition } = useSort()
 
-let cleanupBalanceUpdate = null
 let cleanupRewardsUpdate = null
 
 const rewards = ref([])
@@ -33,10 +30,6 @@ onMounted(async () => {
   // get initial rewards data
   rewards.value = sortByPosition(await getItems('rewards'))
 
-  // set backend listeners
-  cleanupBalanceUpdate = onBalanceUpdate(async () => {
-    await getBalance()
-  })
   cleanupRewardsUpdate = onRewardsUpdate(async () => {
     rewards.value = sortByPosition(await getItems('rewards'))
   })
@@ -44,9 +37,6 @@ onMounted(async () => {
 
 onUnmounted(async () => {
   // cleanup listeners
-  if (cleanupBalanceUpdate) {
-    await cleanupBalanceUpdate();
-  }
   if (cleanupRewardsUpdate) {
     await cleanupRewardsUpdate();
   }

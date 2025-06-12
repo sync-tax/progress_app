@@ -49,8 +49,8 @@
         cursor: pointer;
     
         .editIcon {
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           fill: $main-txt-color;
           opacity: 0.3;
           transition: opacity .15s ease-in-out;
@@ -79,8 +79,16 @@
           rotate: 180deg;
         }
 
+        .nestedMoveUpIcon {
+          rotate: 270deg;
+        }
+
+        .nestedMoveDownIcon {
+          rotate: 90deg;
+        }
+
         .moveIcon {
-          scale: .6;
+          scale: .5;
           fill: $main-txt-color;
           opacity: 0.3;
           transition: opacity .15s ease-in-out;

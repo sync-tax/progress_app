@@ -1,8 +1,16 @@
-// ========== COMPOABLE PROVIDING DATABASE FUNCTIONS FOR HABITS ========== 
 import { useToasts } from '../ui/useToasts'
+import { useDates } from '../../../../shared/helpers/useDate.ts'
+import {toRaw} from 'vue'
 
 const { addToast } = useToasts()
-
+const { getToday } = useDates()
+/**
+ * HABITS RELATED COMPOSABLE
+ * --------------------------------------------------------------------------------------------------------------
+ * @function addHabit {function} - Adds a habit to the database
+ * @function editHabit {function} - Edits a habit in the database
+ * @function onHabitsUpdate {function} - Listens for habit updates from the database
+ */
 export function useHabits() {
     const addHabit = async (habit) => {
         return await window.api.addHabit(habit)
@@ -16,44 +24,33 @@ export function useHabits() {
         return window.api.onHabitsUpdate(callback)
     }
 
-    const toggleHabitCompletion = async (habitId) => {
+    const toggleHabitCompletion = async (habit) => {
+        const today = getToday()
+        const lastTimeCompleted = habit.last_month_completed[habit.last_month_completed.length - 1]
         try {
-            const result = await window.api.toggleHabitCompletion(habitId)
-            if (result && result.success && result.habit) {
-                const index = habits.value.findIndex(h => h.id === habitId)
-                if (index !== -1) {
-                    // Update only the fields managed by this backend call
-                    habits.value[index].counter = result.habit.counter;
-                    habits.value[index].current_streak = result.habit.current_streak;
-                    habits.value[index].best_streak = result.habit.best_streak;
-                    habits.value[index].last_time_completed = result.habit.last_time_completed;
-                }
-                return { success: true, habit: result.habit };
+            const result = await window.api.toggleHabitCompletion(toRaw(habit))
+            if (result.success && lastTimeCompleted !== today) {
+                addToast({ message: '+' + result.crystals + ' Crystals', type: 'plusCrystals' })
+                addToast({ message: '+' + result.exp + ' EXP', type: 'plusExp' })
+                if(result.levelUp) addToast({ message: 'Level Up!', type: 'lvlup' })
+                if(result.tagLevelUp) addToast({ message: `Level Up: ${result.tagTitle}`, type: 'lvlup' })
+            } else if (result.success && lastTimeCompleted === today) {
+                const modifiedCrystals = result.crystals - 1
+                const modifiedExp = result.exp - 1
+                addToast({ message: '-' + modifiedCrystals + ' Crystals', type: 'minusCrystals' })
+                addToast({ message: '-' + modifiedExp + ' EXP', type: 'minusExp' })
             } else {
-                console.error('Failed to toggle habit completion:', result?.error);
-                return { success: false, error: result?.error || 'Unknown error toggling habit.' };
+                addToast({ message: result.message, type: 'error' })
             }
         } catch (error) {
-            console.error('Error in toggleHabitCompletionOnBackend:', error);
-            return { success: false, error: 'Exception occurred while toggling habit.' };
+            console.error('Error toggling habit completion:', error)
+            addToast({ message: 'An error occured...', type: 'error' })
         }
     }
 
-    const runDailyStreakUpdate = async () => {
+    const updateAllStreaks = async () => {
         try {
-            const result = await window.api.updateAllStreaks();
-            if (result && result.success) {
-                if (result.updatedCount > 0) {
-                    addToast({ message: `You lost ${result.updatedCount} streaks!`, type: 'warning' });
-                }
-                if (result.errors && result.errors.length > 0) {
-                    addToast({ message: `Errors during daily streak update: ${result.errors}`, type: 'error' });
-                }
-                return result;
-            } else {
-                addToast({ message: 'Daily streak update failed or did not run successfully.', type: 'error' });
-                return { success: false, message: 'Daily streak update failed.', errors: result?.errors };
-            }
+            await window.api.updateAllStreaks();
         } catch (error) {
             console.error('Error running daily streak update on backend:', error);
             return { success: false, message: 'Exception occurred during daily streak update.' };
@@ -65,7 +62,7 @@ export function useHabits() {
         addHabit,
         editHabit,
         toggleHabitCompletion,
-        runDailyStreakUpdate,
+        updateAllStreaks,
         onHabitsUpdate
     }
 }

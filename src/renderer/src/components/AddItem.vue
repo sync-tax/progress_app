@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'habit_stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
   },
   allTags: {
     type: Array,
@@ -57,7 +57,7 @@ useKeydowns({
 
 <template>
   <div class="addWrapper">
-    <h2 class="addTitle">Add {{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }}</h2>
+    <h2 class="addTitle">Add {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}</h2>
 
      <!-- IDEA -->
      <template v-if="itemType === 'ideas'">

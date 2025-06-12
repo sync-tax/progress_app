@@ -21,7 +21,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 // ========== DATA ==========
 const { items, getItems, deleteItem, moveItem } = useUniversals()
-const { editIdea, addIdea, onIdeasUpdate } = useIdeas()
+const { editIdea, addIdea, convertIdeaToProject, onIdeasUpdate } = useIdeas()
 const { sortByPosition } = useSort()
 
 let cleanupIdeaUpdate = null
@@ -84,6 +84,7 @@ const {
           :itemType="'ideas'" 
           @start-edit="startEditing(idea, 'ideas')"
           @move-item="moveItem(idea, 'ideas', $event)"
+          @idea-to-project="convertIdeaToProject(idea.id)"
         />
       </template>
        

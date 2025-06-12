@@ -3,9 +3,14 @@ import db from './lowdb.js'
 import { IPC_CHANNELS } from '../../shared/ipcChannels'
 
 import { useDates } from '../../shared/helpers/useDate'
+import { useProgressions } from '../../shared/helpers/useProgressions'
+import { useConstants } from '../../shared/helpers/useConstants'
 import { Reward, Habit, Tag, Idea, TodoList, TodoItem, HabitStack, Project } from '../../shared/dbTypes'
 
-const { getStartOfDay, isSameDateAsToday } = useDates()
+const { getToday, getYesterday } = useDates()
+const { getHabitProgressionReward, updateLevel } = useProgressions()
+const { EXP_MULTIPLIER_USER, EXP_MULTIPLIER_TAGS } = useConstants()
+
 
 // register handlers for ipc channels
 // these handlers are used to update the database
@@ -58,7 +63,10 @@ export function registerDBHandlers() {
       })
     }
 
-
+    if (type === 'habit_stacks') {
+      const numberOfHabitsInStack = db.data.habits.filter(habit => habit.stack_id === itemToDelete.id).length
+      if (numberOfHabitsInStack > 0) return { success: false, message: 'There are still habits in this stack!' }
+    }
 
     items.splice(itemToDeleteIndex, 1)
     db.write()
@@ -139,9 +147,24 @@ export function registerDBHandlers() {
   })
 
   // ========== USER ==========
-  ipcMain.handle(IPC_CHANNELS.GET_BALANCE, () => {
+  ipcMain.handle(IPC_CHANNELS.GET_BALANCE, (event) => {
     db.read()
-    return db.data.user.balance
+    const balance = db.data.user.balance
+    return balance
+  })
+
+  ipcMain.handle(IPC_CHANNELS.GET_USER_EXP, (event) => {
+    db.read()
+    const expCurrent = db.data.user.exp_current
+    const expNeeded = db.data.user.exp_needed
+    return { expCurrent, expNeeded }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.GET_USER_LEVEL, (event) => {
+    db.read()
+    console.log(db.data.user.level)
+    const level = db.data.user.level
+    return level
   })
 
   // ========== TAGS ==========
@@ -164,7 +187,7 @@ export function registerDBHandlers() {
       exp_current: 0,
       exp_needed: 60,
       time_spent: 0,
-      created_at: (new Date()).toISOString(),
+      created_at: getToday(),
       position: nextPosition
     }
     db.data.tags.push(newTag)
@@ -218,6 +241,8 @@ export function registerDBHandlers() {
     }
     db.data.ideas.push(newIdea)
 
+    db.data.user.ideas_total++
+
     db.write()
     event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
     return {
@@ -242,6 +267,40 @@ export function registerDBHandlers() {
       message: 'Idea updated!'
     }
   })
+
+  ipcMain.handle(IPC_CHANNELS.CONVERT_IDEA_TO_PROJECT, (event, id: number) => {
+    db.read()
+
+    const ideaToConvert = db.data.ideas.find(idea => idea.id === id)
+    if (!ideaToConvert) return { success: false, message: 'Idea not found' }
+
+    const nextId = (db.data.projects.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.projects.length
+
+    db.data.projects.push({
+      id: nextId,
+      title: ideaToConvert.title,
+      description: ideaToConvert.description,
+      time_spent: 0,
+      active: false,
+      created_at: getToday(),
+      position: nextPosition
+    })
+
+    const ideas = db.data.ideas
+    ideas.forEach(idea => {
+      if (idea.position > ideaToConvert.position) {
+        idea.position--
+      }
+    })
+
+    db.data.ideas = ideas.filter(idea => idea.id !== id)
+    db.write()
+    event.sender.send(IPC_CHANNELS.IDEAS_UPDATED)
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    return { success: true, message: 'New Project started!' }
+  })
+  
 
   // ========== REWARDS ==========
   ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event, addedReward: Reward) => {
@@ -314,9 +373,8 @@ export function registerDBHandlers() {
 
     db.write()
 
-    // TODO: Remove passing user balance -> don't need it
-    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
     event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
 
     return {
       success: true,
@@ -406,7 +464,7 @@ export function registerDBHandlers() {
       best_streak: 0,
       stack_id: addedHabit.stack_id,
       position: nextPosition,
-      last_time_completed: (new Date('1999-02-10T09:15:00')).toISOString(), // just a default value
+      last_month_completed: []
     }
     db.data.habits.push(newHabit)
 
@@ -424,13 +482,23 @@ export function registerDBHandlers() {
     const index = db.data.habits.findIndex(habit => habit.id === editedHabit.id)
     if (index === -1) return { success: false, message: 'Habit not found' }
 
-    const habitToUpdate = db.data.habits[index]
+    const habits = db.data.habits
+    const habitToUpdate = habits[index]
     const newHabitStack = editedHabit.stack_id
     const oldHabitStack = habitToUpdate.stack_id
-    // update position if stack_id changed
+    
     if (newHabitStack !== oldHabitStack) {
-      habitToUpdate.position = db.data.habits.filter(habit => habit.stack_id === newHabitStack).length
+      // update position of habits in the old stack
+      habits.forEach(habit => {
+        if (habit.stack_id === oldHabitStack && habit.position > habitToUpdate.position) {
+          habit.position--
+        }
+      })
+      // put edited habit in the end of the new stack
+      habitToUpdate.position = habits.filter(habit => habit.stack_id === newHabitStack).length
     }
+
+    
 
     habitToUpdate.title = editedHabit.title
     habitToUpdate.tag_name = editedHabit.tag_name
@@ -441,106 +509,113 @@ export function registerDBHandlers() {
     return { success: true, message: 'Habit updated!' }
   })
 
-  ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habitId: number) => {
+  ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habit: Habit) => {
     db.read()
-    const habitIndex = db.data.habits.findIndex(habit => habit.id === habitId)
-    if (habitIndex === -1) return { success: false, error: 'Habit not found' }
+    const dbHabit = db.data.habits.find(h => h.id === habit.id)
+    if (!dbHabit) return { success: false, message: 'Habit not found' }
 
-    const habitToUpdate: Habit = { ...db.data.habits[habitIndex] }
-    const todayDate = getStartOfDay(new Date())
+    const user = db.data.user
+    const tag = db.data.tags.find(tag => tag.title === habit.tag_name)
+    if (!tag) return { success: false, message: 'Tag not found' }
 
-    // Guard against a highly unlikely null from getStartOfDay(new Date())
-    if (!todayDate) {
-      console.error('Failed to get start of today. This should not happen.');
-      // Consider how you want to handle this critical error. Maybe throw or return a specific error.
-      return { success: false, error: 'Internal server error: Could not determine today\'s date.' };
-    }
+    const today = getToday()
+    const habitCheckedToday = habit.last_month_completed.includes(today)
 
-    if (isSameDateAsToday(habitToUpdate.last_time_completed)) {
-      // UNCHECKING on the same day
-      habitToUpdate.counter = (habitToUpdate.counter || 0) - 1
-      habitToUpdate.current_streak = (habitToUpdate.current_streak || 0) - 1
-      // Calculate yesterday relative to todayDate to ensure consistency
-      const yesterdayDate = getStartOfDay(new Date(todayDate.getTime() - 24 * 60 * 60 * 1000))
-      // yesterdayDate is Date | null, which is compatible with habitToUpdate.last_time_completed (Date | null)
-      habitToUpdate.last_time_completed = yesterdayDate?.toISOString() || null
+    // reward for habit completetion
+    const reward = getHabitProgressionReward(habit)
+    const crystals = reward.crystals + habit.current_streak
+    const exp = reward.exp + habit.current_streak
+
+    const userLvlBefore = user.level
+    const tagLvlBefore = tag.level
+    const tagTitle = tag.title
+
+    // revert changes if habit was checked today
+    if (habitCheckedToday) {
+      const lastEntryIndex = habit.last_month_completed.length - 1
+      dbHabit.last_month_completed.splice(lastEntryIndex, 1)
+      dbHabit.counter--
+      dbHabit.current_streak--
+
+      // avoid new current_streak subtracting more than the initial habit check rewarded
+      user.balance -= crystals - 1
+
+      user.exp_gained -= exp - 1
+      user.crystals_gained -= crystals -1
+
+      //handle level ups
+      updateLevel(user, -exp + 1, true);
+      updateLevel(tag, -exp + 1, false);
+    // add changes if habit was not checked today  
     } else {
-      // CHECKING for today
-      habitToUpdate.counter = (habitToUpdate.counter || 0) + 1
-      habitToUpdate.current_streak = (habitToUpdate.current_streak || 0) + 1
+      dbHabit.last_month_completed.push(today)
+      dbHabit.counter++
+      dbHabit.current_streak++
 
-      if (habitToUpdate.current_streak > (habitToUpdate.best_streak || 0)) {
-        habitToUpdate.best_streak = habitToUpdate.current_streak
-      }
-      // todayDate is confirmed as Date here due to the check above, compatible with habitToUpdate.last_time_completed
-      habitToUpdate.last_time_completed = todayDate.toISOString()
+      user.balance += crystals
+
+      user.exp_gained += exp
+      user.crystals_gained += crystals
+
+      //handle level ups
+      updateLevel(user, exp, true);
+      updateLevel(tag, exp, false);
     }
 
-    // Ensure streaks and counters don't go below 0
-    if (habitToUpdate.counter < 0) habitToUpdate.counter = 0;
-    if (habitToUpdate.current_streak < 0) habitToUpdate.current_streak = 0;
+    // check if user leveled up
+    let levelUp = false
+    if(userLvlBefore < user.level) {
+      levelUp = true
+    }
 
-    db.data.habits[habitIndex] = habitToUpdate
+    // check if tag leveled up
+    let tagLevelUp = false
+    if(tagLvlBefore < tag.level) {
+      tagLevelUp = true
+    }
+
+    // check if habitcounter surpassed 60
+    if(dbHabit.counter >= 60){
+      db.data.user.habits_implemented++
+    }
+
+
     db.write()
 
-    // It's good practice to return the updated item
-    return { success: true, habit: habitToUpdate }
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
+    event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
+    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+    return { success: true, exp, crystals, levelUp, tagLevelUp, tagTitle }
   })
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_ALL_STREAKS, () => {
+  ipcMain.handle(IPC_CHANNELS.UPDATE_ALL_STREAKS, (event) => {
     db.read()
-    const habits: Habit[] = db.data.habits // Explicitly type if not already
-    if (!habits || habits.length === 0) {
-      return { success: true, updatedCount: 0, errors: [] }
-    }
+    const habits = db.data.habits
 
-    const todayStart = getStartOfDay(new Date())
-    if (!todayStart) {
-      console.error('UPDATE_ALL_STREAKS: Failed to get start of today.');
-      return { success: false, updatedCount: 0, errors: ['Failed to determine today\'s date.'] };
-    }
-    const yesterdayStart = getStartOfDay(new Date(todayStart.getTime() - 24 * 60 * 60 * 1000))
-    if (!yesterdayStart) {
-      console.error('UPDATE_ALL_STREAKS: Failed to get start of yesterday.');
-      // This is also critical, handle appropriately
-      return { success: false, updatedCount: 0, errors: ['Failed to determine yesterday\'s date.'] };
-    }
+    const today = getToday()
+    const yesterday = getYesterday()
 
-    let updatedCount = 0
-    const errors: string[] = [];
 
-    for (let i = 0; i < habits.length; i++) {
-      const habit = habits[i]; // habit is of type Habit
-      if (habit.current_streak > 0) {
-        const lastCompletedDate = getStartOfDay(habit.last_time_completed)
+    habits.forEach(habit => {
+      const completetionArray = habit.last_month_completed
+      const lastCompletionIndex = completetionArray.length - 1
+      const lastCompletion = completetionArray[lastCompletionIndex]
 
-        // If last_time_completed is invalid or not set, lastCompletedDate will be null.
-        // A streak exists but no valid completion date means it should be reset.
-        let resetStreak = false;
-        if (!lastCompletedDate) {
-          resetStreak = true; // Streak exists, but no valid last completion date.
-        } else {
-          const isToday = lastCompletedDate.getTime() === todayStart.getTime();
-          const wasYesterday = lastCompletedDate.getTime() === yesterdayStart.getTime();
-          if (!isToday && !wasYesterday) {
-            resetStreak = true; // Not completed today or yesterday
-          }
-        }
+      if (lastCompletion ===  today || lastCompletion === yesterday) {
+        return {success: false}
 
-        if (resetStreak) {
-          // Preserve best_streak if current_streak was higher before reset
-          if (habit.current_streak > (habit.best_streak || 0)) {
-            db.data.habits[i].best_streak = habit.current_streak;
-          }
-          db.data.habits[i].current_streak = 0;
-          updatedCount++;
-        }
+      } else {
+        console.log("Last:" + lastCompletion)
+        console.log(today)
+        console.log(yesterday)
+        if(habit.best_streak < habit.current_streak) habit.best_streak = habit.current_streak
+        habit.current_streak = 0
       }
-    }
+    })
 
-    if (updatedCount > 0) {
-      db.write()
-    }
-    return { success: true, updatedCount, errors };
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    db.write()
+    return { success: true }
   })
 }

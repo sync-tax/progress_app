@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'habit_stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
   },
   allTags: {
     type: Array,
@@ -54,7 +54,7 @@ useKeydowns({
 
 <template>
   <div class="editWrapper">
-    <h2 class="editTitle">Edit {{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }}</h2>
+    <h2 class="editTitle">Edit {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}</h2>
     <!-- IDEA -->
     <template v-if="itemType === 'ideas'">
       <div class="inputWrapper">
@@ -68,7 +68,7 @@ useKeydowns({
     </template>
 
     <!-- HABIT STACK -->
-    <template v-if="itemType === 'habit_stacks'">
+    <template v-if="itemType === 'stacks'">
       <div class="inputWrapper">
         <label for="stackTitle">Stack Title</label>
         <input type="text" placeholder="Stack Title" spellcheck="false" v-model="editableItem.title" />
@@ -135,10 +135,10 @@ useKeydowns({
       Cancel
     </button>
     <button v-if="confirmDelete == false" @click="confirmDelete = true" class="editButton deleteButton">
-      Delete {{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }}
+      Delete {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}
     </button>
     <div v-else class="confirmationWrapper">
-      <p>Are you sure you want to delete this {{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }}?</p>
+      <p>Are you sure you want to delete this {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}?</p>
       <div class="confirmationButtons">
         <button @click="confirmDelete = false" class="deleteCancelButton">
           Cancel
