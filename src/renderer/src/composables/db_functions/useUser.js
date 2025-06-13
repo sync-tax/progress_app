@@ -5,6 +5,10 @@ import { ref } from 'vue'
  * @var balance {number} - balance data
  * @function getBalance {function} - Gets balance from the database
  * @function onBalanceUpdate {function} - Listens for balance updates from the database
+ * @function getUserExp {function} - Gets user exp from the database
+ * @function onUserExpUpdate {function} - Listens for user exp updates from the database
+ * @function getUserLevel {function} - Gets user level from the database
+ * @function onUserLevelUpdate {function} - Listens for user level updates from the database
  */
 export function useUser() {
   const balance = ref(0)
@@ -46,6 +50,10 @@ export function useUser() {
     })
   }
 
+  const addTime = async (timeSpent) => {
+    await window.api.addTime(timeSpent)
+  }
+
   return {
     level,
     balance,
@@ -56,6 +64,7 @@ export function useUser() {
     getUserExp,
     onUserExpUpdate,
     getUserLevel,
-    onUserLevelUpdate
+    onUserLevelUpdate,
+    addTime
   }
 }

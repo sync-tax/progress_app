@@ -17,7 +17,7 @@ const { EXP_MULTIPLIER_USER, EXP_MULTIPLIER_TAGS } = useConstants()
 export function registerDBHandlers() {
   // ========== UNIVERSAL ==========
 
-  ipcMain.handle(IPC_CHANNELS.GET_ITEMS, (event, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habit_stacks' | 'projects' | 'todo_lists' | 'todo_items') => {
+  ipcMain.handle(IPC_CHANNELS.GET_ITEMS, (event, type: 'rewards' | 'ideas' | 'tags' | 'habits' | 'habit_stacks' | 'projects' | 'todo_lists' | 'todo_items' | 'user') => {
     db.read()
     return db.data[type]
   })
@@ -171,22 +171,26 @@ export function registerDBHandlers() {
     return level
   })
 
-  ipcMain.handle(IPC_CHANNELS.ADD_TIME, (event, timeSpent: number, todoListId: number) => {
+  ipcMain.handle(IPC_CHANNELS.ADD_TIME, (event, timeSpent: number) => {
     db.read()
     const user = db.data.user
-    const todoList = db.data.todo_lists.find(todoList => todoList.id === todoListId)
-    if (!todoList) return { success: false, message: 'Todo List not found' }
+    const currentActiveProject = db.data.projects.find(project => project.active)
+    if (!currentActiveProject) return { success: false, message: 'No active project found' }
 
-    const linkedProject = db.data.projects.find(project => project.id === todoList.project_id)
-    if (!linkedProject) return { success: false, message: 'Linked Project not found' }
+    const firstTodoListInCurrentActiveProject = db.data.todo_lists.find(todoList => todoList.project_id === currentActiveProject.id)
+    if (!firstTodoListInCurrentActiveProject) return { success: false, message: 'No todo list found for active project' }
+
+    const roundedTimeSpent = Math.round(timeSpent)
 
     user.pomodoros++
-    todoList.time_spent += timeSpent
-    user.focused_time += timeSpent
-    linkedProject.time_spent += timeSpent
+    user.focused_time += roundedTimeSpent
+    currentActiveProject.time_spent += roundedTimeSpent
+    firstTodoListInCurrentActiveProject.time_spent += roundedTimeSpent
 
     db.write()
     event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
     return { success: true }
   })
 
