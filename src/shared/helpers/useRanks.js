@@ -31,9 +31,18 @@ export const useRanks = () => {
         else return 'common';
     }
 
+    const getTodoListRank = (todoList) => {
+        if (todoList.time_spent >= 600) return 'legendary'; //12h
+        else if (todoList.time_spent >= 300) return 'epic'; //6h
+        else if (todoList.time_spent >= 120) return 'rare'; //2h
+        else if (todoList.time_spent >= 30) return 'uncommon'; //0.5h
+        else return 'common';
+    }
+
     return {
         getTagRank,
         getHabitRank,
-        getProjectRank
+        getProjectRank,
+        getTodoListRank
     }
 }

@@ -31,6 +31,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  allProjects: {
+    type: Array,
+    default: () => []
+  },
   stackId: {
     type: Number,
     default: null
@@ -78,10 +82,18 @@ useKeydowns({
       <div class="inputWrapper">
         <label for="listTitle">List Title</label>
         <input type="text" placeholder="List Title" spellcheck="false" v-model="addedItem.title" />
+        <label for="listTag">List Tag</label>
         <select v-model="addedItem.tag_name">
           <option disabled value="">Please select one</option>
           <option v-for="tag in allTags" :key="tag.id" :value="tag.title">
             #{{ tag.title }}
+          </option>
+        </select>
+        <label for="listProject">List Project</label>
+        <select v-model="addedItem.project_id">
+          <option disabled value="">Please select one</option>
+          <option v-for="project in allProjects" :key="project.id" :value="project.id">
+            #{{ project.title }}
           </option>
         </select>
       </div>

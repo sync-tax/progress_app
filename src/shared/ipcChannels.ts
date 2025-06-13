@@ -21,10 +21,12 @@ export const IPC_CHANNELS = {
     ADD_TODO_LIST: 'add-todo-list',
     EDIT_TODO_LIST: 'edit-todo-list',
     TODO_LISTS_UPDATED: 'todo-lists-updated',
+    CLAIM_TODO_LIST_REWARD: 'claim-todo-list-reward',
 
     ADD_TODO_ITEM: 'add-todo-item',
     EDIT_TODO_ITEM: 'edit-todo-item',
     TODO_ITEMS_UPDATED: 'todo-items-updated',
+    TOGGLE_TODO_ITEM_COMPLETION: 'toggle-todo-item-completion',
 
     // ========== IDEAS ==========      
     ADD_IDEA: 'add-idea',

@@ -17,15 +17,19 @@ import { useTodoItems } from '../composables/db_functions/useTodoItems'
 import { useEdit } from '../composables/ui/useEdit'
 import { useAdd } from '../composables/ui/useAdd'
 import { useSort } from '../composables/ui/useSort'
+import { useProgressions } from '../../../shared/helpers/useProgressions.js'
+import { useToasts } from '../composables/ui/useToasts'
 
 // Vue
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, toRaw } from 'vue'
 // ========= DATA =========
 const { editProject, onProjectsUpdate } = useProjects()
-const { addTodoList, editTodoList, onTodoListsUpdate } = useTodoLists()
-const { addTodoItem, editTodoItem, onTodoItemsUpdate } = useTodoItems()
+const { addTodoList, editTodoList, claimTodoListReward, onTodoListsUpdate } = useTodoLists()
+const { addTodoItem, editTodoItem, toggleTodoItemCompletion, onTodoItemsUpdate } = useTodoItems()
 const { getItems, deleteItem, moveItem } = useUniversals()
 const { sortByPosition } = useSort()
+const { getTodoListProgressionReward } = useProgressions()
+const { addToast } = useToasts()
 
 let cleanupProjectsUpdate = null
 let cleanupTodoListsUpdate = null
@@ -126,7 +130,7 @@ const {
 })
 
 // Todo List Adder
-/*const {
+const {
   isAdding: listIsAdding,
   addedItemData: listAddedItemData,
   startAdding: listStartAdding,
@@ -135,7 +139,7 @@ const {
 } = useAdd({
   addFn: addTodoList,
   itemType: 'todo_lists'
-})*/
+})
 
 </script>
 
@@ -196,16 +200,31 @@ const {
           <AddItem :listId="todo_list.id" :itemType="'todo_items'" :allTodoLists="todo_lists"
             v-model="itemAddedItemData" @save-add="itemSaveAdding()" @cancel-add="itemCancelAdding()" />
         </template>
+
+        <div class="todoRewardWrapper">
+          <h4>Reward:</h4>
+          <p> +{{ getTodoListProgressionReward(todo_list, todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id)).crystals }} Crystals</p>
+          <p> +{{ getTodoListProgressionReward(todo_list, todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id)).tagExp }} Tag-EXP</p>
+          <p> +{{ getTodoListProgressionReward(todo_list, todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id)).userExp }} User-EXP</p>
+        <!-- TODO: Make this conditional readable | Checks if all todo items in todo list are completed && if there is at least one todo item in todo list -> shows Claim Reward button if true -->
+        <!-- TODO: Validate CLAIM on Backend only -->
+        <template v-if="todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id && todo_item.completed === true).length === todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id).length && todo_items.filter(todo_item => todo_item.todo_list_id === todo_list.id && todo_item.completed === true).length > 0">
+          <button id="claimButtonActive" @click="claimTodoListReward(toRaw(todo_list))">Claim</button>
+        </template>
+        <template v-else>
+          <button @click="addToast({ message: 'Tasks not completed!', type: 'warning' })">Claim</button>
+        </template>
+      </div>
       </div>
       <!-- TODO: Add Todo List | For now diabled | Add manually in DB-->
-      <!-- <template v-if="!listIsAdding">
-      <div class="addHabitStackWrapper" @click="listStartAdding()">
-        <PlusIcon class="addIcon" />
+      <template v-if="!listIsAdding">
+      <div class="addTodoListWrapper" @click="listStartAdding()">
+        <p>Add Todolist</p>
       </div>
     </template>
     <template v-else-if="listIsAdding">
-      <AddItem :itemType="'todo_lists'" :allTags="tags" v-model="listAddedItemData" @save-add="listSaveAdding()" @cancel-add="listCancelAdding()" />
-    </template>    -->
+      <AddItem :itemType="'todo_lists'" :allTags="tags" :allProjects="projects" v-model="listAddedItemData" @save-add="listSaveAdding()" @cancel-add="listCancelAdding()" />
+    </template> 
     </div>
   </div>
 </template>

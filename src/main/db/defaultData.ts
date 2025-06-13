@@ -5,7 +5,7 @@ const { getToday } = useDates()
 
 const defaultData: DbSchema = {
   "user": {
-    "balance": 6523,
+    "balance": 0,
     "level": 1,
     "exp_current": 0,
     "exp_needed": 60,
@@ -42,12 +42,12 @@ const defaultData: DbSchema = {
     }
   ],
   "todo_lists": [
-    { "id": 1, "title": "List 1", "project_id": 1, "tag_name": "Focus", "position": 0 },
-    { "id": 2, "title": "List 2", "project_id": 1, "tag_name": "Health", "position": 1 },
-    { "id": 3, "title": "List 3", "project_id": 1, "tag_name": "Work", "position": 2 },
-    { "id": 4, "title": "List 1", "project_id": 2, "tag_name": "Learn", "position": 0 },
-    { "id": 5, "title": "List 2", "project_id": 2, "tag_name": "Mind", "position": 1 },
-    { "id": 6, "title": "List 3", "project_id": 2, "tag_name": "Body", "position": 2 },
+    { "id": 1, "title": "List 1", "project_id": 1, "tag_name": "Focus", "time_spent": 45, "position": 0 },
+    { "id": 2, "title": "List 2", "project_id": 1, "tag_name": "Health", "time_spent": 120, "position": 1 },
+    { "id": 3, "title": "List 3", "project_id": 1, "tag_name": "Work", "time_spent": 180, "position": 2 },
+    { "id": 4, "title": "List 1", "project_id": 2, "tag_name": "Learn", "time_spent": 240, "position": 0 },
+    { "id": 5, "title": "List 2", "project_id": 2, "tag_name": "Mind", "time_spent": 300, "position": 1 },
+    { "id": 6, "title": "List 3", "project_id": 2, "tag_name": "Body", "time_spent": 360, "position": 2 },
   ],
   "todo_items": [
     { "id": 1, "title": "Todo 1", "todo_list_id": 1, "completed": false, "position": 0 },

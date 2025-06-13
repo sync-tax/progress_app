@@ -1,5 +1,5 @@
 import { useRanks } from "./useRanks";
-const { getHabitRank } = useRanks()
+const { getHabitRank, getTodoListRank } = useRanks()
 import { useConstants } from "./useConstants";
 const { EXP_MULTIPLIER_USER, EXP_MULTIPLIER_TAGS } = useConstants()
 
@@ -42,6 +42,21 @@ export const useProgressions = () => {
         }
     }
 
+    const getTodoListProgressionReward = (todoList, todoItemsInList) => {
+        return {
+            crystals: Math.round(todoItemsInList.length + todoList.time_spent / 10),
+            tagExp: Math.round(todoItemsInList.length * 10 + todoList.time_spent / 2),
+            userExp: Math.round(todoItemsInList.length * 15 + todoList.time_spent / 1.35)
+        }
+    }
+
+    const getProjectProgressionReward = (project) => {
+        return {
+            crystals: Math.round(project.time_spent / 10),
+            userExp: Math.round(project.time_spent / 1.35)
+        }
+    }
+
     function updateLevel(levelObj, expChange, isUser) {
         let newExp = levelObj.exp_current + expChange;
         let newLevel = levelObj.level;
@@ -67,6 +82,8 @@ export const useProgressions = () => {
 
     return {
         getHabitProgressionReward,
+        getTodoListProgressionReward,
+        getProjectProgressionReward,
         updateLevel
     }
 }

@@ -32,6 +32,7 @@ export interface Project {
 export interface TodoList {
   id: number
   title: string
+  time_spent: number
   project_id: number
   tag_name: string
   position: number

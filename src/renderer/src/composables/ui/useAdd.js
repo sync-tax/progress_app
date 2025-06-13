@@ -98,6 +98,7 @@ const constructPayload = (itemType) => {
         return {
           title: '',
           project_id: null,
+          time_spent: 0,
           tag_name: null,
           position: 0
         }

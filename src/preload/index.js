@@ -44,6 +44,7 @@ const api = {
   // Todo List Functions
   addTodoList: async (todoList) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TODO_LIST, todoList),
   editTodoList: async (todoList) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_TODO_LIST, todoList),
+  claimTodoListReward: async (todoList) => await ipcRenderer.invoke(IPC_CHANNELS.CLAIM_TODO_LIST_REWARD, todoList),
   onTodoListsUpdate: (callback) => {
     const handler = () => callback();
     ipcRenderer.on(IPC_CHANNELS.TODO_LISTS_UPDATED, handler);

@@ -1,6 +1,6 @@
 import { useToasts } from '../ui/useToasts'
 import { useDates } from '../../../../shared/helpers/useDate.ts'
-import {toRaw} from 'vue'
+import { toRaw } from 'vue'
 
 const { addToast } = useToasts()
 const { getToday } = useDates()
@@ -26,11 +26,11 @@ export function useTodoItems() {
     }
 
     const toggleTodoItemCompletion = async (todoItem) => {
-
         try {
-
+            await window.api.toggleTodoItemCompletion(toRaw(todoItem))
         } catch (error) {
-
+            console.error('Error toggling todo item completion:', error)
+            addToast({ message: 'An error occured...', type: 'error' })
         }
     }
 

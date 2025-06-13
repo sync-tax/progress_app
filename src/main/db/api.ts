@@ -8,7 +8,7 @@ import { useConstants } from '../../shared/helpers/useConstants'
 import { Reward, Habit, Tag, Idea, TodoList, TodoItem, HabitStack, Project } from '../../shared/dbTypes'
 
 const { getToday, getYesterday } = useDates()
-const { getHabitProgressionReward, updateLevel } = useProgressions()
+const { getHabitProgressionReward, getTodoListProgressionReward, getProjectProgressionReward, updateLevel } = useProgressions()
 const { EXP_MULTIPLIER_USER, EXP_MULTIPLIER_TAGS } = useConstants()
 
 
@@ -66,6 +66,11 @@ export function registerDBHandlers() {
     if (type === 'habit_stacks') {
       const numberOfHabitsInStack = db.data.habits.filter(habit => habit.stack_id === itemToDelete.id).length
       if (numberOfHabitsInStack > 0) return { success: false, message: 'There are still habits in this stack!' }
+    }
+
+    if (type === 'todo_lists') {
+      const numberOfTodoItemsInList = db.data.todo_items.filter(todo_item => todo_item.todo_list_id === itemToDelete.id).length
+      if (numberOfTodoItemsInList > 0) return { success: false, message: 'There are still todo items in this list!' }
     }
 
     items.splice(itemToDeleteIndex, 1)
@@ -198,6 +203,7 @@ export function registerDBHandlers() {
     const newTodoList = {
       id: nextId,
       title: addedTodoList.title,
+      time_spent: addedTodoList.time_spent,
       project_id: addedTodoList.project_id,
       tag_name: addedTodoList.tag_name,
       position: nextPosition
@@ -226,12 +232,81 @@ export function registerDBHandlers() {
     return { success: true, message: 'Todo List updated!' }
   })
 
+  ipcMain.handle(IPC_CHANNELS.CLAIM_TODO_LIST_REWARD, (event, todoList: TodoList) => {
+    db.read()
+    const claimedTodoListTasks = db.data.todo_items.filter(todoItem => todoItem.todo_list_id === todoList.id)
+
+    const user = db.data.user
+    const userLvlBefore = user.level
+
+    const tag = db.data.tags.find(tag => tag.title === todoList.tag_name)
+    if (!tag) return { success: false, message: 'Tag not found' }
+    const tagLvlBefore = tag.level
+    const tagTitle = tag.title
+    
+
+    let crystalsGained = 0
+    let userExpGained = 0
+    let tagExpGained = 0
+
+    if(claimedTodoListTasks.every(todoItem => todoItem.completed)) {
+      const reward = getTodoListProgressionReward(todoList, claimedTodoListTasks)
+
+      console.log(reward)
+      crystalsGained = reward.crystals
+      userExpGained = reward.userExp
+      tagExpGained = reward.tagExp
+
+      updateLevel(user, userExpGained, true)
+      updateLevel(tag, tagExpGained, false)
+
+    db.data.user.balance += crystalsGained
+    db.data.user.exp_current += userExpGained
+    db.data.user.exp_needed += userExpGained
+
+    db.data.todo_items = db.data.todo_items.filter(todoItem => todoItem.todo_list_id !== todoList.id)
+
+    const todoListIndex = db.data.todo_lists.findIndex(tl => tl.id === todoList.id)
+    if (todoListIndex !== -1) {
+      db.data.todo_lists.splice(todoListIndex, 1)
+    }
+
+    } else {
+      return { success: false, message: 'Not all tasks completed' }
+    }
+
+    let levelUp = false
+    if (userLvlBefore < user.level) {
+      levelUp = true
+    }
+
+    // check if tag leveled up
+    let tagLevelUp = false
+    if (tagLvlBefore < tag.level) {
+      tagLevelUp = true
+    }
+
+    console.log("levelUp: " + levelUp)
+    console.log("tagLevelUp: " + tagLevelUp)
+    console.log("userExpGained: " + userExpGained)
+    console.log("tagExpGained: " + tagExpGained)
+    console.log("crystalsGained: " + crystalsGained)
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
+    event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
+    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED, db.data.todo_lists)
+    
+    return { success: true, crystalsGained, userExpGained, tagExpGained, levelUp, tagLevelUp, tagTitle }
+  })
+
   // ========== TODO ITEM ==========
 
   ipcMain.handle(IPC_CHANNELS.ADD_TODO_ITEM, (event, addedTodoItem: TodoItem) => {
     db.read()
     const nextId = (db.data.todo_items.at(-1)?.id || 0) + 1
-    const nextPosition = db.data.todo_items.length
+    const nextPosition = db.data.todo_items.filter(todo_item => todo_item.todo_list_id === addedTodoItem.todo_list_id).length
 
     if (!addedTodoItem.title || addedTodoItem.title.trim() === '') {
       return {
@@ -286,6 +361,19 @@ export function registerDBHandlers() {
     db.write()
     event.sender.send(IPC_CHANNELS.TODO_ITEMS_UPDATED)
     return { success: true, message: 'Todo Item updated!' }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.TOGGLE_TODO_ITEM_COMPLETION, (event, todo_item: TodoItem) => {
+    db.read()
+    const dbTodoItem = db.data.todo_items.find(todoItem => todoItem.id === todo_item.id)
+    if (!dbTodoItem) return { success: false, message: 'Todo Item not found' }
+
+    dbTodoItem.completed = !dbTodoItem.completed
+
+    db.write()
+
+    event.sender.send(IPC_CHANNELS.TODO_ITEMS_UPDATED)
+    return { success: true }
   })
 
   // ========== IDEAS ==========
