@@ -16,7 +16,7 @@ function createWindow() {
     frame: false,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -95,4 +95,3 @@ ipcMain.on('window-control', (event, action) => {
       break
   }
 })
-
