@@ -9,6 +9,8 @@ const { getToday } = useDates()
  * --------------------------------------------------------------------------------------------------------------
  * @function addHabit {function} - Adds a habit to the database
  * @function editHabit {function} - Edits a habit in the database
+ * @function toggleHabitCompletion {function} - Toggles the completion of a habit
+ * @function updateAllStreaks {function} - Updates all habit-streaks in the database
  * @function onHabitsUpdate {function} - Listens for habit updates from the database
  */
 export function useHabits() {

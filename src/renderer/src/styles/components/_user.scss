@@ -9,6 +9,7 @@
     right: 40px;
 
     z-index: 10;
+   
 
     img{
         width: 30px;
@@ -19,10 +20,10 @@
         filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
     }
     p{
-        @include base-font($weight: 600, $size: 16px);
+        @include base-font($weight: 500, $size: 16px);
 
         margin: auto;
-
+        background-color: $ui-color-dark;
         border-radius: 0px 10px 10px 0px;
         height: 20px;
 

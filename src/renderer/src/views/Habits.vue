@@ -18,15 +18,9 @@ import { useAdd } from '../composables/ui/useAdd'
 import { useSort } from '../composables/ui/useSort'
 
 // Vue
-import { onMounted, onUnmounted, ref, toRaw } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 // ========= DATA =========
-const {
-  addHabit,
-  editHabit,
-  onHabitsUpdate,
-  toggleHabitCompletion,
-  updateAllStreaks
-} = useHabits()
+const { addHabit, editHabit, onHabitsUpdate, toggleHabitCompletion, updateAllStreaks } = useHabits()
 const { addHabitStack, editHabitStack, onHabitStacksUpdate } = useHabitStacks()
 const { getItems, deleteItem, moveItem } = useUniversals()
 const { sortByPosition } = useSort()
@@ -106,7 +100,6 @@ const {
   itemType: 'habits',
 })
 
-// TODO: Add Habit Stack Adder
 const {
   isAdding: habitStackIsAdding,
   addedItemData: habitStackAddedItemData,
@@ -161,13 +154,14 @@ const {
           v-model="habitAddedItemData" @save-add="habitSaveAdding()" @cancel-add="habitCancelAdding()" />
       </template>
     </div>
-    <template v-if="!habitStackIsAdding">
+    <!-- TODO: Add Habit Stack | For now diabled | Add manually in DB-->
+    <!-- <template v-if="!habitStackIsAdding">
       <div class="addHabitStackWrapper" @click="habitStackStartAdding()">
         <PlusIcon class="addIcon" />
       </div>
-    </template>
+    </template> 
     <template v-else-if="habitStackIsAdding">
       <AddItem :itemType="'stacks'" v-model="habitStackAddedItemData" @save-add="habitStackSaveAdding()" @cancel-add="habitStackCancelAdding()" />
-    </template>
+    </template>-->
   </div>
 </template>

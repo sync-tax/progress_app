@@ -23,11 +23,56 @@ const props = defineProps({
 const emit = defineEmits(['start-edit', 'move-item', 'unlock-reward', 'idea-to-project', 'toggle-completion']); // Added 'toggle-completion'
 
 const { getToday } = useDates(); // Added for checkbox
-const { getTagRank, getHabitRank } = useRanks();
+const { getTagRank, getHabitRank, getProjectRank } = useRanks();
 </script>
 
 <template>
-    <div class="cardWrapper">
+    <div class="cardWrapper" :style="{ filter: itemType !== 'projects' && itemType !== 'habit_stacks' && itemType !== 'todo_lists' ? 'drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.2))' : '' }">
+        <!-- PROJECT -->
+        <template v-if="itemType === 'projects'">
+            <div class="projectRankGems">
+                    <img v-if="getProjectRank(itemData) == 'legendary'" src="../assets/LEGENDARY_MARK.png" alt="tagIcon"
+                        class="projectRankMark" :class="getProjectRank(itemData) + '-glow'">
+                    <img v-if="getProjectRank(itemData) == 'epic'" src="../assets/EPIC_MARK.png" alt="tagIcon"
+                        class="projectRankMark" :class="getProjectRank(itemData) + '-glow'">
+                    <img v-if="getProjectRank(itemData) == 'rare'" src="../assets/RARE_MARK.png" alt="tagIcon"
+                        class="projectRankMark" :class="getProjectRank(itemData) + '-glow'">
+                    <img v-if="getProjectRank(itemData) == 'uncommon'" src="../assets/UNCOMMON_MARK.png" alt="tagIcon"
+                        class="projectRankMark" :class="getProjectRank(itemData) + '-glow'">
+                    <img v-if="getProjectRank(itemData) == 'common'" src="../assets/COMMON_MARK.png" alt="tagIcon"
+                        class="projectRankMark" :class="getProjectRank(itemData) + '-glow'">
+                </div>
+                <div class="projectCardContent">
+                    <h2 class="projectTitle">{{ itemData.title }}</h2>
+                    <p class="projectDescription">{{ itemData.description }}</p>
+                </div>
+        </template>
+
+        <!-- TODO LIST -->
+        <template v-if="itemType === 'todo_lists'">
+            <div class="todoListCardContent">
+                <h2 class="habitStackTitle">{{ itemData.title }}</h2>
+                <p class="todoListTag">#{{ itemData.tag_name }}</p>
+            </div>
+        </template>
+
+        <!-- TODO ITEM -->
+        <template v-if="itemType === 'todo_items'">
+            <div class="todoCardContent">
+                <div class="todoCompletionWrapper">
+                    <input type="checkbox"
+                        :checked="itemData.completed"
+                        @change="emit('toggle-completion', itemData)" class="habitCheckbox" />
+                    <h4 class="todoTitle">{{ itemData.title }}</h4>
+                </div>
+            </div>
+        </template>
+
+        <!-- STACK -->
+        <template v-if="itemType === 'habit_stacks'">
+            <h2 class="habitStackTitle">{{ itemData.title }}</h2>
+        </template>
+
         <!-- IDEA -->
         <template v-if="itemType === 'ideas'">
             <div class="bulbWrapper">
@@ -85,18 +130,14 @@ const { getTagRank, getHabitRank } = useRanks();
             </div>
             <div class="habitCardContent">
                 <div class="habitCompletionWrapper">
-                    <input type="checkbox" :checked="itemData.last_month_completed[itemData.last_month_completed.length - 1] === getToday()"
+                    <input type="checkbox"
+                        :checked="itemData.last_month_completed[itemData.last_month_completed.length - 1] === getToday()"
                         @change="emit('toggle-completion', itemData)" class="habitCheckbox" />
                     <h4 class="habitTitle">{{ itemData.title }}</h4>
                 </div>
                 <p class="habitTag">#{{ itemData.tag_name }}</p>
                 <p class="habitStreak">Streak: {{ itemData.current_streak || 0 }}</p>
             </div>
-        </template>
-
-        <!-- STACK -->
-        <template v-if="itemType === 'habit_stacks'">
-            <h2 class="habitStackTitle">{{ itemData.title }}</h2>
         </template>
 
         <!-- REWARD -->
@@ -109,12 +150,17 @@ const { getTagRank, getHabitRank } = useRanks();
                 <h4>{{ itemData.title }}</h4>
             </div>
         </template>
-        <div class="editIconContainer" @click="emit('start-edit')">
+        <!-- TODO: Kinda weird on Project Conatiner | Will fix with SCSS refactor in future -->
+        <div class="editIconContainer" @click="emit('start-edit')" >
             <EditIcon class="editIcon" />
         </div>
-        <div class="moveIconContainer">
-            <ArrowIcon class="moveIcon moveUpIcon" :class="{ 'nestedMoveUpIcon': itemType === 'habits' || itemType === 'todo_items' }" @click="emit('move-item', 'up')" />
-            <ArrowIcon class="moveIcon moveDownIcon" :class="{ 'nestedMoveDownIcon': itemType === 'habits' || itemType === 'todo_items' }" @click="emit('move-item', 'down')" />
+        <div v-if="itemType !== 'projects'" class="moveIconContainer">
+            <ArrowIcon class="moveIcon moveUpIcon"
+                :class="{ 'nestedMoveUpIcon': itemType === 'habits' || itemType === 'todo_items' }"
+                @click="emit('move-item', 'up')" />
+            <ArrowIcon class="moveIcon moveDownIcon"
+                :class="{ 'nestedMoveDownIcon': itemType === 'habits' || itemType === 'todo_items' }"
+                @click="emit('move-item', 'down')" />
         </div>
     </div>
 </template>

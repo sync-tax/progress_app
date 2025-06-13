@@ -99,7 +99,7 @@ export function registerDBHandlers() {
       itemToMove.position = newPosition
     }
 
-    if(type === 'habits') {
+    if (type === 'habits') {
       const habits = db.data.habits
       const habitToMove = habits[itemToMoveIndex]
       const habitToMoveStack = habitToMove.stack_id
@@ -120,7 +120,7 @@ export function registerDBHandlers() {
       habitToMove.position = newPosition
     }
 
-    if(type === 'todo_items') {
+    if (type === 'todo_items') {
       const todoItems = db.data.todo_items
       const todoItemToMove = todoItems[itemToMoveIndex]
       const todoItemToMoveList = todoItemToMove.todo_list_id
@@ -162,55 +162,130 @@ export function registerDBHandlers() {
 
   ipcMain.handle(IPC_CHANNELS.GET_USER_LEVEL, (event) => {
     db.read()
-    console.log(db.data.user.level)
     const level = db.data.user.level
     return level
   })
 
-  // ========== TAGS ==========
-  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event, addedTag: Tag) => {
+  // ========== PROJECTS ==========
+  ipcMain.handle(IPC_CHANNELS.EDIT_PROJECT, (event, editedProject: Project) => {
     db.read()
-    const nextId = (db.data.tags.at(-1)?.id || 0) + 1
-    const nextPosition = db.data.tags.length
+    const index = db.data.projects.findIndex(project => project.id === editedProject.id)
+    if (index === -1) return { success: false, message: 'Project not found' }
 
-    if (!addedTag.title || addedTag.title.trim() === '') {
+    const projectToUpdate = db.data.projects[index]
+    projectToUpdate.title = editedProject.title
+    projectToUpdate.description = editedProject.description
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    return { success: true, message: 'Project updated!' }
+  })
+
+  // ========== TODO LISTS ==========
+
+  ipcMain.handle(IPC_CHANNELS.ADD_TODO_LIST, (event, addedTodoList: TodoList) => {
+    db.read()
+    const nextId = (db.data.todo_lists.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.todo_lists.length
+
+    if (!addedTodoList.title || addedTodoList.title.trim() === '') {
       return {
         success: false,
         message: 'Title is required'
       }
     }
 
-    const newTag = {
+    const newTodoList = {
       id: nextId,
-      title: addedTag.title,
-      level: 1,
-      exp_current: 0,
-      exp_needed: 60,
-      time_spent: 0,
-      created_at: getToday(),
+      title: addedTodoList.title,
+      project_id: addedTodoList.project_id,
+      tag_name: addedTodoList.tag_name,
       position: nextPosition
     }
-    db.data.tags.push(newTag)
+    db.data.todo_lists.push(newTodoList)
 
     db.write()
-    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
     return {
       success: true,
-      message: 'New tag added!'
+      message: 'New todo list added!'
     }
   })
 
-  ipcMain.handle(IPC_CHANNELS.EDIT_TAG, (event, editedTag: Tag) => {
+  ipcMain.handle(IPC_CHANNELS.EDIT_TODO_LIST, (event, editedTodoList: TodoList) => {
     db.read()
-    const index = db.data.tags.findIndex(tag => tag.id === editedTag.id)
-    if (index === -1) return { success: false, message: 'Tag not found' }
+    const index = db.data.todo_lists.findIndex(todoList => todoList.id === editedTodoList.id)
+    if (index === -1) return { success: false, message: 'Todo List not found' }
 
-    const tagToUpdate = db.data.tags[index]
-    tagToUpdate.title = editedTag.title
+    const todoListToUpdate = db.data.todo_lists[index]
+    todoListToUpdate.title = editedTodoList.title
+    todoListToUpdate.tag_name = editedTodoList.tag_name
 
     db.write()
-    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
-    return { success: true, message: 'Tag updated!' }
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
+    return { success: true, message: 'Todo List updated!' }
+  })
+
+  // ========== TODO ITEM ==========
+
+  ipcMain.handle(IPC_CHANNELS.ADD_TODO_ITEM, (event, addedTodoItem: TodoItem) => {
+    db.read()
+    const nextId = (db.data.todo_items.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.todo_items.length
+
+    if (!addedTodoItem.title || addedTodoItem.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+
+    const newTodoItem = {
+      id: nextId,
+      title: addedTodoItem.title,
+      todo_list_id: addedTodoItem.todo_list_id,
+      completed: false,
+      position: nextPosition
+    }
+    db.data.todo_items.push(newTodoItem)
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.TODO_ITEMS_UPDATED)
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    return {
+      success: true,
+      message: 'New todo item added!'
+    }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.EDIT_TODO_ITEM, (event, editedTodoItem: TodoItem) => {
+    db.read()
+    const index = db.data.todo_items.findIndex(todoItem => todoItem.id === editedTodoItem.id)
+    if (index === -1) return { success: false, message: 'Todo Item not found' }
+
+    const todoItems = db.data.todo_items
+    const todoItemToUpdate = todoItems[index]
+    const newTodoList = editedTodoItem.todo_list_id
+    const oldTodoList = todoItemToUpdate.todo_list_id
+
+    if (newTodoList !== oldTodoList) {
+      // update position of todo items in the old list
+      todoItems.forEach(todoItem => {
+        if (todoItem.todo_list_id === oldTodoList && todoItem.position > todoItemToUpdate.position) {
+          todoItem.position--
+        }
+      })
+      // put edited todo item in the end of the new list
+      todoItemToUpdate.position = todoItems.filter(todoItem => todoItem.todo_list_id === newTodoList).length
+    }
+
+    todoItemToUpdate.title = editedTodoItem.title
+    todoItemToUpdate.todo_list_id = editedTodoItem.todo_list_id
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.TODO_ITEMS_UPDATED)
+    return { success: true, message: 'Todo Item updated!' }
   })
 
   // ========== IDEAS ==========
@@ -300,7 +375,284 @@ export function registerDBHandlers() {
     event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
     return { success: true, message: 'New Project started!' }
   })
-  
+
+  // ========== HABITS STACKS ==========
+  ipcMain.handle(IPC_CHANNELS.ADD_HABIT_STACK, (event, addedHabitStack: HabitStack) => {
+    db.read()
+    const nextId = (db.data.habit_stacks.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.habit_stacks.length
+
+    if (!addedHabitStack.title || addedHabitStack.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+
+    const newHabitStack = {
+      id: nextId,
+      title: addedHabitStack.title,
+      position: nextPosition,
+    }
+    db.data.habit_stacks.push(newHabitStack)
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
+    return {
+      success: true,
+      message: 'New habit stack added!'
+    }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT_STACK, (event, editedHabitStack: HabitStack) => {
+    db.read()
+    const index = db.data.habit_stacks.findIndex(habitStack => habitStack.id === editedHabitStack.id)
+    if (index === -1) return { success: false, message: 'Habit stack not found' }
+
+    const habitStackToUpdate = db.data.habit_stacks[index]
+    habitStackToUpdate.title = editedHabitStack.title
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
+
+    return {
+      success: true,
+      message: 'Habit stack updated!'
+    }
+  })
+
+  // ========== HABITS ==========
+  ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, addedHabit: Habit) => {
+    db.read()
+    const nextId = (db.data.habits.at(-1)?.id || 0) + 1
+    // find the next position in the same stack
+    const nextPosition = db.data.habits.filter(habit => habit.stack_id === addedHabit.stack_id).length
+
+    if (!addedHabit.title || addedHabit.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+    if (!addedHabit.tag_name) {
+      return {
+        success: false,
+        message: 'Tag is required'
+      }
+    }
+    if (!addedHabit.stack_id) {
+      return {
+        success: false,
+        message: 'Stack ID is required'
+      }
+    }
+
+    const newHabit = {
+      id: nextId,
+      title: addedHabit.title,
+      tag_name: addedHabit.tag_name,
+      counter: 0,
+      current_streak: 0,
+      best_streak: 0,
+      stack_id: addedHabit.stack_id,
+      position: nextPosition,
+      last_month_completed: []
+    }
+    db.data.habits.push(newHabit)
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    return {
+      success: true,
+      message: 'New Habit added!',
+      addedHabit
+    }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT, (event, editedHabit: Habit) => {
+    db.read()
+    const index = db.data.habits.findIndex(habit => habit.id === editedHabit.id)
+    if (index === -1) return { success: false, message: 'Habit not found' }
+
+    const habits = db.data.habits
+    const habitToUpdate = habits[index]
+    const newHabitStack = editedHabit.stack_id
+    const oldHabitStack = habitToUpdate.stack_id
+
+    if (newHabitStack !== oldHabitStack) {
+      // update position of habits in the old stack
+      habits.forEach(habit => {
+        if (habit.stack_id === oldHabitStack && habit.position > habitToUpdate.position) {
+          habit.position--
+        }
+      })
+      // put edited habit in the end of the new stack
+      habitToUpdate.position = habits.filter(habit => habit.stack_id === newHabitStack).length
+    }
+
+
+
+    habitToUpdate.title = editedHabit.title
+    habitToUpdate.tag_name = editedHabit.tag_name
+    habitToUpdate.stack_id = editedHabit.stack_id
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    return { success: true, message: 'Habit updated!' }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habit: Habit) => {
+    db.read()
+    const dbHabit = db.data.habits.find(h => h.id === habit.id)
+    if (!dbHabit) return { success: false, message: 'Habit not found' }
+
+    const user = db.data.user
+    const tag = db.data.tags.find(tag => tag.title === habit.tag_name)
+    if (!tag) return { success: false, message: 'Tag not found' }
+
+    const today = getToday()
+    const habitCheckedToday = habit.last_month_completed.includes(today)
+
+    // reward for habit completetion
+    const reward = getHabitProgressionReward(habit)
+    const crystals = reward.crystals + habit.current_streak
+    const exp = reward.exp + habit.current_streak
+
+    const userLvlBefore = user.level
+    const tagLvlBefore = tag.level
+    const tagTitle = tag.title
+
+    // revert changes if habit was checked today
+    if (habitCheckedToday) {
+      const lastEntryIndex = habit.last_month_completed.length - 1
+      dbHabit.last_month_completed.splice(lastEntryIndex, 1)
+      dbHabit.counter--
+      dbHabit.current_streak--
+
+      // avoid new current_streak subtracting more than the initial habit check rewarded
+      user.balance -= crystals - 1
+
+      user.exp_gained -= exp - 1
+      user.crystals_gained -= crystals - 1
+
+      //handle level ups
+      updateLevel(user, -exp + 1, true);
+      updateLevel(tag, -exp + 1, false);
+      // add changes if habit was not checked today  
+    } else {
+      dbHabit.last_month_completed.push(today)
+      dbHabit.counter++
+      dbHabit.current_streak++
+
+      user.balance += crystals
+
+      user.exp_gained += exp
+      user.crystals_gained += crystals
+
+      //handle level ups
+      updateLevel(user, exp, true);
+      updateLevel(tag, exp, false);
+    }
+
+    // check if user leveled up
+    let levelUp = false
+    if (userLvlBefore < user.level) {
+      levelUp = true
+    }
+
+    // check if tag leveled up
+    let tagLevelUp = false
+    if (tagLvlBefore < tag.level) {
+      tagLevelUp = true
+    }
+
+    // check if habitcounter surpassed 60
+    if (dbHabit.counter >= 60) {
+      db.data.user.habits_implemented++
+    }
+
+
+    db.write()
+
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
+    event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
+    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+    return { success: true, exp, crystals, levelUp, tagLevelUp, tagTitle }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.UPDATE_ALL_STREAKS, (event) => {
+    db.read()
+    const habits = db.data.habits
+
+    const today = getToday()
+    const yesterday = getYesterday()
+
+
+    habits.forEach(habit => {
+      const completetionArray = habit.last_month_completed
+      const lastCompletionIndex = completetionArray.length - 1
+      const lastCompletion = completetionArray[lastCompletionIndex]
+
+      if (lastCompletion === today || lastCompletion === yesterday) {
+        return { success: false }
+
+      } else {
+        if (habit.best_streak < habit.current_streak) habit.best_streak = habit.current_streak
+        habit.current_streak = 0
+      }
+    })
+
+    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
+    db.write()
+    return { success: true }
+  })
+
+  // ========== TAGS ==========
+  ipcMain.handle(IPC_CHANNELS.ADD_TAG, (event, addedTag: Tag) => {
+    db.read()
+    const nextId = (db.data.tags.at(-1)?.id || 0) + 1
+    const nextPosition = db.data.tags.length
+
+    if (!addedTag.title || addedTag.title.trim() === '') {
+      return {
+        success: false,
+        message: 'Title is required'
+      }
+    }
+
+    const newTag = {
+      id: nextId,
+      title: addedTag.title,
+      level: 1,
+      exp_current: 0,
+      exp_needed: 60,
+      time_spent: 0,
+      created_at: getToday(),
+      position: nextPosition
+    }
+    db.data.tags.push(newTag)
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
+    return {
+      success: true,
+      message: 'New tag added!'
+    }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.EDIT_TAG, (event, editedTag: Tag) => {
+    db.read()
+    const index = db.data.tags.findIndex(tag => tag.id === editedTag.id)
+    if (index === -1) return { success: false, message: 'Tag not found' }
+
+    const tagToUpdate = db.data.tags[index]
+    tagToUpdate.title = editedTag.title
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.TAGS_UPDATED)
+    return { success: true, message: 'Tag updated!' }
+  })
 
   // ========== REWARDS ==========
   ipcMain.handle(IPC_CHANNELS.ADD_REWARD, (event, addedReward: Reward) => {
@@ -371,6 +723,8 @@ export function registerDBHandlers() {
     // remove non-repeatable rewards
     if (!reward.repeatable) db.data.rewards.splice(index, 1)
 
+    db.data.user.rewards_unlocked++
+
     db.write()
 
     event.sender.send(IPC_CHANNELS.REWARDS_UPDATED)
@@ -381,241 +735,5 @@ export function registerDBHandlers() {
       message: 'You unlocked ' + reward.title + '!',
       rewardCost: reward.cost
     }
-  })
-
-  // ========== HABITS STACKS ==========
-  ipcMain.handle(IPC_CHANNELS.ADD_HABIT_STACK, (event, addedHabitStack: HabitStack) => {
-    db.read()
-    const nextId = (db.data.habit_stacks.at(-1)?.id || 0) + 1
-    const nextPosition = db.data.habit_stacks.length
-
-    if (!addedHabitStack.title || addedHabitStack.title.trim() === '') {
-      return {
-        success: false,
-        message: 'Title is required'
-      }
-    }
-
-    const newHabitStack = {
-      id: nextId,
-      title: addedHabitStack.title,
-      position: nextPosition,
-    }
-    db.data.habit_stacks.push(newHabitStack)
-
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
-    return {
-      success: true,
-      message: 'New habit stack added!'
-    }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT_STACK, (event, editedHabitStack: HabitStack) => {
-    db.read()
-    const index = db.data.habit_stacks.findIndex(habitStack => habitStack.id === editedHabitStack.id)
-    if (index === -1) return { success: false, message: 'Habit stack not found' }
-
-    const habitStackToUpdate = db.data.habit_stacks[index]
-    habitStackToUpdate.title = editedHabitStack.title
-
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABIT_STACKS_UPDATED)
-
-    return {
-      success: true,
-      message: 'Habit stack updated!'
-    }
-  })
-
-  // ========== HABITS ==========
-  ipcMain.handle(IPC_CHANNELS.ADD_HABIT, (event, addedHabit: Habit) => {
-    db.read()
-    const nextId = (db.data.habits.at(-1)?.id || 0) + 1
-    // find the next position in the same stack
-    const nextPosition = db.data.habits.filter(habit => habit.stack_id === addedHabit.stack_id).length
-    console.log(nextPosition)
-
-    if (!addedHabit.title || addedHabit.title.trim() === '') {
-      return {
-        success: false,
-        message: 'Title is required'
-      }
-    }
-    if (!addedHabit.tag_name) {
-      return {
-        success: false,
-        message: 'Tag is required'
-      }
-    }
-    if (!addedHabit.stack_id) {
-      return {
-        success: false,
-        message: 'Stack ID is required'
-      }
-    }
-
-    const newHabit = {
-      id: nextId,
-      title: addedHabit.title,
-      tag_name: addedHabit.tag_name,
-      counter: 0,
-      current_streak: 0,
-      best_streak: 0,
-      stack_id: addedHabit.stack_id,
-      position: nextPosition,
-      last_month_completed: []
-    }
-    db.data.habits.push(newHabit)
-
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
-    return {
-      success: true,
-      message: 'New Habit added!',
-      addedHabit
-    }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.EDIT_HABIT, (event, editedHabit: Habit) => {
-    db.read()
-    const index = db.data.habits.findIndex(habit => habit.id === editedHabit.id)
-    if (index === -1) return { success: false, message: 'Habit not found' }
-
-    const habits = db.data.habits
-    const habitToUpdate = habits[index]
-    const newHabitStack = editedHabit.stack_id
-    const oldHabitStack = habitToUpdate.stack_id
-    
-    if (newHabitStack !== oldHabitStack) {
-      // update position of habits in the old stack
-      habits.forEach(habit => {
-        if (habit.stack_id === oldHabitStack && habit.position > habitToUpdate.position) {
-          habit.position--
-        }
-      })
-      // put edited habit in the end of the new stack
-      habitToUpdate.position = habits.filter(habit => habit.stack_id === newHabitStack).length
-    }
-
-    
-
-    habitToUpdate.title = editedHabit.title
-    habitToUpdate.tag_name = editedHabit.tag_name
-    habitToUpdate.stack_id = editedHabit.stack_id
-
-    db.write()
-    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
-    return { success: true, message: 'Habit updated!' }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, (event, habit: Habit) => {
-    db.read()
-    const dbHabit = db.data.habits.find(h => h.id === habit.id)
-    if (!dbHabit) return { success: false, message: 'Habit not found' }
-
-    const user = db.data.user
-    const tag = db.data.tags.find(tag => tag.title === habit.tag_name)
-    if (!tag) return { success: false, message: 'Tag not found' }
-
-    const today = getToday()
-    const habitCheckedToday = habit.last_month_completed.includes(today)
-
-    // reward for habit completetion
-    const reward = getHabitProgressionReward(habit)
-    const crystals = reward.crystals + habit.current_streak
-    const exp = reward.exp + habit.current_streak
-
-    const userLvlBefore = user.level
-    const tagLvlBefore = tag.level
-    const tagTitle = tag.title
-
-    // revert changes if habit was checked today
-    if (habitCheckedToday) {
-      const lastEntryIndex = habit.last_month_completed.length - 1
-      dbHabit.last_month_completed.splice(lastEntryIndex, 1)
-      dbHabit.counter--
-      dbHabit.current_streak--
-
-      // avoid new current_streak subtracting more than the initial habit check rewarded
-      user.balance -= crystals - 1
-
-      user.exp_gained -= exp - 1
-      user.crystals_gained -= crystals -1
-
-      //handle level ups
-      updateLevel(user, -exp + 1, true);
-      updateLevel(tag, -exp + 1, false);
-    // add changes if habit was not checked today  
-    } else {
-      dbHabit.last_month_completed.push(today)
-      dbHabit.counter++
-      dbHabit.current_streak++
-
-      user.balance += crystals
-
-      user.exp_gained += exp
-      user.crystals_gained += crystals
-
-      //handle level ups
-      updateLevel(user, exp, true);
-      updateLevel(tag, exp, false);
-    }
-
-    // check if user leveled up
-    let levelUp = false
-    if(userLvlBefore < user.level) {
-      levelUp = true
-    }
-
-    // check if tag leveled up
-    let tagLevelUp = false
-    if(tagLvlBefore < tag.level) {
-      tagLevelUp = true
-    }
-
-    // check if habitcounter surpassed 60
-    if(dbHabit.counter >= 60){
-      db.data.user.habits_implemented++
-    }
-
-
-    db.write()
-
-    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
-    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
-    event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
-    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
-    return { success: true, exp, crystals, levelUp, tagLevelUp, tagTitle }
-  })
-
-  ipcMain.handle(IPC_CHANNELS.UPDATE_ALL_STREAKS, (event) => {
-    db.read()
-    const habits = db.data.habits
-
-    const today = getToday()
-    const yesterday = getYesterday()
-
-
-    habits.forEach(habit => {
-      const completetionArray = habit.last_month_completed
-      const lastCompletionIndex = completetionArray.length - 1
-      const lastCompletion = completetionArray[lastCompletionIndex]
-
-      if (lastCompletion ===  today || lastCompletion === yesterday) {
-        return {success: false}
-
-      } else {
-        console.log("Last:" + lastCompletion)
-        console.log(today)
-        console.log(yesterday)
-        if(habit.best_streak < habit.current_streak) habit.best_streak = habit.current_streak
-        habit.current_streak = 0
-      }
-    })
-
-    event.sender.send(IPC_CHANNELS.HABITS_UPDATED)
-    db.write()
-    return { success: true }
   })
 }

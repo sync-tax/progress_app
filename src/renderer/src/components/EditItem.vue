@@ -17,13 +17,17 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks', 'todo_lists', 'todo_items', 'projects'].includes(value)
   },
   allTags: {
     type: Array,
     default: () => []
   },
   allHabitStacks: {
+    type: Array,
+    default: () => []
+  },
+  allTodoLists: {
     type: Array,
     default: () => []
   }
@@ -55,6 +59,40 @@ useKeydowns({
 <template>
   <div class="editWrapper">
     <h2 class="editTitle">Edit {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}</h2>
+
+    <!-- PROJECT -->
+    <template v-if="itemType === 'projects'">
+      <div class="inputWrapper">
+        <label for="projectTitle">Project Title</label>
+        <input type="text" placeholder="Project Title" spellcheck="false" v-model="editableItem.title" />
+        <label for="projectDescription">Project Description</label>
+        <textarea placeholder="Project Description" spellcheck="false" v-model="editableItem.description"></textarea>
+      </div>
+    </template>
+
+    <!-- TODO LIST -->
+    <template v-if="itemType === 'todo_lists'">
+      <div class="inputWrapper">
+        <label for="listTitle">List Title</label>
+        <input type="text" placeholder="List Title" spellcheck="false" v-model="editableItem.title" />
+        <label for="listTag">Tag</label>
+        <select v-model="editableItem.tag_name">
+          <option disabled value="">Please select one</option>
+          <option v-for="tag in allTags" :key="tag.id" :value="tag.title">
+            #{{ tag.title }}
+          </option>
+        </select>
+      </div>
+    </template>
+
+    <!-- TODO ITEM -->
+    <template v-if="itemType === 'todo_items'">
+      <div class="inputWrapper">
+        <label for="itemTitle">Item Title</label>
+        <input type="text" placeholder="Item Title" spellcheck="false" v-model="editableItem.title" />
+      </div>
+    </template>
+
     <!-- IDEA -->
     <template v-if="itemType === 'ideas'">
       <div class="inputWrapper">

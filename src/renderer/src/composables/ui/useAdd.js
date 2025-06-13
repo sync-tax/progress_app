@@ -94,6 +94,20 @@ const constructPayload = (itemType) => {
           tag_name: null,
           stack_id: null
         }
+      case 'todo_lists':
+        return {
+          title: '',
+          project_id: null,
+          tag_name: null,
+          position: 0
+        }
+      case 'todo_items':
+        return {
+          title: '',
+          todo_list_id: null,
+          completed: false,
+          position: 0
+        }
       default:
         console.warn(`Unknown itemType: ${itemType}.`)
         return null

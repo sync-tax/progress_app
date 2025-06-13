@@ -17,7 +17,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks'].includes(value)
+    validator: (value) => ['rewards', 'tags', 'ideas', 'habits', 'stacks', 'todo_lists', 'todo_items'].includes(value)
   },
   allTags: {
     type: Array,
@@ -27,7 +27,19 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  allTodoLists: {
+    type: Array,
+    default: () => []
+  },
   stackId: {
+    type: Number,
+    default: null
+  },
+  listId: {
+    type: Number,
+    default: null
+  },
+  projectId: {
     type: Number,
     default: null
   }
@@ -43,6 +55,8 @@ const addedItem = computed({
 });
 
 addedItem.value.stack_id = props.stackId
+addedItem.value.todo_list_id = props.listId
+addedItem.value.project_id = props.projectId
 
 // ========== EMITS ========== 
 const emit = defineEmits(['save-add', 'cancel-add']);
@@ -58,6 +72,28 @@ useKeydowns({
 <template>
   <div class="addWrapper">
     <h2 class="addTitle">Add {{ itemType.charAt(0).toUpperCase() + itemType.slice(1, -1) }}</h2>
+
+    <!-- TODO LIST -->
+    <template v-if="itemType === 'todo_lists'">
+      <div class="inputWrapper">
+        <label for="listTitle">List Title</label>
+        <input type="text" placeholder="List Title" spellcheck="false" v-model="addedItem.title" />
+        <select v-model="addedItem.tag_name">
+          <option disabled value="">Please select one</option>
+          <option v-for="tag in allTags" :key="tag.id" :value="tag.title">
+            #{{ tag.title }}
+          </option>
+        </select>
+      </div>
+    </template>
+
+    <!-- TODO ITEM -->
+    <template v-if="itemType === 'todo_items'">
+      <div class="inputWrapper">
+        <label for="itemTitle">Item Title</label>
+        <input type="text" placeholder="Item Title" spellcheck="false" v-model="addedItem.title" />
+      </div>
+    </template>
 
      <!-- IDEA -->
      <template v-if="itemType === 'ideas'">

@@ -362,11 +362,13 @@ body main .moduleWrapper {
   position: relative;
   display: flex;
   justify-content: space-around;
-  filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.2));
+  width: -moz-fit-content;
+  width: fit-content;
   cursor: pointer;
   background-color: #211E1D;
   border-radius: 5px 5px 5px 5px;
   transition: all 0.15s ease-in-out;
+  width: 227px;
 }
 .cardWrapper .cardContent {
   padding-left: 5px;
@@ -700,9 +702,10 @@ progress::-webkit-progress-value {
 }
 .balanceWrapper p {
   font-family: "Cinzel", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   margin: auto;
+  background-color: #181818;
   border-radius: 0px 10px 10px 0px;
   height: 20px;
   padding: 0px 8px 0px 12px;
@@ -749,7 +752,7 @@ progress::-webkit-progress-value {
   gap: 10px;
 }
 #ideasWrapper #ideaCard .bulbWrapper {
-  width: 30px;
+  width: 40px;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -757,7 +760,7 @@ progress::-webkit-progress-value {
 }
 #ideasWrapper #ideaCard .bulbWrapper .bulb {
   fill: #DBB997;
-  transform: scale(0.75);
+  transform: scale(0.9);
   opacity: 0.35;
   transition: opacity 0.2s ease-in-out;
   filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
@@ -773,14 +776,14 @@ progress::-webkit-progress-value {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding-top: 18px;
+  justify-content: center;
 }
 #ideasWrapper #ideaCard .ideaContent h4 {
   font-family: "Cinzel", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 200;
+  font-size: 18px;
   color: #DBB997;
-  padding-top: 5px;
+  padding-top: 0px;
   height: 26px;
 }
 #ideasWrapper #ideaCard .ideaContent p {
@@ -788,7 +791,7 @@ progress::-webkit-progress-value {
   font-weight: 300;
   font-size: 12px;
   color: #DBB997;
-  padding-top: 2px;
+  padding-top: 0px;
   padding-right: 3px;
   line-height: 15px;
 }
@@ -860,18 +863,17 @@ progress::-webkit-progress-value {
   display: flex;
   justify-content: space-between;
   height: 30px;
-  background-color: #211E1D;
 }
 #habitsWrapper .habitStackCard .stackTitleWrapper .habitStackTitle {
   font-family: "Cinzel", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 200;
+  font-size: 24px;
   color: #DBB997;
   margin: auto 0;
   height: -moz-fit-content;
   height: fit-content;
-  background-color: #211E1D;
-  padding-left: 10px;
+  background-color: #181818;
+  padding-left: 2px;
 }
 #habitsWrapper .habitStackCard .editStackIcon {
   width: 20px;
@@ -1033,4 +1035,161 @@ progress::-webkit-progress-value {
   align-self: center;
   fill: #4A612F;
   opacity: 100%;
+}
+
+.projectTitleWrapper {
+  display: flex;
+  background-color: #211E1D;
+  border-radius: 5px;
+  margin-top: 10px;
+  width: 940px;
+}
+.projectTitleWrapper .projectCardContent {
+  width: 940px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0px 5px 5px 65px;
+}
+.projectTitleWrapper .projectCardContent .projectTitle {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 200;
+  font-size: 32px;
+  color: #DBB997;
+  width: 500px;
+}
+.projectTitleWrapper .projectCardContent .projectDescription {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #DBB997;
+  opacity: 0.5;
+  width: 500px;
+}
+
+#todoCard {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+#todoCard .todoCardContent {
+  padding-left: 10px;
+  height: 30px;
+  transition: opacity 0.2s ease-in-out;
+}
+#todoCard .todoCardContent .todoTitle {
+  position: absolute;
+  bottom: 3px;
+  left: 30px;
+}
+
+.addTodoItemWrapper {
+  width: 227px;
+  height: 30px;
+  border-radius: 5px;
+  border: 3px dashed #211E1D;
+  display: flex;
+  justify-content: center;
+  opacity: 60%;
+  cursor: pointer;
+}
+.addTodoItemWrapper:hover {
+  opacity: 100%;
+  border: none;
+  background-color: #211E1D;
+}
+.addTodoItemWrapper .addIcon {
+  align-self: center;
+  fill: #4A612F;
+  opacity: 100%;
+}
+
+.todoListCardContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 5px;
+  background-color: #181818;
+}
+.todoListCardContent .habitStackTitle {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 200;
+  font-size: 24px;
+  color: #DBB997;
+  margin: auto 0;
+  height: -moz-fit-content;
+  height: fit-content;
+  background-color: #181818;
+  padding-left: 2px;
+}
+.todoListCardContent .todoListTag {
+  font-family: "Cinzel", sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+  color: #DBB997;
+  opacity: 0.6;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #211E1D;
+  border-radius: 20px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.listTitleWrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  background-color: #211E1D;
+  border-radius: 5px;
+}
+
+.todoCardContent {
+  width: 100%;
+}
+.todoCardContent .todoCompletionWrapper input[type=checkbox] {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.todoCardContent .todoCompletionWrapper .todoTitle {
+  font-family: "Inter", sans-serif;
+  font-weight: 200;
+  font-size: 16px;
+  color: #DBB997;
+  padding-bottom: 2px;
+}
+
+.projectRankGems {
+  width: 100px;
+  height: 60px;
+  overflow: visible;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.projectRankMark {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: -58px;
+  left: -70px;
+  transition: all 0.15s ease-in-out;
+}
+.projectRankMark.legendary-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 128, 0, 0.15));
+}
+.projectRankMark.epic-glow {
+  filter: drop-shadow(0px 0px 2px rgba(163, 53, 238, 0.15));
+}
+.projectRankMark.rare-glow {
+  filter: drop-shadow(0px 0px 2px rgba(0, 112, 221, 0.15));
+}
+.projectRankMark.uncommon-glow {
+  filter: drop-shadow(0px 0px 2px rgba(30, 255, 0, 0.15));
+}
+.projectRankMark.common-glow {
+  filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.15));
 }/*# sourceMappingURL=main.css.map */

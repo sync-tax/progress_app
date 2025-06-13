@@ -3,6 +3,7 @@
  * --------------------------------------------------------------------------------------------------------------
  * @function getTagRank {function} - Gets tag rank based on level
  * @function getHabitRank {function} - Gets habit rank based on streak and counter
+ * @function getProjectRank {function} - Gets project rank based on level
  */
 export const useRanks = () => {
     const getTagRank = (tag) => {
@@ -22,8 +23,17 @@ export const useRanks = () => {
         else return 'common';
     }
 
+    const getProjectRank = (project) => {
+        if (project.time_spent >= 2400) return 'legendary'; //40h
+        else if (project.time_spent >= 1200) return 'epic'; //20h
+        else if (project.time_spent >= 480) return 'rare'; //8h
+        else if (project.time_spent >= 120) return 'uncommon'; //2h
+        else return 'common';
+    }
+
     return {
         getTagRank,
-        getHabitRank
+        getHabitRank,
+        getProjectRank
     }
 }

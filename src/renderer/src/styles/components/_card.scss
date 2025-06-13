@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     justify-content: space-around;
-    filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.2));
+    width: fit-content;
 
     cursor: pointer;
 
@@ -10,6 +10,8 @@
     border-radius: 5px 5px 5px 5px;
 
     transition: all .15s ease-in-out;
+
+    width: 227px;
 
     .cardContent {
         padding-left: 5px;

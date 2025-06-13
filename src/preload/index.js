@@ -41,6 +41,25 @@ const api = {
     return () => ipcRenderer.removeListener(IPC_CHANNELS.PROJECTS_UPDATED, handler);
   },
 
+  // Todo List Functions
+  addTodoList: async (todoList) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TODO_LIST, todoList),
+  editTodoList: async (todoList) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_TODO_LIST, todoList),
+  onTodoListsUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.TODO_LISTS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.TODO_LISTS_UPDATED, handler);
+  },
+
+  // Todo Item Functions
+  addTodoItem: async (todoItem) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TODO_ITEM, todoItem),
+  editTodoItem: async (todoItem) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_TODO_ITEM, todoItem),
+  toggleTodoItemCompletion: async (todoItemId) => await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_TODO_ITEM_COMPLETION, todoItemId),
+  onTodoItemsUpdate: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on(IPC_CHANNELS.TODO_ITEMS_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.TODO_ITEMS_UPDATED, handler);
+  },
+
   // Idea Functions
   addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
   editIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_IDEA, idea),

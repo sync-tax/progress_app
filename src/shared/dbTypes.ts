@@ -11,6 +11,7 @@ export interface User {
   todos_done: number
   ideas_total: number
   habits_implemented: number
+  rewards_unlocked: number
   exp_gained: number
   crystals_gained: number
   created_at: string
@@ -32,7 +33,7 @@ export interface TodoList {
   id: number
   title: string
   project_id: number
-  tag_id: number
+  tag_name: string
   position: number
 }
 

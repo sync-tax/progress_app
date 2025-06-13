@@ -5,7 +5,7 @@
 
 
         .bulbWrapper {
-            width: 30px;
+            width: 40px;
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -13,7 +13,7 @@
 
             .bulb{
                 fill: $main-txt-color;
-                transform: scale(.75);
+                transform: scale(.9);
                 opacity: .35;
                 transition: opacity .2s ease-in-out;
                 filter: drop-shadow(0px 0px 10px rgba(219, 185, 151, 0.35));
@@ -31,21 +31,22 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding-top: 18px;
+            justify-content: center;
+
 
 
 
             h4 {
-                @include base-font($weight: 600, $size: 16px);
+                @include base-font($weight: 200, $size: 18px);
                 color: $main-txt-color;
-                padding-top: 5px;
+                padding-top: 0px;
                 height: 26px
             }
 
             p {
                 @include inter-font($weight: 300, $size: 12px);
                 color: $main-txt-color;
-                padding-top: 2px;
+                padding-top: 0px;
                 padding-right: 3px;
                 line-height: 15px;
             }

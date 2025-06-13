@@ -18,6 +18,7 @@ const defaultData: DbSchema = {
     "habits_implemented": 0,
     "exp_gained": 0,
     "crystals_gained": 0,
+    "rewards_unlocked": 0,
     "created_at": getToday()
   },
   "projects": [
@@ -41,20 +42,20 @@ const defaultData: DbSchema = {
     }
   ],
   "todo_lists": [
-    { "id": 1, "title": "List 1 of Project 1", "project_id": 1, "tag_id": 2, "position": 0 },
-    { "id": 2, "title": "List 2 of Project 1", "project_id": 1, "tag_id": 3, "position": 1 },
-    { "id": 3, "title": "List 3 of Project 1", "project_id": 1, "tag_id": 4, "position": 2 },
-    { "id": 4, "title": "List 1 of Project 2", "project_id": 2, "tag_id": 2, "position": 0 },
-    { "id": 5, "title": "List 2 of Project 2", "project_id": 2, "tag_id": 3, "position": 1 },
-    { "id": 6, "title": "List 3 of Project 2", "project_id": 2, "tag_id": 4, "position": 2 },
+    { "id": 1, "title": "List 1", "project_id": 1, "tag_name": "Focus", "position": 0 },
+    { "id": 2, "title": "List 2", "project_id": 1, "tag_name": "Health", "position": 1 },
+    { "id": 3, "title": "List 3", "project_id": 1, "tag_name": "Work", "position": 2 },
+    { "id": 4, "title": "List 1", "project_id": 2, "tag_name": "Learn", "position": 0 },
+    { "id": 5, "title": "List 2", "project_id": 2, "tag_name": "Mind", "position": 1 },
+    { "id": 6, "title": "List 3", "project_id": 2, "tag_name": "Body", "position": 2 },
   ],
   "todo_items": [
-    { "id": 1, "title": "Todo 1 of List 1", "todo_list_id": 1, "completed": false, "position": 0 },
-    { "id": 2, "title": "Todo 2 of List 1", "todo_list_id": 1, "completed": false, "position": 1 },
-    { "id": 3, "title": "Todo 3 of List 1", "todo_list_id": 2, "completed": false, "position": 0 },
-    { "id": 4, "title": "Todo 4 of List 1", "todo_list_id": 2, "completed": false, "position": 1 },
-    { "id": 5, "title": "Todo 1 of List 2", "todo_list_id": 3, "completed": false, "position": 0 },
-    { "id": 6, "title": "Todo 2 of List 2", "todo_list_id": 3, "completed": false, "position": 1 }
+    { "id": 1, "title": "Todo 1", "todo_list_id": 1, "completed": false, "position": 0 },
+    { "id": 2, "title": "Todo 2", "todo_list_id": 1, "completed": false, "position": 1 },
+    { "id": 3, "title": "Todo 3", "todo_list_id": 1, "completed": false, "position": 2 },
+    { "id": 4, "title": "Todo 1", "todo_list_id": 2, "completed": false, "position": 0 },
+    { "id": 5, "title": "Todo 2", "todo_list_id": 2, "completed": false, "position": 1 },
+    { "id": 6, "title": "Todo 3", "todo_list_id": 2, "completed": false, "position": 2 }
   ],
   "tags": [
     { "id": 1, "title": "Focus", "level": 33, "exp_current": 0, "exp_needed": 100, "time_spent": 0, "created_at": "2025-06-12", "position": 0 },

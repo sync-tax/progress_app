@@ -12,15 +12,15 @@
             display: flex;
             justify-content: space-between;
             height: 30px;
-            background-color: $ui-color-medium;
+
 
             .habitStackTitle {
-                @include base-font($weight: 600, $size: 16px);
+                @include base-font($weight: 200, $size: 24px);
                 color: $main-txt-color;
                 margin: auto 0;
                 height: fit-content;
-                background-color: $ui-color-medium;
-                padding-left: 10px;
+                background-color: $ui-color-dark;
+                padding-left: 2px;
             }
         }
 
