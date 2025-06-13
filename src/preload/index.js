@@ -31,10 +31,13 @@ const api = {
     ipcRenderer.on(IPC_CHANNELS.USER_LEVEL_UPDATED, handler);
     return () => ipcRenderer.removeListener(IPC_CHANNELS.USER_LEVEL_UPDATED, handler);
   },
+  addTime: async (timeSpent, todoListId) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TIME, timeSpent, todoListId),
 
   // Project Functions
   addProject: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_PROJECT, project),
   editProject: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_PROJECT, project),
+  claimProjectReward: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.CLAIM_PROJECT_REWARD, project),
+  activateProject: async (project) => await ipcRenderer.invoke(IPC_CHANNELS.ACTIVATE_PROJECT, project),
   onProjectsUpdate: (callback) => {
     const handler = () => callback();
     ipcRenderer.on(IPC_CHANNELS.PROJECTS_UPDATED, handler);
@@ -55,6 +58,7 @@ const api = {
   addTodoItem: async (todoItem) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_TODO_ITEM, todoItem),
   editTodoItem: async (todoItem) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_TODO_ITEM, todoItem),
   toggleTodoItemCompletion: async (todoItemId) => await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_TODO_ITEM_COMPLETION, todoItemId),
+  getNextActiveTodo: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_NEXT_ACTIVE_TODO),
   onTodoItemsUpdate: (callback) => {
     const handler = () => callback();
     ipcRenderer.on(IPC_CHANNELS.TODO_ITEMS_UPDATED, handler);

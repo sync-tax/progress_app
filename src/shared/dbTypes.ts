@@ -5,7 +5,6 @@ export interface User {
   exp_current: number
   exp_needed: number
   focused_time: number
-  total_time: number
   pomodoros: number
   projects_done: number
   todos_done: number
@@ -24,6 +23,7 @@ export interface Project {
   description: string
   time_spent: number
   active: boolean
+  completed: boolean
   created_at: string
   position: number
 }

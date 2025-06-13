@@ -10,7 +10,6 @@ const defaultData: DbSchema = {
     "exp_current": 0,
     "exp_needed": 60,
     "focused_time": 0,
-    "total_time": 0,
     "pomodoros": 0,
     "projects_done": 0,
     "todos_done": 0,
@@ -26,7 +25,8 @@ const defaultData: DbSchema = {
       "id": 1,
       "title": "Build App",
       "description": "Description for project 1.",
-      "time_spent": 0,
+      "time_spent": 231,
+      "completed": false,
       "active": true,
       "created_at": "2025-06-12",
       "position": 0
@@ -35,10 +35,21 @@ const defaultData: DbSchema = {
       "id": 2,
       "title": "Read Book",
       "description": "Description for project 2.",
-      "time_spent": 0,
+      "time_spent": 89,
+      "completed": false,
       "active": false,
       "created_at": "2025-06-12",
       "position": 1
+    },
+    {
+      "id": 3,
+      "title": "Shit Pants",
+      "description": "Description for project 2.",
+      "time_spent": 1232,
+      "completed": false,
+      "active": false,
+      "created_at": "2025-06-12",
+      "position": 2
     }
   ],
   "todo_lists": [

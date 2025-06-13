@@ -1,6 +1,6 @@
 import { useToasts } from '../ui/useToasts'
 import { useDates } from '../../../../shared/helpers/useDate.ts'
-import { toRaw } from 'vue'
+import { toRaw, ref } from 'vue'
 
 const { addToast } = useToasts()
 const { getToday } = useDates()
@@ -13,6 +13,10 @@ const { getToday } = useDates()
  * @function onTodoItemsUpdate {function} - Listens for todo item updates from the database
  */
 export function useTodoItems() {
+
+    const nextActiveTodo = ref(null)
+    const nextActiveTodoTitle = ref(null)
+    
     const addTodoItem = async (todoItem) => {
         return await window.api.addTodoItem(todoItem)
     }
@@ -34,11 +38,31 @@ export function useTodoItems() {
         }
     }
 
+    const getNextActiveTodo = async () => {
+        try {
+            const result = await window.api.getNextActiveTodo()
+            if (result.success) {
+                nextActiveTodo.value = result.todo
+                nextActiveTodoTitle.value = result.title
+                return result.title
+            } else {
+                addToast({ message: result.message, type: 'info' })
+                return null
+            }
+        } catch (error) {
+            console.error('Error getting next active todo:', error)
+            addToast({ message: 'An error occurred while fetching next todo', type: 'error' })
+            return null
+        }
+    }
+
 
     return {
         addTodoItem,
         editTodoItem,
         toggleTodoItemCompletion,
-        onTodoItemsUpdate
+        onTodoItemsUpdate,
+        getNextActiveTodo,
+        nextActiveTodoTitle
     }
 }

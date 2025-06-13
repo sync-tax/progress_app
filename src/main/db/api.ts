@@ -171,6 +171,25 @@ export function registerDBHandlers() {
     return level
   })
 
+  ipcMain.handle(IPC_CHANNELS.ADD_TIME, (event, timeSpent: number, todoListId: number) => {
+    db.read()
+    const user = db.data.user
+    const todoList = db.data.todo_lists.find(todoList => todoList.id === todoListId)
+    if (!todoList) return { success: false, message: 'Todo List not found' }
+
+    const linkedProject = db.data.projects.find(project => project.id === todoList.project_id)
+    if (!linkedProject) return { success: false, message: 'Linked Project not found' }
+
+    user.pomodoros++
+    todoList.time_spent += timeSpent
+    user.focused_time += timeSpent
+    linkedProject.time_spent += timeSpent
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+    return { success: true }
+  })
+
   // ========== PROJECTS ==========
   ipcMain.handle(IPC_CHANNELS.EDIT_PROJECT, (event, editedProject: Project) => {
     db.read()
@@ -184,6 +203,76 @@ export function registerDBHandlers() {
     db.write()
     event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
     return { success: true, message: 'Project updated!' }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.ACTIVATE_PROJECT, (event, project: Project) => {
+    db.read()
+    const index = db.data.projects.findIndex(p => p.id === project.id)
+    if (index === -1) return { success: false, message: 'Project not found' }
+
+    const projectToUpdate = db.data.projects[index]
+    if (projectToUpdate.active) return { success: false, message: 'Project already active' }
+
+    const currentActiveProject = db.data.projects.find(p => p.active)
+    if (currentActiveProject) {
+      currentActiveProject.active = false
+    }
+
+    projectToUpdate.active = true
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    return { success: true, message: 'Project activated!' }
+  })
+
+  ipcMain.handle(IPC_CHANNELS.CLAIM_PROJECT_REWARD, (event, project: Project) => {
+    db.read()
+    const projectIndex = db.data.projects.findIndex(project => project.id === project.id)
+    if (projectIndex === -1) return { success: false, message: 'Project not found' }
+
+    const projectToUpdate = db.data.projects[projectIndex]
+    const user = db.data.user
+    const userLvlBefore = user.level
+
+    let crystalsGained = 0
+    let userExpGained = 0
+    let levelUp = false
+
+    if (!projectToUpdate.completed) return { success: false, message: 'Project not completed' }
+    const reward = getProjectProgressionReward(projectToUpdate)
+    crystalsGained = reward.crystals
+    userExpGained = reward.userExp
+
+    user.exp_gained += userExpGained
+    user.crystals_gained += crystalsGained
+
+    updateLevel(user, userExpGained, true)
+    levelUp = user.level > userLvlBefore
+
+    const nextDoneId = (db.data.projects_done.at(-1)?.id || 0) + 1
+    db.data.projects_done.push({
+      id: nextDoneId,
+      name: projectToUpdate.title,
+      created_at: projectToUpdate.created_at,
+      time_spent: projectToUpdate.time_spent
+    })
+
+    db.data.projects = db.data.projects.filter(project => project.id !== projectToUpdate.id)
+    db.data.user.projects_done += 1
+
+    const nextProject = [...db.data.projects].sort((a, b) => a.id - b.id)[0]
+    if (nextProject) {
+      nextProject.active = true
+    }
+   
+
+    db.write()
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
+    event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
+    event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
+    event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
+
+    return { success: true, crystalsGained, userExpGained, levelUp }
   })
 
   // ========== TODO LISTS ==========
@@ -210,8 +299,12 @@ export function registerDBHandlers() {
     }
     db.data.todo_lists.push(newTodoList)
 
+    const projectIndex = db.data.projects.findIndex(project => project.id === addedTodoList.project_id)
+    if (projectIndex !== -1) db.data.projects[projectIndex].completed = false
+
     db.write()
     event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
     return {
       success: true,
       message: 'New todo list added!'
@@ -235,6 +328,10 @@ export function registerDBHandlers() {
   ipcMain.handle(IPC_CHANNELS.CLAIM_TODO_LIST_REWARD, (event, todoList: TodoList) => {
     db.read()
     const claimedTodoListTasks = db.data.todo_items.filter(todoItem => todoItem.todo_list_id === todoList.id)
+    const project = db.data.projects.find(project => project.id === todoList.project_id)
+    if (!project) return { success: false, message: 'Project not found' }
+
+    const claimedTodoListPosition = todoList.position
 
     const user = db.data.user
     const userLvlBefore = user.level
@@ -244,7 +341,6 @@ export function registerDBHandlers() {
     const tagLvlBefore = tag.level
     const tagTitle = tag.title
     
-
     let crystalsGained = 0
     let userExpGained = 0
     let tagExpGained = 0
@@ -264,9 +360,13 @@ export function registerDBHandlers() {
     db.data.user.exp_current += userExpGained
     db.data.user.exp_needed += userExpGained
 
+    user.exp_gained += userExpGained
+    user.crystals_gained += crystalsGained
+
     db.data.todo_items = db.data.todo_items.filter(todoItem => todoItem.todo_list_id !== todoList.id)
 
     const todoListIndex = db.data.todo_lists.findIndex(tl => tl.id === todoList.id)
+    
     if (todoListIndex !== -1) {
       db.data.todo_lists.splice(todoListIndex, 1)
     }
@@ -286,17 +386,24 @@ export function registerDBHandlers() {
       tagLevelUp = true
     }
 
-    console.log("levelUp: " + levelUp)
-    console.log("tagLevelUp: " + tagLevelUp)
-    console.log("userExpGained: " + userExpGained)
-    console.log("tagExpGained: " + tagExpGained)
-    console.log("crystalsGained: " + crystalsGained)
+    const todoListsInProject = db.data.todo_lists.filter(todoList => todoList.project_id === project.id)
+    if (todoListsInProject.length === 0) {
+      project.completed = true
+    }
+
+   //TODO Look for better normalisation of pos solution (maybe global event watcher or smth idk)
+    db.data.todo_lists.forEach(todoList => {
+      if (todoList.position > claimedTodoListPosition && todoList.project_id === project.id) {
+        todoList.position--
+      }
+    })
 
     db.write()
     event.sender.send(IPC_CHANNELS.BALANCE_UPDATED, db.data.user.balance)
     event.sender.send(IPC_CHANNELS.USER_EXP_UPDATED, db.data.user.exp_current, db.data.user.exp_needed)
     event.sender.send(IPC_CHANNELS.USER_LEVEL_UPDATED, db.data.user.level)
-    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED, db.data.todo_lists)
+    event.sender.send(IPC_CHANNELS.TODO_LISTS_UPDATED)
+    event.sender.send(IPC_CHANNELS.PROJECTS_UPDATED)
     
     return { success: true, crystalsGained, userExpGained, tagExpGained, levelUp, tagLevelUp, tagTitle }
   })
@@ -369,6 +476,8 @@ export function registerDBHandlers() {
     if (!dbTodoItem) return { success: false, message: 'Todo Item not found' }
 
     dbTodoItem.completed = !dbTodoItem.completed
+
+    db.data.user.todos_done += 1
 
     db.write()
 
@@ -446,6 +555,7 @@ export function registerDBHandlers() {
       description: ideaToConvert.description,
       time_spent: 0,
       active: false,
+      completed: false,
       created_at: getToday(),
       position: nextPosition
     })

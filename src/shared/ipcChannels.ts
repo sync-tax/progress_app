@@ -11,11 +11,14 @@ export const IPC_CHANNELS = {
     GET_USER_EXP: 'get-user-exp',
     USER_EXP_UPDATED: 'user-exp-updated',
     GET_USER_LEVEL: 'get-user-level',
+    ADD_TIME: 'add-time',
     USER_LEVEL_UPDATED: 'user-level-updated',
 
     // ========== PROJECTS ==========
     ADD_PROJECT: 'add-project',
     EDIT_PROJECT: 'edit-project',
+    ACTIVATE_PROJECT: 'activate-project',
+    CLAIM_PROJECT_REWARD: 'claim-project-reward',
     PROJECTS_UPDATED: 'projects-updated',
 
     ADD_TODO_LIST: 'add-todo-list',
@@ -26,6 +29,7 @@ export const IPC_CHANNELS = {
     ADD_TODO_ITEM: 'add-todo-item',
     EDIT_TODO_ITEM: 'edit-todo-item',
     TODO_ITEMS_UPDATED: 'todo-items-updated',
+    GET_NEXT_ACTIVE_TODO: 'get-next-active-todo',
     TOGGLE_TODO_ITEM_COMPLETION: 'toggle-todo-item-completion',
 
     // ========== IDEAS ==========      

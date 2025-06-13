@@ -23,12 +23,12 @@ import { useToasts } from '../composables/ui/useToasts'
 // Vue
 import { onMounted, onUnmounted, ref, toRaw } from 'vue'
 // ========= DATA =========
-const { editProject, onProjectsUpdate } = useProjects()
+const { editProject, claimProjectReward, onProjectsUpdate } = useProjects()
 const { addTodoList, editTodoList, claimTodoListReward, onTodoListsUpdate } = useTodoLists()
 const { addTodoItem, editTodoItem, toggleTodoItemCompletion, onTodoItemsUpdate } = useTodoItems()
 const { getItems, deleteItem, moveItem } = useUniversals()
 const { sortByPosition } = useSort()
-const { getTodoListProgressionReward } = useProgressions()
+const { getTodoListProgressionReward, getProjectProgressionReward } = useProgressions()
 const { addToast } = useToasts()
 
 let cleanupProjectsUpdate = null
@@ -158,6 +158,22 @@ const {
         <EditItem :itemType="'projects'" v-model="projectEditedItemData" @save-edit="projectSaveEditing"
           @cancel-edit="projectCancelEditing" @delete-edit="projectDeleteEditing" />
       </template>
+
+      <!-- TODO: Make this conditional readable | Checks if all todo lists in project are completed && if there is at least one todo list in project -> shows Claim Reward button if true -->
+      <!-- TODO: Validate CLAIM on Backend only -->
+      <div class="projectRewardWrapper">
+        <div class="projectRewardText">
+          <p> +{{ getProjectProgressionReward(project).crystals }} Crystals</p>
+          <p> +{{ getProjectProgressionReward(project).userExp }} User-EXP</p>
+        </div>
+
+      <template v-if="project.completed">
+        <button id="claimButtonActive" @click="claimProjectReward(toRaw(project))">Claim</button>
+      </template>
+      <template v-else>
+        <button @click="addToast({ message: 'Project not Completed!', type: 'warning' })">Claim</button>
+      </template>
+    </div>
     </div>
 
     <div id="habitsWrapper" class="moduleWrapper">
