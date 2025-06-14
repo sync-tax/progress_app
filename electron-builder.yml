@@ -12,6 +12,9 @@ asarUnpack:
   - resources/**
 win:
   executableName: progress
+  icon: build/icon.ico
+  verifyUpdateCodeSignature: false
+  signingHashAlgorithms: []
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
