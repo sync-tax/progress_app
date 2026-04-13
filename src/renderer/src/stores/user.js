@@ -11,8 +11,6 @@ export const useUserStore = defineStore('user', () => {
     pomodoros: 0,
     questlines_done: 0,
     todos_done: 0,
-    ideas_total: 0,
-    habits_implemented: 0,
     rewards_unlocked: 0,
     exp_gained: 0,
     crystals_gained: 0,

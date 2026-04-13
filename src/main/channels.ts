@@ -48,33 +48,7 @@ export const IPC_CHANNELS = {
   EDIT_TASK: 'edit-task',
   DELETE_TASK: 'delete-task',
   TASKS_UPDATED: 'tasks-updated',
-  GET_NEXT_ACTIVE_TASK: 'get-next-active-task',
   TOGGLE_TASK_COMPLETION: 'toggle-task-completion',
-
-  // ========== IDEAS ==========
-  GET_IDEAS: 'get-ideas',
-  ADD_IDEA: 'add-idea',
-  EDIT_IDEA: 'edit-idea',
-  DELETE_IDEA: 'delete-idea',
-  CONVERT_IDEA_TO_PROJECT: 'convert-idea-to-project',
-  IDEAS_UPDATED: 'ideas-updated',
-
-  // ========== HABITS STACK ==========
-  GET_HABIT_STACKS: 'get-habit-stacks',
-  ADD_HABIT_STACK: 'add-habit-stack',
-  EDIT_HABIT_STACK: 'edit-habit-stack',
-  DELETE_HABIT_STACK: 'delete-habit-stack',
-  HABIT_STACKS_UPDATED: 'habit-stacks-updated',
-
-  // ========== HABITS ==========
-  GET_HABITS: 'get-habits',
-  ADD_HABIT: 'add-habit',
-  EDIT_HABIT: 'edit-habit',
-  DELETE_HABIT: 'delete-habit',
-  MOVE_NESTED_HABIT: 'move-nested-habit',
-  TOGGLE_HABIT_COMPLETION: 'toggle-habit-completion',
-  HABITS_UPDATED: 'habits-updated',
-  UPDATE_ALL_STREAKS: 'update-all-streaks',
 
   // ========== TAGS ==========
   GET_TAGS: 'get-tags',

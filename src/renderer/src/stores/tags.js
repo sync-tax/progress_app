@@ -34,17 +34,14 @@ export const useTagsStore = defineStore('tags', () => {
     }
   }
 
-  // logic handled in useAdd.js
   const addTag = async (tag) => {
     return await window.api.addTag(tag)
   }
 
-  // logic handled in useEdit.js
   const editTag = async (tag) => {
     return await window.api.editTag(tag)
   }
 
-  // logic handled in useEdit.js
   const deleteTag = async (id) => {
     return await window.api.deleteTag(id)
   }

@@ -52,51 +52,31 @@ Find the .exe file in the dist -> win-unpacked folder
 
 ### Timer
 
-Tracks time spent on a project. Acts like a flexible pomodoro timer. (1-120 minutes). In case of not using the PC you can manually add time to a project. It will always be added to the currently active project and the quest which is assigned first inside this project.
+Tracks focused time with a flexible session length. You can start, stop and reset sessions, or manually add time if needed. Logged time is applied to the currently active project flow and feeds the progression system.
 
-### Quests
+### Projects
 
-Represent my projects. Each questline (project) can have multiple sub-quests. Sub-quests can be assigned a tag and various tasks. Depending on the amount of time spent and completed tasks, the quest rewards will be calculated.
+This is the main planning module. Projects are structured into projects, epics and tasks. Epics can be linked to one or two skills, tasks can be completed directly, and finished work rewards the user with EXP and crystals.
 
-Rewards include:
+### Skills
 
-- Global EXP
-- Tag EXP
-- Crystals
-
-### Ideas
-
-Serve as a backlog for my ideas. I can store them and convert them to quests later if I decide to tackle them.
-
-### Habit (Stacks)
-
-Represent my habits. I can create habit stacks and add habits to them. They level up based on the counter & best streak. Rewards grow with your streak. Streaks reset if you miss a day.
-
-Rewards include:
-
-- Global EXP
-- Tag EXP
-- Crystals
-
-### Tags
-
-Tags represent your passions and skills in real life. They level up based on the amount of time spent on a project with this tag and on your habit completions.
+Skills represent the areas you want to grow in real life. They gain EXP and levels through focused project work and use the same rarity-style rank system as the rest of the app.
 
 ### Rewards
 
-You can declare your own rewards and set a price for them. You can then buy them with crystals. They are either repeatable or one-time purchases.
+You can define your own rewards, assign a crystal cost and choose whether they are repeatable or one-time. Rewards can be claimed once you have enough crystals.
+
+### Statistics
+
+Provides a higher-level overview of the current account and activity data. It includes focus time summaries, XP and crystal totals, skill distribution, project progress and a yearly activity heatmap. The statistics view can also be exported as a PDF.
+
+### Settings
+
+Contains the small set of system-level options that currently matter: timer limits, default session length and data export. You can also export the local database as a JSON backup.
 
 ### Progression
 
-Leveling up comes with a rank progression for tags, habits and projects. The level cap is 60. It is an exponential progression. (The higher the level, the more EXP is needed to level up)
-
-Ranks:
-
-- Common (white)
-- Uncommon (green)
-- Rare (blue)
-- Epic (purple)
-- Legendary (orange)
+Acts as a reference page for the progression curves behind the system. It shows how user and skill leveling scale over time. The current system uses an exponential progression up to level 80 and rank tiers from Common to Mythic.
 
 ---
 
@@ -104,38 +84,25 @@ Ranks:
 
 **Code Cleanup**
 
-- SCSS -> BEM
-- Extract DB Handler logic to reusable functions (if needed)
-- Rework parts of the architecture
-- Think about ways to minimize separate files
+- Extract code from Views -> Abstraction
+- ❓ ...
 
 **Features**
 
-- Achievements
-- Settings (Themes, Import/Export DB...)
-- More sophisticated Statistics
+- Add Settings
+  - € to Crystals conversion 4 rewards
+  - ❓...
 
 **UI/UX**
 
-- Rework UI to be more intuitive
-- Redesign UI
-- Animations
-- Sound Effects
+- Rework Settings UI
+- Improve Projects Module Usability & UI
+- ❓Replace Drag Delete with Overlay ("Do you really want to delete xxx?")
+- ❓...
 
 ---
 
-## Bug Log (starting with MVP 0.1)
+## Bug Log
 
-- 24.06.2025: Nested move arrangement buggy | resolved ✅ (addTask handler calculated position based on all tasks instead of quest tasks)
-- 21.06.2025: Tasks don't properly clean when quest resolved | resolved ✅ (fixed handler logic)
-- 20.06.2025: Rank indicator (mark) overlaps drag handle - minor css issue | not resolved ⚠️
-- 17.06.2025: Questline randomly switching to completed | resolved ✅ (dynamically checks if completed, depending if all sub-quests including tasks are completed)
-- 17.06.2025: Questline Completion not working | resolved ✅ (fixed handler logic)
-- 17.06.2025: User Update reactivity fails sometimes - Need to restart app to see EXP & Balance Updates | unsure ❓ (happens randomly - maybe race condition - will try refetching user data after ipc call instead of relying on update events)
-- 17.06.2025: Quest Rewards calculate wrong | resolved ✅ (adapted IPC handler)
-- 17.06.2025: Timer finished Notification Spams | resolved ✅ (fixed cleaning event listeners)
-- 17.06.2025: Edit-Mode lags when editing multiple items | resolved ✅ (fixced with backend cleanup)
-- 16.06.2025: Timer throttling when minimized | resolved ✅ (moved to main process)
-- 15.06.2025: Loose Data After Quest Deletion | resolved ✅ (cascading delete)
-- 14.06.2025: Corrupted Position values in DB | resolved ✅ (implemented normalize function)
-- 13.06.2025: Tags not accessible in Quests | resolved ✅ (fixed passed ref to component)
+- [] 13.04.2026: Statistics Heatmap 1 day behind
+- [] 13.04.2026: Having 0 Projects leads to no action possible in "Projects" Module

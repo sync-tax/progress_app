@@ -85,21 +85,22 @@ import StatsIcon from '../assets/stats.svg'
         </div>
       </RouterLink>
 
-      <!-- Progression -->
+      <!-- Progression 
       <RouterLink
+        id="progressionLink"
         v-slot="{ isActive }"
         to="/Progression"
       >
         <div :class="['navLink', { active: isActive }]">
           <div class="navLinkContent">
             <SettingsIcon class="nav-icon" />
-            <p>Test</p>
+            <p>Progression</p>
           </div>
 
           <div class="navLinkIndicator"></div>
         </div>
       </RouterLink>
-
+-->
       <!-- Settings -->
       <RouterLink
         id="settingsLink"

@@ -1,7 +1,5 @@
 <script setup>
-import ModuleTitle from '../components/ModuleTitle.vue'
-import ConstructionIcon from '../assets/construction.svg'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useXPMultipliers } from '../../../shared/constants/useXPMultipliers'
 
 const { EXP_MULTIPLIER_USER, EXP_MULTIPLIER_TAGS } = useXPMultipliers()
@@ -45,9 +43,6 @@ const tagData = computed(() => {
 
 <template>
   <div class="achievements-container">
-    <!-- TODO: Add achievements 
-    <ModuleTitle title="Achievements" />
-    <ConstructionIcon id="constructionIcon" />-->
     <div class="tables-container">
       <!-- User Progression Table -->
       <div class="table-wrapper">

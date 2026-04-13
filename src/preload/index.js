@@ -88,24 +88,10 @@ const api = {
   deleteTask: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_TASK, id),
   toggleTaskCompletion: async (taskId) =>
     await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_TASK_COMPLETION, taskId),
-  getNextActiveTask: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_NEXT_ACTIVE_TASK),
   onTasksUpdate: (callback) => {
     const handler = () => callback()
     ipcRenderer.on(IPC_CHANNELS.TASKS_UPDATED, handler)
     return () => ipcRenderer.removeListener(IPC_CHANNELS.TASKS_UPDATED, handler)
-  },
-
-  // Idea Functions
-  getIdeas: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_IDEAS),
-  addIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_IDEA, idea),
-  editIdea: async (idea) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_IDEA, idea),
-  deleteIdea: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_IDEA, id),
-  convertIdeaToProject: async (id) =>
-    await ipcRenderer.invoke(IPC_CHANNELS.CONVERT_IDEA_TO_PROJECT, id),
-  onIdeasUpdate: (callback) => {
-    const handler = () => callback()
-    ipcRenderer.on(IPC_CHANNELS.IDEAS_UPDATED, handler)
-    return () => ipcRenderer.removeListener(IPC_CHANNELS.IDEAS_UPDATED, handler)
   },
 
   // Tag Functions
@@ -138,32 +124,6 @@ const api = {
     }
   },
 
-  // HabitStack Functions
-  getHabitStacks: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABIT_STACKS),
-  addHabitStack: async (habitStack) =>
-    await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT_STACK, habitStack),
-  editHabitStack: async (habitStack) =>
-    await ipcRenderer.invoke(IPC_CHANNELS.EDIT_HABIT_STACK, habitStack),
-  deleteHabitStack: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT_STACK, id),
-  onHabitStacksUpdate: (callback) => {
-    const handler = () => callback()
-    ipcRenderer.on(IPC_CHANNELS.HABIT_STACKS_UPDATED, handler)
-    return () => ipcRenderer.removeListener(IPC_CHANNELS.HABIT_STACKS_UPDATED, handler)
-  },
-
-  // Habit Functions
-  getHabits: async () => await ipcRenderer.invoke(IPC_CHANNELS.GET_HABITS),
-  addHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.ADD_HABIT, habit),
-  editHabit: async (habit) => await ipcRenderer.invoke(IPC_CHANNELS.EDIT_HABIT, habit),
-  deleteHabit: async (id) => await ipcRenderer.invoke(IPC_CHANNELS.DELETE_HABIT, id),
-  toggleHabitCompletion: async (habitId) =>
-    await ipcRenderer.invoke(IPC_CHANNELS.TOGGLE_HABIT_COMPLETION, habitId),
-  updateAllStreaks: async () => await ipcRenderer.invoke(IPC_CHANNELS.UPDATE_ALL_STREAKS),
-  onHabitsUpdate: (callback) => {
-    const handler = () => callback()
-    ipcRenderer.on(IPC_CHANNELS.HABITS_UPDATED, handler)
-    return () => ipcRenderer.removeListener(IPC_CHANNELS.HABITS_UPDATED, handler)
-  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -3,8 +3,6 @@
 // Icons
 import PlusIcon from '../assets/plus.svg'
 import DeleteIcon from '../assets/delete.svg'
-// Components
-import ModuleTitle from '../components/ModuleTitle.vue'
 // Composables
 import { useKeydowns } from '../helpers/composables/useKeydowns'
 import { useToasts } from '../helpers/composables/useToasts'

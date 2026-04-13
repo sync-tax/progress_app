@@ -1,12 +1,12 @@
-import { Reward, Habit, Tag, Idea, HabitStack, Quest, Task } from '../db/types.ts'
+import { Quest, Questline, Reward, Tag, Task } from '../db/types.ts'
 import { useValidations } from '../helpers/useValidations'
 const { validateExistance } = useValidations()
 
 export function useGlobals() {
   const updateItemPositions = (
-    itemToMove: Reward | Habit | Tag | Idea | HabitStack | Quest | Task,
-    allPassedItems: (Reward | Habit | Tag | Idea | HabitStack | Quest | Task)[],
-    allItems: (Reward | Habit | Tag | Idea | HabitStack | Quest | Task)[],
+    itemToMove: Reward | Tag | Questline | Quest | Task,
+    allPassedItems: (Reward | Tag | Questline | Quest | Task)[],
+    allItems: (Reward | Tag | Questline | Quest | Task)[],
     direction: 'up' | 'down',
   ) => {
     const itemExists = validateExistance(itemToMove.id, allItems)

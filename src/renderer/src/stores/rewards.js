@@ -34,17 +34,14 @@ export const useRewardsStore = defineStore('rewards', () => {
     }
   }
 
-  // logic handled in useAdd.js
   const addReward = async (reward) => {
     return await window.api.addReward(reward)
   }
 
-  // logic handled in useEdit.js
   const editReward = async (reward) => {
     return await window.api.editReward(reward)
   }
 
-  // logic handled in useEdit.js
   const deleteReward = async (id) => {
     return await window.api.deleteReward(id)
   }

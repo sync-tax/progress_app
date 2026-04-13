@@ -2,7 +2,6 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import ModuleTitle from '../components/ModuleTitle.vue'
 import ArrowIcon from '../assets/arrow.svg'
 
 import { useSettingsStore } from '../stores/settings'
