@@ -57,46 +57,36 @@ Find the .exe file in the dist -> win-unpacked folder
 ## Modules
 
 ### Timer
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/102df394-197c-47fa-aead-0ed821423155" />
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/102df394-197c-47fa-aead-0ed821423155" />
 
 Tracks focused time with a flexible session length. You can start, stop and reset sessions, or manually add time if needed. Logged time is applied to the currently active project flow and feeds the progression system.
 
 ### Projects
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/8a2c3cc0-c550-4b08-8850-8603f1a5a3c7" />
-
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/8a2c3cc0-c550-4b08-8850-8603f1a5a3c7" />
 
 This is the main planning module. Projects are structured into projects, epics and tasks. Epics can be linked to one or two skills, tasks can be completed directly, and finished work rewards the user with EXP and crystals.
 
 ### Skills
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/26499746-6ffe-43b3-9f82-2f20e2b8df70" />
-
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/26499746-6ffe-43b3-9f82-2f20e2b8df70" />
 
 Skills represent the areas you want to grow in real life. They gain EXP and levels through focused project work and use the same rarity-style rank system as the rest of the app.
 
 ### Rewards
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/2c04a215-432c-4acf-bfba-2d4f6c2d83dc" />
-
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/2c04a215-432c-4acf-bfba-2d4f6c2d83dc" />
 
 You can define your own rewards, assign a crystal cost and choose whether they are repeatable or one-time. Rewards can be claimed once you have enough crystals.
 
 ### Statistics
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/6ef69f17-0081-42f2-9117-51390fa5069c" />
-
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/6ef69f17-0081-42f2-9117-51390fa5069c" />
 
 Provides a higher-level overview of the current account and activity data. It includes focus time summaries, XP and crystal totals, skill distribution, project progress and a yearly activity heatmap. The statistics view can also be exported as a PDF.
 
 ### Settings
-<img width="500" alt="grafik" src="https://github.com/user-attachments/assets/af8b9257-fe3b-4966-8cfe-e3ec0f505b03" />
 
 <img width="500" alt="grafik" src="https://github.com/user-attachments/assets/af8b9257-fe3b-4966-8cfe-e3ec0f505b03" />
 
