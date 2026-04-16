@@ -116,7 +116,9 @@ Contains the small set of system-level options that currently matter: timer limi
 
 ---
 
-## Bug Log
+## Bugs & Todos
 
-- [] 13.04.2026: Statistics Heatmap 1 day behind
-- [] 13.04.2026: Having 0 Projects leads to no action possible in "Projects" Module
+- [] BUG | Statistics Heatmap shows 1 day behind
+- [] BUG | Having 0 Projects leads to no action possible in "Projects" Module
+- [] TODO | Rebalance Heatmap Stat -> 4h for 100%
+- [] TODO | Ensure Icon Logo shows on win (currently Electron default)

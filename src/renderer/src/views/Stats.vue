@@ -122,10 +122,11 @@ const getProjectRank = (project) => {
 }
 
 const getHeatOpacity = (minutes) => {
-  if (minutes >= 120) return 1
-  if (minutes >= 60) return 0.7
-  if (minutes >= 25) return 0.4
-  if (minutes >= 2) return 0.2
+  if (minutes >= 240) return 1
+  if (minutes >= 120) return 0.7
+  if (minutes >= 60) return 0.45
+  if (minutes >= 25) return 0.3
+  if (minutes >= 2) return 0.15
   return 0
 }
 
