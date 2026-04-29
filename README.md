@@ -117,8 +117,10 @@ Contains the small set of system-level options that currently matter: timer limi
 ---
 
 ## Bugs & Todos
+**INFO**: Current version works sufficiently well for personal use → Will tackle those when building 1.0 in roughly one year.
 
-- [] BUG | Statistics Heatmap shows 1 day behind
-- [] BUG | Having 0 Projects leads to no action possible in "Projects" Module
-- [] TODO | Rebalance Heatmap Stat -> 4h for 100%
-- [] TODO | Ensure Icon Logo shows on win (currently Electron default)
+- [ ] BUG | Statistics Heatmap shows 1 day behind
+- [ ] BUG | Having 0 Projects leads to no action possible in "Projects" Module
+- [ ] TODO | Rebalance Heatmap Stat -> 4h for 100%
+- [ ] TODO | Ensure Icon Logo shows on win (currently Electron default)
+- [ ] TODO | Refactor all Vue.js views (Codex was quite verbose)
