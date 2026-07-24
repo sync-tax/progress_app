@@ -1,27 +1,27 @@
-import { LowSync } from 'lowdb'
-import { JSONFileSync } from 'lowdb/node'
-import { join } from 'path'
-import { app } from 'electron'
-import defaultData from './default'
-import type { DbSchema } from './types'
+import { LowSync } from "lowdb";
+import { JSONFileSync } from "lowdb/node";
+import { join } from "path";
+import { app } from "electron";
+import defaultData from "./default";
+import type { DbSchema } from "./types";
 
 // save path of db.json
-const file = join(app.getPath('userData'), 'dev-db.json') // change to 'db.json' in production
-export const dbFilePath = file
+const file = join(app.getPath("userData"), "db.json"); // change to 'db.json' in production
+export const dbFilePath = file;
 
 // creates the adapter
-const adapter = new JSONFileSync<DbSchema>(file)
+const adapter = new JSONFileSync<DbSchema>(file);
 
 // creates the database
-const db = new LowSync<DbSchema>(adapter, defaultData)
+const db = new LowSync<DbSchema>(adapter, defaultData);
 
 // reads the database
-db.read()
+db.read();
 
 // ensures default data if db is empty
-db.data ||= defaultData
+db.data ||= defaultData;
 
 // saves it
-db.write()
+db.write();
 
-export default db
+export default db;
